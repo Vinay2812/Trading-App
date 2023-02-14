@@ -1,13 +1,13 @@
 import "./Admin.css";
 import AdminNavbar from "../../components/AdminNavbar/AdminNavbar";
-import { useEffect } from "react";
-import { useAdmin } from "../../hooks/useAdmin";
+import { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Admin() {
   // check if admin is logged in
-  const admin = useAdmin();
-
+  const admin = useSelector((state) => state.adminReducer?.adminData?.admin)
 
   const navigate = useNavigate();
   useEffect(()=>{
@@ -16,8 +16,6 @@ function Admin() {
     }
   }, [admin])
 
-
-  
 
   return (
     <div className="page">

@@ -1,6 +1,5 @@
-import { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import "./Password.css";
-import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getUserOTP,
@@ -8,13 +7,30 @@ import {
   updatePassword,
   verifyOTP,
 } from "../../api/AuthRequest";
+import { login } from "../../redux/actions/authActions";
+import { useDispatch, useSelector } from "react-redux";
 
 function Password() {
   const navigate = useNavigate();
   const params = useParams();
-  const { userId } = params;
+
+  const user = useSelector( state => state.authReduder?.authData)
+  const { userId }= params;
+  console.log(params);
+  useEffect(()=>{
+    if(!user.userData){
+      navigate("/auth");
+      return;
+    }
+    if(user?.userData?.password){
+      navigate("/home");
+      return;
+    }
+    console.log(user)
+  },[user])
+
   useEffect(() => {
-    if (userId === undefined || userId === null) {
+    if (userId == undefined || userId == null) {
       navigate("/auth");
       return;
     }
@@ -22,7 +38,7 @@ function Password() {
 
     async function checkValidUser() {
       try {
-        const res = await getUserOTP(userId);
+        await getUserOTP(userId);
       } catch (err) {
         navigate("/auth");
       }
@@ -40,8 +56,9 @@ function Password() {
   const [passwordDetails, setPasswordDetails] = useState(
     INITIAL_PASSWORD_DETAILS
   );
-  console.log(passwordDetails);
+
   const [passwordPage, setPasswordPage] = useState(false);
+  const dispatch = useDispatch();
 
   function handleChange(e) {
     e.preventDefault();
@@ -62,12 +79,12 @@ function Password() {
     };
 
     const validation = await verifyOTP(otpData);
-    console.log(validation);
     if (validation.status === 200) {
       setPasswordPage(true);
     }
     alert(validation.data);
   }
+
   async function handleSubmit() {
     if (passwordDetails.password.length < 4) {
       alert("Minimum 4 character required");
@@ -85,6 +102,7 @@ function Password() {
     const res = await updatePassword(updatePasswordData);
     if (res.status === 200) {
       alert("password updated successfully");
+      dispatch(login({mobile: user.userData.mobile, company_name: user.userData.company_name, password: passwordDetails.password}))
     }
   }
   return (

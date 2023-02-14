@@ -7,28 +7,27 @@ import { useSelector } from "react-redux";
 import Loader from "../../components/Loader/Loader";
 import { useNavigate } from "react-router-dom";
 
-import { useAdmin } from "../../hooks/useAdmin";
-import {useUser} from "../../hooks/useUser"
 
 function Auth() {
   const [registerPage, setRegisterPage] = useState(false);
   const { loading } = useSelector(state => state.authReducer)
   
-  const admin = useAdmin();
-  const user = useUser();
+  const admin = useSelector((state) => state.adminReducer?.adminData?.admin)
+  const user = useSelector(state => state.authReducer?.authData?.userData);
 
   const navigate = useNavigate();
 
   useEffect(()=>{
-    if(user){
-      navigate("/home");
-      return;
-    }
-
     if(admin){
       navigate("/admin");
     }
-  }, [user, admin])
+  }, [admin])
+
+  useEffect(()=>{
+    if(user){
+      navigate("/home");
+    }
+  }, [user])
   return (
     <div className="auth">
       {

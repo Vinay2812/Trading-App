@@ -60,7 +60,7 @@ export default function validateForm({ userData, bankData, contactData }, setErr
             return false;
         }
 
-        if (gst.length === 15 && gst.substring(3, 13) !== pan) {
+        if (gst.length === 15 && gst.substring(2, 12) !== pan) {
             setError("Invalid pan");
             return false;
         }
