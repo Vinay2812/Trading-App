@@ -1,0 +1,38 @@
+.contact-container{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.contact-title{
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+.contact-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 0.5fr;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    gap: 1rem;
+}
+.contact-row > div{
+    display: flex;
+    justify-content: center;
+}
+
+.coloumn-names{
+    background-color: #000000f4;
+    padding: 0.5rem;
+}
+
+@media (max-width: 1000px) {
+    .contact-row {
+      grid-template-columns: 1fr 1fr;
+    }
+}
+@media (max-width: 600px) {
+    .contact-row {
+      grid-template-columns: 1fr;
+    }
+}

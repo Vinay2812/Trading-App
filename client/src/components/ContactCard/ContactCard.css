@@ -1,0 +1,25 @@
+.contact-row > input{
+    /* width: 100%; */
+    padding: 6px 12px;
+    border: 1px solid lightgray;
+    border-radius: 3px;
+    outline: none;
+    font-size: 12px;
+    color: rgb(103, 102, 102);
+
+}
+.contact-row > input::placeholder{
+    color:rgba(101, 100, 100, 0.373)
+}
+.action-btns{
+    color: rgb(112, 125, 223);
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.action-btns > *{
+    cursor: pointer;
+}
+

@@ -1,0 +1,22 @@
+.bank-detail-container{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.add-bank-btn{
+    width: max-content;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    background-color: #556cd6;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+.add-bank-btn:disabled{
+    background-color: darkgrey;
+    cursor: not-allowed;
+}

@@ -1,0 +1,1 @@
+INSERT into onlineUserDetails (email) OUTPUT inserted.* VALUES ('vinaysarda2812@gmail.com')

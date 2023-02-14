@@ -1,0 +1,50 @@
+.registration-list{
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    margin: 0.5rem;
+    border-radius: 1rem 1rem 0 0 ;
+}
+
+.list-row{
+    display: grid;
+    grid-template-columns: 0.5fr 1.25fr 1.5fr 0.6fr 0.75fr;
+    justify-content: space-around;
+}
+
+.column-names{
+    color: #FFFFFF;
+    background-color: rgba(0, 0, 0, 0.647);
+}
+.list-row-item{
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 3rem;
+    overflow-y: scroll;
+}
+.list-row-item:not(:last-child){
+    border-right: 2px solid #FFFFFF;
+}
+
+.list-row:not(.column-names):nth-child(odd){
+    background-color: #dedcdc;
+}
+
+.list-row:nth-child(even) > .list-row-item{
+    border-right: 2px solid #dedcdc;
+}
+
+.add{
+    background-color: rgb(26, 141, 26);
+}
+
+.map{
+    background-color: rgb(109, 109, 251);
+}
+
+.btns{
+    display: flex;
+    gap: 0.75rem
+}

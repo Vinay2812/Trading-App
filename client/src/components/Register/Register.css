@@ -1,0 +1,133 @@
+.register-container{
+    display: flex;
+    padding: 0.75rem;
+    overflow-y: scroll;
+    gap: 0.5rem;
+    flex-direction: column;
+    height: 85vh;
+}
+
+.register-title{
+    background-color: #F5F5F5;
+    padding: 1rem 0;
+    font-size: 18px;
+    font-weight: 600;
+    position: relative;
+}
+.error{
+    position: absolute;
+    width: max-content;
+    min-width: 300px;
+    padding: 0.5rem 1rem;
+    background-color: tomato;
+    right: 0;
+    top: 10%;
+    color: #FFFFFF;
+    font-size: 14px;
+    text-align: center;
+
+}
+.row{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.row > div{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+div > label{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+div > input, .row > div > textarea, select, .gst{
+    padding: 6px 12px;
+    border: 1px solid lightgray;
+    border-radius: 3px;
+    outline: none;
+    font-size: 14px;
+    color: rgb(103, 102, 102);
+}
+input:focus, select:focus, textarea:focus{
+    outline: 1px solid #0070f3 !important;
+}
+
+.gst{
+    margin-left: 0.5rem;
+    width: 85%;
+}
+select > option{
+   margin: 6px 0;
+}
+
+.row > div > textarea{
+    height: 3rem;
+    resize: none;
+}
+
+.gst-checkbox{
+    display: flex;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.5rem !important;
+    color:rgb(103, 102, 102);
+}
+
+.register-btns{
+    display: flex;
+    gap: 0.75rem;
+    position: fixed;
+    bottom: 0rem;
+    padding: 1rem;
+    background-color: #eaeaea;
+    width: 100%;;
+}
+
+.cancel, .save{
+    padding: 0.35rem 0.75rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    border-radius: 4px;
+    width: max-content;
+}
+.cancel{
+    background-color: #FFFFFF;
+    border: 1px solid #556cd6;
+    color: #556cd6;
+    font-weight: 700;
+}
+.save{
+    background-color: #556cd6;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.save > svg{
+    font-size: 14px;
+}
+
+@media (max-width: 900px) {
+    .row {
+      grid-template-columns: 1fr 1fr;
+      flex-direction: column;
+    }
+    .gst{
+        margin-left: 0.5rem;
+        width: 82%;
+    }
+  }
+@media (max-width: 600px) {
+    .row {
+      grid-template-columns: 1fr;
+      flex-direction: column;
+    }
+    .gst{
+        margin-left: 0.5rem;
+        width: 90%;
+    }
+  }

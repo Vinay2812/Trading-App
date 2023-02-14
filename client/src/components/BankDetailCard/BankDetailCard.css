@@ -1,0 +1,50 @@
+.bank-detail-card-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.bank-detail-card-title{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bank-detail-card-title > svg{
+    cursor: pointer;
+    color: rgb(103, 102, 102);
+    font-size: 16px;
+}
+
+.bank-card-grid-container{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+.bank-card-grid-container > input, .bank-card-grid-container > select{
+    padding: 6px 12px;
+    border: 1px solid lightgray;
+    border-radius: 3px;
+    outline: none;
+    font-size: 12px;
+    color: rgb(103, 102, 102);
+}
+
+.bank-card-grid-container > input::placeholder{
+    color:rgba(101, 100, 100, 0.373)
+}
+
+@media (max-width: 900px) {
+    .bank-card-grid-container {
+      grid-template-columns: 1fr 1fr;
+      gap :1rem;
+    }
+  }
+@media (max-width: 600px) {
+    .bank-card-grid-container {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+}
