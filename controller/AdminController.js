@@ -84,10 +84,13 @@ export async function addUser(req, res){
                 carporate_party, CompanyPan, Mobile_No, Is_Login, IFSC, 
                 FSSAI, Branch1Drcr, Branch2Drcr, Locked, GSTStateCode, 
                 UnregisterGST, whatsup_no, Limit_By, Tan_no, TDSApplicable,
-                MsOms, userId
+                MsOms,
+                AC_rate, City_Code, Bank_Opening, Opening_Balance,
+                Group_Code, Commission, OffPhone, Branch1OB, Branch2OB, Distance,
+                Bal_Limit, bsid, cityid, company_code
             )
             OUTPUT
-                inserted.*
+                inserted.accoid
             VALUES
             (
                 '${next_ac_code}', '${company_name}', '${company_name}', 'P', '${address}', 
@@ -95,11 +98,18 @@ export async function addUser(req, res){
                 '${bank_name}', '${account_number}','D', 'D', '${account_name.substring(0, Math.min(15, account_name.length - 1))}',
                 'N', '${pan}', '${mobile}', 'Y', '${ifsc}', 
                 '${fssai}', 'D', 'D', '0', '${22}',
-                '${gst == null ? 1 : 0}', '${whatsapp}', 'N', '${tan}', 'Y',
-                'M', '${userId}'  
+                '${gst == null ? 0 : 1}', '${whatsapp}', 'N', '${tan}', 'Y',
+                'M',
+                '0', '0', '0', '0',
+                '0', '0', '0', '0', '0', '0',
+                '0', '0', '0', '1'
+
             )
         `;
+
+        console.log(INSERT_NT1_ACCOUNT_MASTER_QUERY)
         const output = await(await executeQuery(INSERT_NT1_ACCOUNT_MASTER_QUERY))[0];
+        console.log(output)
         const UPDATE_USER_DETAILS = `
             UPDATE onlineUserDetails SET accoid = '${output.accoid}' WHERE userId = '${userId}';
         `

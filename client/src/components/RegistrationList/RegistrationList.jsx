@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import "./RegistrationList.css";
 import { addUser, getUsers, updateAuthorization } from "../../api/AdminRequest";
+import AdminNavbar from "../AdminNavbar/AdminNavbar";
 
 function ListItem({ data, fetchUsers }) {
     // const [authorized, setAuthorized] = useState(data.authorized === 1)
-    console.log(data);
     async function handleAdd(){
       const res = await addUser(data.userId);
       console.log(res.data);
@@ -40,7 +40,8 @@ function RegistrationList() {
   }, [window.onload]);
 
   return (
-    <div className="registration-list">
+    <div className="page">
+      <AdminNavbar />
       <div className="list-row column-names">
         <div className="list-row-item">User Id</div>
         <div className="list-row-item">Company name</div>
