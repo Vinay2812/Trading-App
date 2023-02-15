@@ -6,6 +6,15 @@ import bcrypt from "bcrypt";
 export async function register(req, res) {
     const { userData, bankData, contactData } = req.body;
     try {
+        const CHECK_USER = `
+            SELECT userId from onlineUserDetails
+            WHERE company_name = '${userData.company_name}' AND mobile like '%${userData.mobile.substring(userData.mobile.length - 10, userData.mobile.length)}'
+        `
+        const checkUserExist = await executeQuery(CHECK_USER);
+
+        if(checkUserExist.length){
+            return res.status(500).json("User already exist with this company and mobile");
+        }
         const USER_DATA_QUERY = `
             INSERT into onlineUserDetails
                 (company_name, email, address, state, district, pincode, mobile, whatsapp, gst, pan, fssai, tan, constitution_of_firm)

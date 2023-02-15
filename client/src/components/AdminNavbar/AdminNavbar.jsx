@@ -19,7 +19,6 @@ function AdminNavbar() {
           navigate("/admin/registration-list")
           break;
         default:
-          navigate("/admin");
           return
       }
   }, [active])
