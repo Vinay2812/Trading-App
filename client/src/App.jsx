@@ -5,6 +5,7 @@ import Password from './components/Password/Password'
 import Admin from './pages/Admin/Admin'
 import Home from './pages/Home/Home'
 import RegistrationList from './components/RegistrationList/RegistrationList'
+import MapClient from './components/MapClient/MapClient'
  
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/admin"  > 
             <Route path="/admin" element={<Admin />}/>
             <Route path="/admin/registration-list" element={<RegistrationList />}/>
+            <Route path="/admin/map/:id" element={<MapClient />}/>
         </Route>
       </Routes>
     </div>
