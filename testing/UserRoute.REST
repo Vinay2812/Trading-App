@@ -1,0 +1,13 @@
+// get user in the onlineUserDetails by id
+GET http://localhost:5000/user/company/6 HTTP/1.1
+
+###
+
+// get all the company named from nt_1_accountmaster
+GET http://localhost:5000/user/company-names HTTP/1.1
+
+###
+
+// get user data from nt_1_accountmaster
+GET http://localhost:5000/user/nt_1_account_master/4 HTTP/1.1
+

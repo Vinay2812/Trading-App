@@ -7,6 +7,8 @@ import "./database/dbConnect.js";
 import path from "path"
 import AuthRoute from "./routes/AuthRoute.js"
 import AdminRoute from "./routes/AdminRoute.js"
+import UserRoute from "./routes/UserRoute.js"
+
 import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -20,6 +22,7 @@ app.use(morgan(":status :method :url :response-time ms"));
 
 app.use("/auth", AuthRoute);
 app.use("/admin", AdminRoute);
+app.use("/user", UserRoute);
 
 app.use(express.static(path.join(__dirname, "client", "dist")));
 app.get("*", (req, res)=>{

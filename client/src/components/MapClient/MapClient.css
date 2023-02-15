@@ -20,7 +20,7 @@
 
 .user-data-container{
     display: grid;
-    min-width: 50%;
+    width: 75%;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     padding: 16px;
@@ -44,13 +44,14 @@
     display: flex;
     align-items: center;
     background-color: lightgrey;
+    overflow-y: hidden;
 }
 .user-data-container > div > select{
     width: calc(100% - 120px)
 }
 .vl{
-    width: 50%;
-    border: 1px dotted black;
+    width: 75%;
+    border: 2px dotted black;
 }
 .map-btns{
     display: flex;
@@ -62,5 +63,7 @@
     padding: 0.5rem 1.5rem !important;
 }
 
-
+#cancel:focus{
+    outline: 2px solid black;
+}
 

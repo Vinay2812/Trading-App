@@ -120,3 +120,29 @@ export async function addUser(req, res){
         res.status(500).json(err)
     }
 }
+
+export async function mapClient(req, res){
+    const {userId, accoid} = req.body;
+    try {
+        const UPDATE_ONLINE_USER = `
+            UPDATE onlineUserDetails
+            SET accoid = ${accoid}
+            WHERE userId = '${userId}'
+        `
+
+        const UPDATE_NT_1_ACCOUNTMASTER = `
+            UPDATE nt_1_accountmaster
+            SET userId = '${userId}'
+            WHERE accoid = '${accoid}'
+        `
+
+        await Promise.all([
+            executeQuery(UPDATE_ONLINE_USER),
+            executeQuery(UPDATE_NT_1_ACCOUNTMASTER)
+        ])
+        console.log("called")
+        res.status(200).json("Mapping was successful")
+    } catch (error) {
+        res.status(500).json(err);
+    }
+} 
