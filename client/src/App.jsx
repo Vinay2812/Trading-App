@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Auth from "./pages/Auth/Auth"
 import Password from './components/Password/Password'
 import Admin from './pages/Admin/Admin'
@@ -19,7 +19,6 @@ function App() {
             <Route path="/admin" element={<Admin />}/>
             <Route path="/admin/registration-list" element={<RegistrationList />}/>
             <Route path="/admin/map/:id" element={<MapClient />}/>
-            <Route path="/admin/publish-list" />
         </Route>
       </Routes>
     </div>

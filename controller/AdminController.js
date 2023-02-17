@@ -146,3 +146,19 @@ export async function mapClient(req, res){
         res.status(500).json(err);
     }
 } 
+
+export async function getTenderBalances(req, res){
+    try {
+        const GET_TENDER_BALANCES = `
+            SELECT Tender_No, Tender_Date, millshortname, itemname, 
+            paymenttoshortname, tenderdoshortname, season, Grade, 
+            Quantal, Lifting_Date, Purc_Rate, Mill_Rate, mc, pt, itemcode, 
+            tenderid, td from qrytenderdobalanceview WHERE balance > 0 AND Buyer_Party = 2
+        `;
+
+        const tenderBalances = await executeQuery(GET_TENDER_BALANCES);
+        res.status(200).json(tenderBalances);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
