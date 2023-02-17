@@ -19,6 +19,7 @@ function App() {
             <Route path="/admin" element={<Admin />}/>
             <Route path="/admin/registration-list" element={<RegistrationList />}/>
             <Route path="/admin/map/:id" element={<MapClient />}/>
+            <Route path="/admin/publish-list" />
         </Route>
       </Routes>
     </div>

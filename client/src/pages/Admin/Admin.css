@@ -1,0 +1,44 @@
+.page-tabs{
+    display: flex;
+    padding: 1rem;
+    gap: 2rem;
+    position: relative;
+}
+
+.page-tab{
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.active{
+    color: darkmagenta;
+    padding-bottom: 2px;
+    border-bottom: 2px solid darkmagenta;
+}
+
+.refreshBtn{
+    position: absolute;
+    right: 4rem;
+    top: 0.75rem;
+    background-color: darkorchid;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.page-container{
+    background-color: #ffffff;
+    border-radius: 4px;
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}
+
+
+.reload{
+    font-size: 16px;
+}

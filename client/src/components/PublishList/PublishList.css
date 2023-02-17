@@ -1,0 +1,30 @@
+.publish-list-row{
+    display: grid;
+    grid-template-columns: 0.5fr 0.75fr 1fr 1fr 1fr 1fr 0.5fr 0.5fr 1fr 1fr 0.75fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.head{
+    background-color: rgba(0, 0, 0, 0.647);
+    color: white;
+    font-weight: 600;
+    position: fixed;
+    height: 3rem;
+}
+.head > *:not(:last-child){
+    border-right: 2px solid #ffffff;
+}
+.publish-list-cell{
+    padding: 0.5rem;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.publish-list-row:not(:first):nth-child(odd){
+    background-color: lightblue;
+}
+.publish-list-row:not(:first):nth-child(even){
+    background-color: lightcyan;
+}
