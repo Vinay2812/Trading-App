@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./PublishList.css"
 import Loader from "../Loader/Loader"
 import PublishListItem from "./PublishListItem";
+import { getTenderBalances } from "../../api/AdminRequest";
 
 function PublishList({isPublishList=true, refresh, setRefresh}) {
     // hooks
@@ -32,7 +33,16 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
 
     // functions
     async function fetchPublishList(signal = null){
-      return []
+      setLoading(true)
+      try {
+        const tenderBalances = await getTenderBalances(signal); 
+        if(tenderBalances.status === 200){
+          setPublishList(tenderBalances.data);
+          setLoading(false)
+        }
+      } catch (err) {
+        setLoading(false);
+      }
     }
 
   return (

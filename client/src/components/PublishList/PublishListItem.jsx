@@ -48,7 +48,8 @@ function PublishListItem({ publishListItem }) {
 
   // functions
   function convertDate(date){
-    return new Date(date).toLocaleDateString();
+    const d = new Date(date);
+    return d.getDay() + "/" + d.getMonth() + "/" + d.getFullYear().toString().substring(2, 4);
   }
 
   return (
