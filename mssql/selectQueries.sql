@@ -21,3 +21,5 @@ SELECT tender_no, tenderid, tender_date, publish_date,
     purc_rate, sale_rate, published_qty, selling_type, multipal_of
     , auto_confirm, status
  from trDailypublish;
+
+

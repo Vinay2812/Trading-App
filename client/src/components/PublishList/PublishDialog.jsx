@@ -8,7 +8,7 @@ function PublishDialog({ publishItem, setShowDialog }) {
   const [dialogData, setDialogData] = useState({
     ...publishItem,
     type: "F",
-    multiple_of: 1,
+    multiple_of: 160,
     auto_confirm: "Y",
   });
   const [loading, setLoading] = useState(false);
@@ -30,9 +30,11 @@ function PublishDialog({ publishItem, setShowDialog }) {
         if(res.status === 200){
             setLoading(false);
             alert(res.data);
+            setShowDialog(false);
         }
     }catch(err){
         setLoading(false);
+        alert("Failed to insert")
     }
   }
 

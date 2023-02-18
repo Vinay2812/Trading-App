@@ -2,6 +2,7 @@
 
 /node_modules
 client/node_modules
+data/.~lock.Vinay.xlsx#
 
 # Editor directories and files
 .vscode/*

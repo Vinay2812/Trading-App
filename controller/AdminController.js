@@ -153,7 +153,7 @@ export async function getTenderBalances(req, res){
             SELECT distinct(Tender_No), Tender_Date, millshortname, itemname, 
             paymenttoshortname, tenderdoshortname, season, Grade, 
             Quantal, Lifting_Date, Purc_Rate, Mill_Rate, mc, pt, itemcode, ic,
-            tenderid, td from qrytenderdobalanceview WHERE balance > 0 AND Buyer_Party = 2
+            tenderid, td, Mill_Code, Tender_Do, Payment_To from qrytenderdobalanceview WHERE balance > 0 AND Buyer_Party = 2
         `;
 
         const tenderBalances = await executeQuery(GET_TENDER_BALANCES);
@@ -164,6 +164,7 @@ export async function getTenderBalances(req, res){
 }
 
 export async function insertIntoTrDailyPublish(req, res){
+    // console.log(req.body);
     const {
         Tender_No,
         Tender_Date,
@@ -188,9 +189,14 @@ export async function insertIntoTrDailyPublish(req, res){
         sale_rate,
         publish_quantal,
         multiple_of,
-        auto_confirm
-    } = req.body;
+        auto_confirm,
+        Tender_Do,
+        type,
+        Mill_Code,
+        Payment_To
 
+    } = req.body;
+    const publish_date = (new Date()).toLocaleDateString();
     try {
         const INSERT_INTO_TR_DAILY_PUBLISH = `
         INSERT into trDailypublish 
@@ -203,14 +209,13 @@ export async function insertIntoTrDailyPublish(req, res){
         )
         VALUES
         (
-            ${Tender_No}, ${tenderid}, '${Tender_Date}', '${""}',
-            ${Lifting_Date}, ${""}, ${mc}, ${itemcode}, ${ic}, ${paymenttoshortname},
-            ${pt}, ${""}, ${td}, ${season}, ${Grade}, ${unit}, ${Quantal}, ${Mill_Rate},
-            ${Purc_Rate}, ${sale_rate}, ${publish_quantal}, ${""}, ${multiple_of},
-            ${auto_confirm}, ${""}
+            '${Tender_No}', '${tenderid}', '${Tender_Date}', '${publish_date}',
+            '${Lifting_Date}', '${Mill_Code}', '${mc}', '${itemcode}', '${ic}', '${Payment_To}',
+            '${pt}', '${Tender_Do}', '${td}', '${season}', '${Grade}', '${unit}', '${Quantal}', '${Mill_Rate}',
+            '${Purc_Rate}', '${sale_rate}', '${publish_quantal}', '${type}', '${multiple_of}',
+            '${auto_confirm}', 'Y'
         )
         `
-
         await executeQuery(INSERT_INTO_TR_DAILY_PUBLISH);
         res.status(200).json("Inserted into trDailypublish")
     } catch (err) {

@@ -33,3 +33,20 @@ pui khadi', '416012', '', 'netramarda2001@gmail.com', 'Online',
             )
 
 
+INSERT into trDailypublish 
+(
+    tender_no, tenderid, tender_date, publish_date, 
+    lifting_date, mill_code, mc, item_code, it, payment_to, 
+    pt, doac, doid, season, grade, unit, qty, mill_rate, 
+    purc_rate, sale_rate, published_qty, selling_type, multipal_of
+    ,auto_confirm, status
+)
+VALUES
+(
+    '2459', '2503', '02/08/2022', '2/18/2023',
+    '05/08/2022', '84482', '5881', '1', '8', '80402',
+    '1943', '80402', '1943', '21-22', 'SUPER S/30 (S1)', 'Q', '5000', '3375',
+    '0', '12', '1212', 'F', '160',
+    'Y', 'Y'
+)
+

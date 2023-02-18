@@ -8,7 +8,7 @@ function PublishListItem({ publishListItem }) {
     ...publishListItem,
     Tender_Date: convertDate(publishListItem.Tender_Date),
     Lifting_Date: convertDate(publishListItem.Lifting_Date),
-    unit: "none",
+    unit: "Q",
     sale_rate: "",
     publish_quantal: ""
   });
@@ -17,16 +17,7 @@ function PublishListItem({ publishListItem }) {
   // functions
   function convertDate(date) {
     if(!date || !date?.length)return;
-
-    const d = new Date(date);
-    return (
-      d.getDay() +
-      1 +
-      "/" +
-      (d.getMonth() + 1) +
-      "/" +
-      d.getFullYear().toString().substring(2, 4)
-    );
+    return new Date(date).toLocaleDateString();
   }
 
   function handleInputChange(e) {
@@ -35,10 +26,6 @@ function PublishListItem({ publishListItem }) {
   }
 
   function handlePublishBtnClicked() {
-    if(listItemData.unit === "none"){
-      alert("Please select a unit for Tender no. " + listItemData.Tender_No);
-      return;
-    }
 
     if(!listItemData.sale_rate || listItemData.sale_rate?.length === 0){
       alert("Please enter sale rate for Tender no. " + listItemData.Tender_No);
@@ -71,12 +58,9 @@ function PublishListItem({ publishListItem }) {
           value={listItemData.unit}
           onChange={handleInputChange}
         >
-          <option value="none" hidden={true}>
-            Select
-          </option>
-          <option>Quantal</option>
-          <option>Metric Tone</option>
-          <option>Litre </option>
+          <option value="Q">Quantal</option>
+          <option value="M">Metric Tone</option>
+          <option value="L">Litre </option>
         </select>
       </div>
       <div className="publish-list-cell">{listItemData.Quantal}</div>
