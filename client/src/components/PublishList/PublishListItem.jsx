@@ -36,17 +36,17 @@ function PublishListItem({ publishListItem }) {
 
   function handlePublishBtnClicked() {
     if(listItemData.unit === "none"){
-      alert("Please select a unit for Tender no. " + Tender_No);
+      alert("Please select a unit for Tender no. " + listItemData.Tender_No);
       return;
     }
 
     if(!listItemData.sale_rate || listItemData.sale_rate?.length === 0){
-      alert("Please enter sale rate for Tender no. " + Tender_No);
+      alert("Please enter sale rate for Tender no. " + listItemData.Tender_No);
       return;
     }
 
     if(!listItemData.publish_quantal || listItemData.publish_quantal?.length === 0){
-      alert("Please enter publish quantal for Tender no. " + Tender_No);
+      alert("Please enter publish quantal for Tender no. " + listItemData.Tender_No);
       return;
     }
 
