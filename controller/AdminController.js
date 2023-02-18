@@ -164,14 +164,9 @@ export async function getTenderBalances(req, res){
 }
 
 export async function insertIntoTrDailyPublish(req, res){
-    // console.log(req.body);
     const {
         Tender_No,
         Tender_Date,
-        millshortname,
-        itemname,
-        paymenttoshortname,
-        tenderdoshortname,
         season,
         Grade,
         Quantal,
@@ -184,7 +179,6 @@ export async function insertIntoTrDailyPublish(req, res){
         ic,
         tenderid,
         td,
-        balance,
         unit,
         sale_rate,
         publish_quantal,
