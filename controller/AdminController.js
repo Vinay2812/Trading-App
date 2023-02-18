@@ -97,7 +97,7 @@ export async function addUser(req, res){
                 '${address}', '${pincode}', '${gst}', '${email}', 'Online', 
                 '${bank_name}', '${account_number}','D', 'D', '${account_name.substring(0, Math.min(15, account_name.length - 1))}',
                 'N', '${pan}', '${mobile}', 'Y', '${ifsc}', 
-                '${fssai}', 'D', 'D', '0', '${22}',
+                '${fssai}', 'D', 'D', '0', '${state.substring(0, 2)}',
                 '${gst == null ? 0 : 1}', '${whatsapp}', 'N', '${tan}', 'Y',
                 'M',
                 '0', '0', '0', '0',
