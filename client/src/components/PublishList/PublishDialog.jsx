@@ -1,28 +1,12 @@
 import React, { useState } from "react";
+import { insertIntoTrDailyPublish } from "../../api/AdminRequest";
 import Loader from "../Loader/Loader";
 
 function PublishDialog({ publishItem, setShowDialog }) {
-  const {
-    millshortname,
-    itemname,
-    Grade,
-    season,
-    balance,
-    publish_quantal,
-    unit,
-    Lifting_Date,
-  } = publishItem;
 
   // useStates
   const [dialogData, setDialogData] = useState({
-    millshortname,
-    itemname,
-    Grade,
-    season,
-    balance,
-    publish_quantal,
-    unit,
-    Lifting_Date,
+    ...publishItem,
     type: "F",
     multiple_of: 1,
     auto_confirm: "Y",
@@ -41,8 +25,15 @@ function PublishDialog({ publishItem, setShowDialog }) {
 
   async function handleDialogPublish() {
     setLoading(true);
-
-    setLoading(false);
+    try{
+        const res = await insertIntoTrDailyPublish(dialogData);
+        if(res.status === 200){
+            setLoading(false);
+            alert(res.data);
+        }
+    }catch(err){
+        setLoading(false);
+    }
   }
 
   return (
@@ -124,7 +115,9 @@ function PublishDialog({ publishItem, setShowDialog }) {
                 <button className="cancel" onClick={handleDialogCancel}>
                   Cancel
                 </button>
-                <button className="save" onClick={handleDialogPublish}>Publish</button>
+                <button className="save" onClick={handleDialogPublish}>
+                  Publish
+                </button>
               </div>
             </div>
           </div>

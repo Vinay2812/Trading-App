@@ -2,51 +2,15 @@ import React, { useState } from "react";
 import PublishDialog from "./PublishDialog";
 
 function PublishListItem({ publishListItem }) {
-  // variables
-  const {
-    Tender_No,
-    Tender_Date,
-    millshortname,
-    itemname,
-    paymenttoshortname,
-    tenderdoshortname,
-    season,
-    Grade,
-    Quantal,
-    Lifting_Date,
-    Purc_Rate,
-    Mill_Rate,
-    mc,
-    pt,
-    itemcode,
-    tenderid,
-    td,
-    balance
-  } = publishListItem;
 
   // useStates
   const [listItemData, setListItemData] = useState({
-    Tender_No,
-    Tender_Date: convertDate(Tender_Date),
-    millshortname,
-    itemname,
-    paymenttoshortname,
-    tenderdoshortname,
-    season,
-    Grade,
-    Quantal,
-    Lifting_Date: convertDate(Lifting_Date),
-    Purc_Rate,
-    Mill_Rate,
-    mc,
-    pt,
-    itemcode,
-    tenderid,
-    td,
-    balance,
+    ...publishListItem,
+    Tender_Date: convertDate(publishListItem.Tender_Date),
+    Lifting_Date: convertDate(publishListItem.Lifting_Date),
     unit: "none",
     sale_rate: "",
-    publish_quantal: "",
+    publish_quantal: ""
   });
   const [showDialog, setShowDialog] = useState(false);
 
