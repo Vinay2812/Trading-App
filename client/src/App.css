@@ -1,4 +1,4 @@
-*:not(.page-container)::-webkit-scrollbar{
+::-webkit-scrollbar{
     display: none;
 }
 
@@ -20,7 +20,16 @@ button{
 button:hover{
     opacity: 0.85;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
 .page{
     width: 100%;
     height: calc(100vh - 4rem);

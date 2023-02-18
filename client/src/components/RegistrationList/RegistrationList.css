@@ -14,7 +14,7 @@
 
 .column-names{
     color: #FFFFFF;
-    background-color: rgba(0, 0, 0, 0.647);
+    background-color: darkslategray;
 }
 .list-row-item{
     font-weight: 600;
@@ -29,7 +29,10 @@
 }
 
 .list-row:not(.column-names):nth-child(odd){
-    background-color: #dedcdc;
+    background-color: whitesmoke;
+}
+.list-row:not(.column-names):nth-child(even){
+    background-color: lightgrey;
 }
 
 .list-row:nth-child(even) > .list-row-item{

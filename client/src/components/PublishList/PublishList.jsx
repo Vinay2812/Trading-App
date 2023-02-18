@@ -11,7 +11,7 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
 
     // useStates
     const [loading, setLoading] = useState(false);
-    const [showDialog, setShowDialog] = useState(false);
+    
     const [publishList, setPublishList] = useState([])
 
     // variables
@@ -21,12 +21,14 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
       const controller = new AbortController();
       const signal = { signal: controller.signal } 
 
-      if(refresh || isPublishList){
+      if(refresh || (isPublishList !== null)){
         fetchPublishList(signal)
         setRefresh(false);
       }
 
       return ()=>{
+        setRefresh(false)
+        setLoading(false);
         controller.abort();
       }
     }, [refresh, isPublishList, window.onload])
@@ -72,6 +74,7 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
             return <PublishListItem key={index} publishListItem={publishListItem}/>
           })
         }
+        
         </>
       }
     </div>

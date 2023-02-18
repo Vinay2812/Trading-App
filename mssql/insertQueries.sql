@@ -31,3 +31,15 @@ pui khadi', '416012', '', 'netramarda2001@gmail.com', 'Online',
                 '0', '0', '0', '1'
 
             )
+
+
+INSERT into trDailypublish 
+(
+    tender_no, tenderid, tender_date, publish_date, 
+    lifting_date, mill_code, mc, item_code, it, payment_to, 
+    pt, doac, doid, season, grade, unit, qty, mill_rate, 
+    purc_rate, sale_rate, published_qty, selling_type, multipal_of
+    , auto_confirm, status
+)
+VALUES
+()
