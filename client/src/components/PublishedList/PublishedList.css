@@ -1,0 +1,29 @@
+.published-list-container{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: scroll !important;
+}
+.published-list-container > .head{
+    position: relative;
+    width: max-content;
+}
+.published-list-container > .head > .published-list-cell{
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.published-list-row{
+    display: grid;      /*   1     2     3      4     5      6       7     8     9    10     11    12   13    14    15    16    17    18*/
+    grid-template-columns: 0.5fr 0.6fr 0.75fr 0.75fr 0.75fr 0.75fr 0.6fr 0.6fr 0.5fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 1.75fr;
+}
+
+.published-list-cell{
+    width: 100%;
+    overflow-x: scroll;
+}
+
+.published-list-row > *:not(:last-child){
+    border-right: 2px solid #ffffff;
+}

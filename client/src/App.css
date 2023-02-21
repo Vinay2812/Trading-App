@@ -1,4 +1,4 @@
-::-webkit-scrollbar{
+*:not(.published-list-container)::-webkit-scrollbar{
     display: none;
 }
 

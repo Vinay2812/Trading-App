@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PublishDialog from "./PublishDialog";
+import convertDate from "../../utils/convertDate";
 
 function PublishListItem({ publishListItem }) {
 
@@ -15,10 +16,6 @@ function PublishListItem({ publishListItem }) {
   const [showDialog, setShowDialog] = useState(false);
 
   // functions
-  function convertDate(date) {
-    if(!date || !date?.length)return;
-    return new Date(date).toLocaleDateString();
-  }
 
   function handleInputChange(e) {
     const { name, value } = e.target;

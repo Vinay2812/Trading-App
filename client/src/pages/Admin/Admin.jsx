@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PublishList from "../../components/PublishList/PublishList";
 import { TfiReload } from "react-icons/all";
+import PublishedList from "../../components/PublishedList/PublishedList";
 
 function Admin() {
   // hooks
@@ -55,20 +56,33 @@ function Admin() {
         >
           Client List
         </div>
-        <button className="refreshBtn" onClick={handleRefresh}>
-          {activeTab === 0 ? (
-            <>
+        {
+          activeTab === 0 &&
+          <button className="refreshBtn" onClick={handleRefresh}>
               <TfiReload className="reload" /> {"Refresh"}
-            </>
-          ) : (
-            ""
-          )}
-        </button>
+          </button>
+        }
+        {
+          activeTab === 1 &&
+          <div className="publishedListBtns">
+            <button className="publishedListBtn">
+              Stop Trading
+            </button>
+            <button className="publishedListBtn">
+              Order Book
+            </button>
+          </div>
+        }
       </div>
       <div className="page-container">
         {activeTab === 0 && (
           <PublishList refresh={refresh} setRefresh={setRefresh} />
         )}
+        {
+          activeTab === 1 && (
+            <PublishedList />
+          )
+        }
       </div>
     </div>
   );
