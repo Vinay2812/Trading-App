@@ -190,7 +190,7 @@ export async function insertIntoTrDailyPublish(req, res){
         Payment_To
 
     } = req.body;
-    const publish_date = (new Date()).toLocaleDateString();
+    const publish_date = (new Date()).toISOString();
     try {
         const INSERT_INTO_TR_DAILY_PUBLISH = `
         INSERT into trDailypublish 
@@ -210,6 +210,7 @@ export async function insertIntoTrDailyPublish(req, res){
             '${auto_confirm}', 'Y'
         )
         `
+        console.log(INSERT_INTO_TR_DAILY_PUBLISH);
         await executeQuery(INSERT_INTO_TR_DAILY_PUBLISH);
         res.status(200).json("Inserted into trDailypublish")
     } catch (err) {
