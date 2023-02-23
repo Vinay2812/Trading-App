@@ -1,10 +1,12 @@
-import React from "react";
+import convertDate from "../../utils/convertDate"
+import convertUnit from "../../utils/convertUnit"
+import { FaEdit, BsPauseCircle } from "react-icons/all"
 
 function PublishedListItem({ listItemData }) {
   return (
     <div className="published-list-row">
-      <div className="published-list-cell">{listItemData.Tender_No}</div>
-      <div className="published-list-cell">{listItemData.Tender_Date}</div>
+      <div className="published-list-cell">{listItemData.tender_no}</div>
+      <div className="published-list-cell">{convertDate(listItemData.tender_date)}</div>
       <div className="published-list-cell">{listItemData.millshortname}</div>
       <div className="published-list-cell">{listItemData.itemname}</div>
       <div className="published-list-cell">
@@ -14,23 +16,25 @@ function PublishedListItem({ listItemData }) {
         {listItemData.tenderdoshortname}
       </div>
       <div className="published-list-cell">{listItemData.season}</div>
-      <div className="published-list-cell">{listItemData.Grade}</div>
-      <div className="published-list-cell">{listItemData.unit}</div>
-      <div className="published-list-cell">{listItemData.Quantal}</div>
-      <div className="published-list-cell">{listItemData.Lifting_Date}</div>
-      <div className="published-list-cell">{listItemData.Purc_Rate}</div>
-      <div className="published-list-cell">{listItemData.Mill_Rate}</div>
+      <div className="published-list-cell">{listItemData.grade}</div>
+      <div className="published-list-cell">{convertUnit(listItemData.unit)}</div>
+      <div className="published-list-cell">{listItemData.qty}</div>
+      <div className="published-list-cell">{convertDate(listItemData.lifting_date)}</div>
+      <div className="published-list-cell">{listItemData.purc_rate}</div>
+      <div className="published-list-cell">{listItemData.mill_rate}</div>
       <div className="published-list-cell">{listItemData.sale_rate}</div>
-      <div className="published-list-cell">
-       {listItemData.publish_quantal}
-      </div>
-      <div className="published-list-cell">
-        <button>
-          Modify
-        </button>
-        <button>
-          Stop
-        </button>
+      <div className="published-list-cell">{listItemData.published_qty}</div>
+      <div className="published-list-cell">{listItemData.sold}</div>
+      <div className="published-list-cell">{listItemData.balance}</div>
+      <div className="published-list-cell btns-container">
+        <div className="edit">
+         <FaEdit/>
+         <span>Modify</span>
+        </div>
+        <div className="stop">
+         <BsPauseCircle />
+         <span>Stop</span>
+        </div>
       </div>
     </div>
   );

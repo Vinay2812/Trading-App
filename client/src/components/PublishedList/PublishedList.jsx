@@ -2,6 +2,7 @@ import "./PublishedList.css"
 import Loader from '../Loader/Loader';
 import { useEffect, useState } from "react";
 import PublishedListItem from "./PublishedListItem";
+import { getQryTrDailyBalance } from "../../api/AdminRequest"
 
 function PublishedList() {
     // useStates
@@ -20,7 +21,11 @@ function PublishedList() {
     // functions
     async function fetchPublishedList(signal = null){
         setLoading(true);
-        setLoading(false);
+        const res = await getQryTrDailyBalance();
+        if(res.status === 200){
+            setPublishedList(res.data);
+            setLoading(false);
+        }
     }
 
   return (

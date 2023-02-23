@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { insertIntoTrDailyPublish } from "../../api/AdminRequest";
 import Loader from "../Loader/Loader";
+import convertDate from "../../utils/convertDate"
+import convertUnit from "../../utils/convertUnit";
 
 function PublishDialog({ publishItem, setShowDialog }) {
 
@@ -69,11 +71,11 @@ function PublishDialog({ publishItem, setShowDialog }) {
             <div className="dialog-row">
               <div className="dialog-cell">
                 <label htmlFor="">Selling Unit: </label>
-                <span>{dialogData.unit}</span>
+                <span>{convertUnit(dialogData.unit)}</span>
               </div>
               <div className="dialog-cell">
                 <label htmlFor="">Lifting Date: </label>
-                <span>{dialogData.Lifting_Date}</span>
+                <span>{convertDate(dialogData.Lifting_Date)}</span>
               </div>
             </div>
             <div className="dialog-row">

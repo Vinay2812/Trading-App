@@ -1,29 +1,89 @@
 .published-list-container{
     position: relative;
     height: 100%;
-    width: 100%;
     overflow: scroll !important;
 }
+
 .published-list-container > .head{
     position: relative;
-    width: max-content;
 }
+/* .published-list-container > .published-list-row{
+} */
 .published-list-container > .head > .published-list-cell{
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 0 0.5rem;
+    text-align: center !important;
+    overflow: scroll;
+    width: calc(100% - 1rem) !important;
 }
 .published-list-row{
     display: grid;      /*   1     2     3      4     5      6       7     8     9    10     11    12   13    14    15    16    17    18*/
-    grid-template-columns: 0.5fr 0.6fr 0.75fr 0.75fr 0.75fr 0.75fr 0.6fr 0.6fr 0.5fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 1.75fr;
+    grid-template-columns: 0.5fr 0.6fr 0.75fr 0.75fr 0.75fr 0.75fr 0.6fr 0.6fr 0.5fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 1.25fr;
+    /* width: max-content; */
 }
 
 .published-list-cell{
-    width: 100%;
-    overflow-x: scroll;
+    padding: 0.5rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    width: calc(100% - 1rem) !important;
 }
 
 .published-list-row > *:not(:last-child){
     border-right: 2px solid #ffffff;
 }
+
+.published-list-row:not(.head):nth-child(odd){
+    background-color: whitesmoke;
+}
+.published-list-row:not(.head):nth-child(even){
+    background-color: lightgrey;
+}
+
+.btns-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    bottom: 6px;
+    gap: 1rem;
+}
+.btns-container > div {
+    position: relative;
+    padding: 0.25rem;
+}
+.btns-container > div > svg{
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.btns-container > div > span{
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    position: absolute;
+    bottom: -6px;
+}
+
+.btns-container > .edit{
+    color: darkslateblue;
+}
+
+.btns-container > .stop{
+    color: red;
+}
+
+.btns-container > .edit > span{
+    right: 2px;
+}
+.btns-container > .stop > span{
+    right: 5px;
+}
+
+.btns-container > div:hover{
+    color: blueviolet;
+    margin-bottom: 1px;
+}
+

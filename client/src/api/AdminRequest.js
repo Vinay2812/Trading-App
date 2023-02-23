@@ -7,3 +7,4 @@ export const addUser = async(userId) => await API.get(`/admin/user/${userId}/add
 export const mapClient = async(mapData) => await API.put("/admin/map", mapData);
 export const getTenderBalances = async(signal) => await API.get("/admin/tenderbalances", signal);
 export const insertIntoTrDailyPublish = async(data) => await API.post("/admin/trDailyPublish", data);
+export const getQryTrDailyBalance = async(signal) => await API.get("/admin/qrytrdailybalance", signal)

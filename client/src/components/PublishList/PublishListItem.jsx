@@ -7,8 +7,6 @@ function PublishListItem({ publishListItem }) {
   // useStates
   const [listItemData, setListItemData] = useState({
     ...publishListItem,
-    Tender_Date: convertDate(publishListItem.Tender_Date),
-    Lifting_Date: convertDate(publishListItem.Lifting_Date),
     unit: "Q",
     sale_rate: "",
     publish_quantal: ""
@@ -41,7 +39,7 @@ function PublishListItem({ publishListItem }) {
     <div className="publish-list-row">
       <div className="publish-list-cell">{listItemData.Tender_No}</div>
       <div className="publish-list-cell">
-        {listItemData.Tender_Date}
+        {convertDate(listItemData.Tender_Date)}
       </div>
       <div className="publish-list-cell">{listItemData.millshortname}</div>
       <div className="publish-list-cell">{listItemData.itemname}</div>
@@ -62,7 +60,7 @@ function PublishListItem({ publishListItem }) {
       </div>
       <div className="publish-list-cell">{listItemData.Quantal}</div>
       <div className="publish-list-cell">
-        {listItemData.Lifting_Date}
+        {convertDate(listItemData.Lifting_Date)}
       </div>
       <div className="publish-list-cell">{listItemData.Purc_Rate}</div>
       <div className="publish-list-cell">{listItemData.Mill_Rate}</div>

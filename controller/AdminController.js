@@ -216,3 +216,15 @@ export async function insertIntoTrDailyPublish(req, res){
         res.status(500).json(err);
     }
 }
+
+export async function getQryTrDailyBalance(req, res){
+    try {
+        const GET_TR_DAILY_PUBLISH = `
+            SELECT * from qrytrdailybalance where status='Y' and balance > 0
+        `
+        const trDailyPublishList = await executeQuery(GET_TR_DAILY_PUBLISH);
+        res.status(200).json(trDailyPublishList)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
