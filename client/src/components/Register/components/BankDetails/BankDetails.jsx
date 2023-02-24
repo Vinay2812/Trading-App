@@ -1,3 +1,4 @@
+
 import BankDetailCard from "../BankDetailCard/BankDetailCard";
 import "./BankDetails.css";
 

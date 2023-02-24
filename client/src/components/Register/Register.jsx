@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import "./Register.css";
-import allDistricts from "./districts.json";
-import states from "./states.json";
-import { constitutionFirm } from "./contitution-firm";
+import allDistricts from "./data/districts.json";
+import states from "./data/states.json";
+import { constitutionFirm } from "./data/contitution-firm";
 import { AiFillSave } from "react-icons/ai";
-import BankDetails from "../BankDetails/BankDetails";
-import ContactDetails from "../ContactDetails/ContactDetails";
-import validateForm from "./FormValidation";
+import validateForm from "./utility/FormValidation";
 // import { register } from "../../redux/actions/authActions";
 import { register } from "../../api/AuthRequest";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Loader from "../Loader/Loader";
+import BankDetails from "./components/BankDetails/BankDetails";
+import ContactDetails from "./components/ContactDetails/ContactDetails";
 
 function Register({ setRegisterPage }) {
   states.sort((a, b) => a.code - b.code);
@@ -76,8 +76,8 @@ function Register({ setRegisterPage }) {
       stateCode === "0"
         ? [{ name: "Not Available" }]
         : allDistricts.find(
-          (state) => state.code.toString() === stateCode.toString()
-        ).districts;
+            (state) => state.code.toString() === stateCode.toString()
+          ).districts;
     setStateDistricts(reqDistricts);
   }, [stateCode]);
 
@@ -89,9 +89,8 @@ function Register({ setRegisterPage }) {
 
     return () => {
       clearTimeout(timeout);
-    }
+    };
   }, [error]);
-
 
   function handleStateChange(e) {
     setStateCode(e.target.value);
@@ -124,7 +123,7 @@ function Register({ setRegisterPage }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (hasGST && (userDetails.gst.length !== 15)) {
+    if (hasGST && userDetails.gst.length !== 15) {
       setError("Invalid gst");
       return;
     }
@@ -139,38 +138,36 @@ function Register({ setRegisterPage }) {
 
     if (validation === true) {
       setLoading(true);
-      const updatedMobile = userDetails.mobile.substring(userDetails.mobile.length - 10, userDetails.mobile.length)
+      const updatedMobile = userDetails.mobile.substring(
+        userDetails.mobile.length - 10,
+        userDetails.mobile.length
+      );
       const formData = {
         userData: { ...userDetails, mobile: updatedMobile },
         bankData: bankDetailArray,
-        contactData: contactArray
+        contactData: contactArray,
       };
       register(formData)
         .then((res) => res.json())
-        .then(user => {
-            navigate(`/register/${user.userData.userId}`)
-            setLoading(false);
-          }
-        )
-        .catch(err => {
+        .then((user) => {
+          navigate(`/register/${user.userData.userId}`);
           setLoading(false);
-            alert(err.message);
-          }
-        )
+        })
+        .catch((err) => {
+          setLoading(false);
+          alert(err.message);
+        });
     }
-
   }
   return (
     <div className="register-container">
-      {loading ? <Loader /> :
+      {loading ? (
+        <Loader />
+      ) : (
         <>
           <div className="register-title">
             User Registration
-            {error.length ? (
-              <div className="error">
-                {error}
-              </div>
-            ) : ""}
+            {error.length ? <div className="error">{error}</div> : ""}
           </div>
 
           <div className="row">
@@ -224,7 +221,12 @@ function Register({ setRegisterPage }) {
             </div>
             <div>
               <label htmlFor="district">District</label>
-              <select name="district" defaultValue={0} onChange={handleChange} disabled={userDetails.state.length === 0}>
+              <select
+                name="district"
+                defaultValue={0}
+                onChange={handleChange}
+                disabled={userDetails.state.length === 0}
+              >
                 <option value={0} disabled hidden></option>
                 {stateDistricts.map((district) => {
                   return (
@@ -279,7 +281,7 @@ function Register({ setRegisterPage }) {
                     name="gst_registered"
                     checked={hasGST}
                     onChange={() => {
-                      setHasGST(prev => !prev);
+                      setHasGST((prev) => !prev);
                     }}
                   />
                   <input
@@ -338,7 +340,9 @@ function Register({ setRegisterPage }) {
               />
             </div>
             <div>
-              <label htmlFor="constitution_of_firm">Constitution of the Firm</label>
+              <label htmlFor="constitution_of_firm">
+                Constitution of the Firm
+              </label>
               <select
                 name="constitution_of_firm"
                 id=""
@@ -370,15 +374,12 @@ function Register({ setRegisterPage }) {
             <button className="cancel" onClick={() => setRegisterPage(false)}>
               CANCEL
             </button>
-            <button
-              className="save"
-              onClick={handleSubmit}
-            >
+            <button className="save" onClick={handleSubmit}>
               {<AiFillSave />} SAVE
             </button>
           </div>
         </>
-      }
+      )}
     </div>
   );
 }

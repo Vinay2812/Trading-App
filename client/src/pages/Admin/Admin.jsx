@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import PublishList from "../../components/PublishList/PublishList";
 import { TfiReload } from "react-icons/all";
 import PublishedList from "../../components/PublishedList/PublishedList";
+import { stopAllTrade } from "../../api/AdminRequest";
 
 function Admin() {
   // hooks
@@ -16,7 +17,8 @@ function Admin() {
 
   // useStates
   const [activeTab, setActiveTab] = useState(0);
-  const [refresh, setRefresh] = useState(false);
+  const [refreshPublishList, setRefreshPublishList] = useState(false);
+  const [refreshPublishedList, setRefreshPublishedList] = useState(false);
 
   //useEffects
   useEffect(() => {
@@ -30,8 +32,22 @@ function Admin() {
     setActiveTab(index);
   }
 
-  function handleRefresh(){
-    setRefresh(true);
+  function handleRefreshPublishList(){
+    setRefreshPublishList(true);
+  }
+  async function handleStopTrading(){
+    try {
+      const res = await stopAllTrade();
+      if(res.status === 200){
+        setRefreshPublishedList(true);
+        alert("All trading stopped successfully");
+        setTimeout(() => {
+          setRefreshPublishedList(false);
+        }, 1000);
+      }
+    } catch (err) {
+      setRefreshPublishedList(false);
+    }
   }
 
   return (
@@ -58,14 +74,14 @@ function Admin() {
         </div>
         {
           activeTab === 0 &&
-          <button className="refreshBtn" onClick={handleRefresh}>
+          <button className="refreshBtn" onClick={handleRefreshPublishList}>
               <TfiReload className="reload" /> {"Refresh"}
           </button>
         }
         {
           activeTab === 1 &&
           <div className="publishedListBtns">
-            <button className="publishedListBtn">
+            <button className="publishedListBtn" onClick={handleStopTrading}>
               Stop Trading
             </button>
             <button className="publishedListBtn">
@@ -76,11 +92,11 @@ function Admin() {
       </div>
       <div className="page-container">
         {activeTab === 0 && (
-          <PublishList refresh={refresh} setRefresh={setRefresh} />
+          <PublishList refresh={refreshPublishList} setRefresh={setRefreshPublishList} />
         )}
         {
           activeTab === 1 && (
-            <PublishedList />
+            <PublishedList refresh={refreshPublishedList}/>
           )
         }
       </div>

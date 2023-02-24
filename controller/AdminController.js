@@ -6,7 +6,6 @@ export async function adminLogin(req, res){
     const {username, password} = req.body;
     const {ADMIN_USERNAME, ADMIN_PASSWORD} = process.env;
     try {
-       
         if(username !== ADMIN_USERNAME){
             return res.status(400).json("Invalid admin username");
         }
@@ -150,14 +149,26 @@ export async function mapClient(req, res){
 export async function getTenderBalances(req, res){
     try {
         const GET_TENDER_BALANCES = `
-            SELECT distinct(Tender_No), Tender_Date, millshortname, itemname, 
+            SELECT Tender_No, Tender_Date, millshortname, itemname, 
             paymenttoshortname, tenderdoshortname, season, Grade, 
             Quantal, Lifting_Date, Purc_Rate, Mill_Rate, mc, pt, itemcode, ic,
             tenderid, td, Mill_Code, Tender_Do, Payment_To from qrytenderdobalanceview WHERE balance > 0 AND Buyer_Party = 2
         `;
 
         const tenderBalances = await executeQuery(GET_TENDER_BALANCES);
-        res.status(200).json(tenderBalances);
+        
+        let uniqueKeys = [];
+        let uniqueList = [];
+        for(let ele of tenderBalances){
+            if(!uniqueKeys.includes(ele.tenderid)){
+                uniqueKeys.push(ele.tenderid);
+                uniqueList.push(ele);
+            }
+        }
+        uniqueList.sort((a, b) => {
+            return new Date(b.Tender_Date) - new Date(a.Tender_Date)
+        });
+        res.status(200).json(uniqueList);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -188,10 +199,18 @@ export async function insertIntoTrDailyPublish(req, res){
         type,
         Mill_Code,
         Payment_To
-
     } = req.body;
-    const publish_date = (new Date()).toISOString();
+
     try {
+        const CHECK_TENDER_ID_EXIST = `
+            SELECT tenderid from trDailypublish WHERE tenderid = '${tenderid}'
+        `
+        const tenderIdExist = await executeQuery(CHECK_TENDER_ID_EXIST);
+        if(tenderIdExist.length > 0){
+            res.status(200).json("Tender Id already exist");
+            return;
+        }
+        const publish_date = (new Date()).toISOString();
         const INSERT_INTO_TR_DAILY_PUBLISH = `
         INSERT into trDailypublish 
         (
@@ -210,7 +229,6 @@ export async function insertIntoTrDailyPublish(req, res){
             '${auto_confirm}', 'Y'
         )
         `
-        console.log(INSERT_INTO_TR_DAILY_PUBLISH);
         await executeQuery(INSERT_INTO_TR_DAILY_PUBLISH);
         res.status(200).json("Inserted into trDailypublish")
     } catch (err) {
@@ -221,10 +239,60 @@ export async function insertIntoTrDailyPublish(req, res){
 export async function getQryTrDailyBalance(req, res){
     try {
         const GET_TR_DAILY_PUBLISH = `
-            SELECT * from qrytrdailybalance where status='Y' and balance > 0
+            SELECT * from qrytrdailybalance where balance > 0
         `
         const trDailyPublishList = await executeQuery(GET_TR_DAILY_PUBLISH);
-        res.status(200).json(trDailyPublishList)
+        
+        let uniqueKeys = [];
+        let uniqueList = [];
+        for(let ele of trDailyPublishList){
+            if(!uniqueKeys.includes(ele.tenderid)){
+                uniqueKeys.push(ele.tenderid);
+                uniqueList.push(ele);
+            }
+        }
+        uniqueList.sort((a, b) => {
+            return new Date(a.publish_date) - new Date(b.publish_date);
+        })
+        res.status(200).json(uniqueList)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+
+export async function stopSingleTrade(req, res){
+    const {tenderid} = req.body;
+    try {
+        const STOP_SINGLE_TENDER = `
+            UPDATE trDailypublish SET status = 'N' WHERE tenderid = '${tenderid}'
+        `
+        await executeQuery(STOP_SINGLE_TENDER);
+        res.status(200).json("Stopped tender " + tenderid)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+
+export async function stopAllTrade(req, res){
+    try {
+        const STOP_ALL_TENDER = `
+            UPDATE trDailypublish SET status = 'N'
+        `
+        await executeQuery(STOP_ALL_TENDER);
+        res.status(200).json("Stopped all tender")
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+
+export async function startSingleTrade(req, res){
+    const {tenderid} = req.body;
+    try {
+        const START_SINGLE_TENDER = `
+            UPDATE trDailypublish SET status = 'Y' WHERE tenderid = '${tenderid}'
+        `
+        await executeQuery(START_SINGLE_TENDER);
+        res.status(200).json("Started tender " + tenderid)
     } catch (err) {
         res.status(500).json(err);
     }
