@@ -4,7 +4,7 @@ import allDistricts from "./data/districts.json";
 import states from "./data/states.json";
 import { constitutionFirm } from "./data/contitution-firm";
 import { AiFillSave } from "react-icons/ai";
-import validateForm from "./utility/FormValidation";
+import validateForm from "./utils/FormValidation";
 // import { register } from "../../redux/actions/authActions";
 import { register } from "../../api/AuthRequest";
 import { useNavigate } from "react-router-dom";

@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
 import "./PublishList.css"
 import Loader from "../Loader/Loader"
-import PublishListItem from "./PublishListItem";
 import { getTenderBalances } from "../../api/AdminRequest";
+import PublishListItem from "./components/PublishListItem";
 
 function PublishList({isPublishList=true, refresh, setRefresh}) {
-    // hooks
-
-    // selectors
 
     // useStates
     const [loading, setLoading] = useState(false);
-    
     const [publishList, setPublishList] = useState([])
-
-    // variables
 
     // useEffects
     useEffect(()=>{
@@ -37,7 +31,7 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
     async function fetchPublishList(signal = null){
       setLoading(true)
       try {
-        const tenderBalances = await getTenderBalances(signal); 
+        const tenderBalances = await getTenderBalances(signal);
         if(tenderBalances.status === 200){
           setPublishList(tenderBalances.data);
           setLoading(false)
@@ -49,7 +43,7 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
 
   return (
     <div className="publish-list-container">
-      {loading ? <Loader /> : 
+      {loading ? <Loader /> :
         <>
         <div className="publish-list-row head">
             <div className="publish-list-cell">T.no</div>

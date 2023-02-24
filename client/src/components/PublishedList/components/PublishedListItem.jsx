@@ -1,8 +1,36 @@
-import convertDate from "../../utils/convertDate"
-import convertUnit from "../../utils/convertUnit"
-import { FaEdit, BsPauseCircle } from "react-icons/all"
+import convertDate from "../../../utils/convertDate"
+import convertUnit from "../../../utils/convertUnit"
+import { FaEdit, BsPauseCircle, BsFillPlayFill } from "react-icons/all"
+import { useState } from "react";
+import { stopSingleTrade, startSingleTrade } from "../../../api/AdminRequest";
 
-function PublishedListItem({ listItemData }) {
+function PublishedListItem({ publishedItemData }) {
+
+  // useStates
+  const [listItemData, setListItemData] = useState(publishedItemData)
+  // functions
+
+  async function handleTradeBtnClick() {
+    try {
+      if(listItemData.status === 'Y'){
+        const res = await stopSingleTrade({tenderid: listItemData.tenderid});
+        if(res.status === 200){
+          setListItemData(prev => ({...prev, status: 'N'}))
+          alert(listItemData.tender_no + " Trade Stopped")
+        }
+      }
+      else{
+        const res = await startSingleTrade({tenderid: listItemData.tenderid});
+        if(res.status === 200){
+          setListItemData(prev => ({...prev, status: 'Y'}))
+          alert(listItemData.tender_no + " Trade Started")
+        }
+      }
+    } catch (err) {
+      alert("Something went wrong")
+    }
+  }
+
   return (
     <div className="published-list-row">
       <div className="published-list-cell">{listItemData.tender_no}</div>
@@ -31,9 +59,9 @@ function PublishedListItem({ listItemData }) {
          <FaEdit/>
          <span>Modify</span>
         </div>
-        <div className="stop">
-         <BsPauseCircle />
-         <span>Stop</span>
+        <div className={`${listItemData.status === 'Y'? "stop" : "start"}`} onClick={handleTradeBtnClick}>
+         {listItemData.status === 'Y' ? <BsPauseCircle /> : <BsFillPlayFill/>}
+         <span>{listItemData.status === 'Y' ? "Stop" : "Start"}</span>
         </div>
       </div>
     </div>

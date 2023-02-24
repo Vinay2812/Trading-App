@@ -10,13 +10,8 @@ function MapClient() {
   // react hooks
   const params = useParams();
   const navigate = useNavigate();
-
-
   // variables
   const userId = params.id;
-
-
-
   // useStates
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({

@@ -1,10 +1,10 @@
 import "./PublishedList.css"
 import Loader from '../Loader/Loader';
 import { useEffect, useState } from "react";
-import PublishedListItem from "./PublishedListItem";
 import { getQryTrDailyBalance } from "../../api/AdminRequest"
+import PublishedListItem from "./components/PublishedListItem";
 
-function PublishedList() {
+function PublishedList({refresh}) {
     // useStates
     const [loading, setLoading] = useState(false);
     const [publishedList, setPublishedList] = useState([])
@@ -12,11 +12,17 @@ function PublishedList() {
     // useEffects
     useEffect(()=>{
         const controller = new AbortController();
-        const signal = {signal: controller.signal}
-
+        const signal = {signal: controller.signal};
         fetchPublishedList(signal).catch(err => setLoading(false))
+    },[])
+    useEffect(()=>{
+        const controller = new AbortController();
+        const signal = {signal: controller.signal};
+        if(refresh){
+            fetchPublishedList(signal).catch(err => setLoading(false))
+        }
 
-    }, [window.onload])
+    }, [refresh])
 
     // functions
     async function fetchPublishedList(signal = null){
@@ -55,7 +61,7 @@ function PublishedList() {
                 </div>
                 {
                     publishedList.map((item, index) => {
-                        return <PublishedListItem key={index} listItemData={item}/>
+                        return <PublishedListItem key={index} publishedItemData={item}/>
                     })
                 }
             </>

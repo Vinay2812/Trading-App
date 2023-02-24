@@ -8,3 +8,6 @@ export const mapClient = async(mapData) => await API.put("/admin/map", mapData);
 export const getTenderBalances = async(signal) => await API.get("/admin/tenderbalances", signal);
 export const insertIntoTrDailyPublish = async(data) => await API.post("/admin/trDailyPublish", data);
 export const getQryTrDailyBalance = async(signal) => await API.get("/admin/qrytrdailybalance", signal)
+export const stopSingleTrade = async(data) => await API.patch("/admin/trade/stop", data);
+export const stopAllTrade = async() => await API.patch("/admin/trade/stop/all");
+export const startSingleTrade = async(data) => await API.patch("/admin/trade/start", data);

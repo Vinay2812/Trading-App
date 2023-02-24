@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { insertIntoTrDailyPublish } from "../../api/AdminRequest";
-import Loader from "../Loader/Loader";
-import convertDate from "../../utils/convertDate"
-import convertUnit from "../../utils/convertUnit";
+import { insertIntoTrDailyPublish } from "../../../api/AdminRequest";
+import Loader from "../../Loader/Loader";
+import convertDate from "../../../utils/convertDate";
+import convertUnit from "../../../utils/convertUnit";
 
 function PublishDialog({ publishItem, setShowDialog }) {
-
   // useStates
   const [dialogData, setDialogData] = useState({
     ...publishItem,
@@ -27,16 +26,16 @@ function PublishDialog({ publishItem, setShowDialog }) {
 
   async function handleDialogPublish() {
     setLoading(true);
-    try{
-        const res = await insertIntoTrDailyPublish(dialogData);
-        if(res.status === 200){
-            setLoading(false);
-            alert(res.data);
-            setShowDialog(false);
-        }
-    }catch(err){
+    try {
+      const res = await insertIntoTrDailyPublish(dialogData);
+      if (res.status === 200) {
         setLoading(false);
-        alert("Failed to insert")
+        alert(res.data);
+        setShowDialog(false);
+      }
+    } catch (err) {
+      setLoading(false);
+      alert("Failed to insert");
     }
   }
 

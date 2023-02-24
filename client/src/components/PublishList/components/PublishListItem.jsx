@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import PublishDialog from "./PublishDialog";
-import convertDate from "../../utils/convertDate";
+import convertDate from "../../../utils/convertDate";
 
 function PublishListItem({ publishListItem }) {
-
   // useStates
   const [listItemData, setListItemData] = useState({
     ...publishListItem,
     unit: "Q",
     sale_rate: "",
-    publish_quantal: ""
+    publish_quantal: "",
   });
   const [showDialog, setShowDialog] = useState(false);
 
@@ -21,19 +20,22 @@ function PublishListItem({ publishListItem }) {
   }
 
   function handlePublishBtnClicked() {
-
-    if(!listItemData.sale_rate || listItemData.sale_rate?.length === 0){
+    if (!listItemData.sale_rate || listItemData.sale_rate?.length === 0) {
       alert("Please enter sale rate for Tender no. " + listItemData.Tender_No);
       return;
     }
 
-    if(!listItemData.publish_quantal || listItemData.publish_quantal?.length === 0){
-      alert("Please enter publish quantal for Tender no. " + listItemData.Tender_No);
+    if (
+      !listItemData.publish_quantal ||
+      listItemData.publish_quantal?.length === 0
+    ) {
+      alert(
+        "Please enter publish quantal for Tender no. " + listItemData.Tender_No
+      );
       return;
     }
 
-
-    setShowDialog(prev => !prev);
+    setShowDialog((prev) => !prev);
   }
   return (
     <div className="publish-list-row">
@@ -90,7 +92,12 @@ function PublishListItem({ publishListItem }) {
           Publish
         </button>
       </div>
-      {showDialog && <PublishDialog publishItem={listItemData} setShowDialog={setShowDialog}/>}
+      {showDialog && (
+        <PublishDialog
+          publishItem={listItemData}
+          setShowDialog={setShowDialog}
+        />
+      )}
     </div>
   );
 }
