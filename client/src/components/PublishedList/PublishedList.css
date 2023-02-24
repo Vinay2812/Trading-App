@@ -16,9 +16,9 @@
     width: calc(100% - 1rem) !important;
 }
 .published-list-row{
-    display: grid;      /*   1     2     3      4     5      6       7     8     9    10     11    12   13    14    15    16    17    18*/
-    grid-template-columns: 0.5fr 0.6fr 0.75fr 0.75fr 0.75fr 0.75fr 0.6fr 0.6fr 0.5fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 1.25fr;
-    width: 150%;
+    display: grid;      /*   1    2   3    4     5      6       7     8     9    10  11    12   13    14    15    16    17    18*/
+    grid-template-columns: 0.5fr 1fr 2fr 0.75fr 0.75fr 0.9fr 0.6fr 0.8fr 0.7fr 0.7fr 1fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 1.25fr;
+    width: 125%;
 }
 
 .published-list-cell{

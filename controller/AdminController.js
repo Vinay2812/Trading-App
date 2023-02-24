@@ -297,3 +297,29 @@ export async function startSingleTrade(req, res){
         res.status(500).json(err);
     }
 }
+
+export async function updateAllSaleRate(req, res){
+    const {sale_rate} = req.body;
+    try {
+        const UPDATE_ALL_SALE_RATE = `
+            UPDATE trDailypublish SET sale_rate = sale_rate + ${sale_rate}
+        `
+        await executeQuery(UPDATE_ALL_SALE_RATE);
+        res.status(200).json("Updated all sale rate")
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+
+export async function updateSingleSaleRate(req, res){
+    const {tenderid, sale_rate} = req.body;
+    try {
+        const UPDATE_SINGLE_SALE_RATE = `
+            UPDATE trDailypublish SET sale_rate = sale_rate + ${sale_rate} WHERE tenderid = '${tenderid}'
+        `
+        await executeQuery(UPDATE_SINGLE_SALE_RATE);
+        res.status(200).json("Updated sale rate for tender " + tenderid)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}

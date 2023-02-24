@@ -4,9 +4,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PublishList from "../../components/PublishList/PublishList";
-import { TfiReload } from "react-icons/all";
+import {
+  TfiReload,
+  AiOutlinePlusCircle,
+  AiOutlineMinusCircle,
+  AiOutlineArrowUp,
+  AiOutlineArrowDown,
+} from "react-icons/all";
 import PublishedList from "../../components/PublishedList/PublishedList";
-import { stopAllTrade } from "../../api/AdminRequest";
+import { stopAllTrade, updateAllSaleRate } from "../../api/AdminRequest";
 
 function Admin() {
   // hooks
@@ -19,6 +25,7 @@ function Admin() {
   const [activeTab, setActiveTab] = useState(0);
   const [refreshPublishList, setRefreshPublishList] = useState(false);
   const [refreshPublishedList, setRefreshPublishedList] = useState(false);
+  const [saleRateChange, setSaleRateChange] = useState("");
 
   //useEffects
   useEffect(() => {
@@ -32,21 +39,64 @@ function Admin() {
     setActiveTab(index);
   }
 
-  function handleRefreshPublishList(){
+  function handleRefreshPublishList() {
     setRefreshPublishList(true);
   }
-  async function handleStopTrading(){
+
+  function handleRefreshPublishedList() {
+    setRefreshPublishedList(true);
+    setTimeout(() => {
+      setRefreshPublishedList(false);
+    }, 1000);
+  }
+
+  function handleSaleRateChange(e) {
+    setSaleRateChange(e.target.value);
+  }
+
+  function handleIncreaseAllSaleRate() {
+    let incVal = Math.abs(
+      parseInt(saleRateChange.length ? saleRateChange : "0")
+    );
+    updateSaleRate(incVal);
+    setSaleRateChange("");
+  }
+
+  function handleDecreaseAllSaleRate() {
+    let decVal =
+      -1 * Math.abs(parseInt(saleRateChange.length ? saleRateChange : "0"));
+    updateSaleRate(decVal);
+    setSaleRateChange("");
+  }
+
+  async function handleStopTrading() {
     try {
       const res = await stopAllTrade();
-      if(res.status === 200){
-        setRefreshPublishedList(true);
+      if (res.status === 200) {
+        handleRefreshPublishedList();
         alert("All trading stopped successfully");
-        setTimeout(() => {
-          setRefreshPublishedList(false);
-        }, 1000);
       }
     } catch (err) {
       setRefreshPublishedList(false);
+    }
+  }
+
+  async function updateSaleRate(val) {
+    if (val == 0) return;
+
+    const quesRes = confirm(
+      `Are you sure you want to ${
+        val > 0 ? "increase" : "decrease"
+      } all sale rate by ${Math.abs(val)} ?`
+    );
+    if (quesRes) {
+      const res = await updateAllSaleRate({ sale_rate: val });
+      if (res.status === 200) {
+        handleRefreshPublishedList();
+        setTimeout(() => {
+          alert("Sale rate updated successfully");
+        }, 500);
+      }
     }
   }
 
@@ -72,33 +122,41 @@ function Admin() {
         >
           Client List
         </div>
-        {
-          activeTab === 0 &&
+        {activeTab === 0 && (
           <button className="refreshBtn" onClick={handleRefreshPublishList}>
-              <TfiReload className="reload" /> {"Refresh"}
+            <TfiReload className="reload" /> {"Refresh"}
           </button>
-        }
-        {
-          activeTab === 1 &&
+        )}
+        {activeTab === 1 && (
           <div className="publishedListBtns">
-            <button className="publishedListBtn" onClick={handleStopTrading}>
+            <div className="inc-sale-rate">
+              <AiOutlineArrowDown onClick={handleDecreaseAllSaleRate} />
+              <input
+                type="number"
+                placeholder="+/- sale rate by"
+                value={saleRateChange}
+                onChange={handleSaleRateChange}
+              />
+              <AiOutlineArrowUp onClick={handleIncreaseAllSaleRate} />
+            </div>
+            <button
+              className="publishedListBtn stop-all"
+              onClick={handleStopTrading}
+            >
               Stop Trading
             </button>
-            <button className="publishedListBtn">
-              Order Book
-            </button>
+            <button className="publishedListBtn order">Order Book</button>
           </div>
-        }
+        )}
       </div>
       <div className="page-container">
         {activeTab === 0 && (
-          <PublishList refresh={refreshPublishList} setRefresh={setRefreshPublishList} />
+          <PublishList
+            refresh={refreshPublishList}
+            setRefresh={setRefreshPublishList}
+          />
         )}
-        {
-          activeTab === 1 && (
-            <PublishedList refresh={refreshPublishedList}/>
-          )
-        }
+        {activeTab === 1 && <PublishedList refresh={refreshPublishedList} />}
       </div>
     </div>
   );

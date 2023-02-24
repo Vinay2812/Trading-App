@@ -1,1 +1,0 @@
-UPDATE trDailyPublish SET status = 'Y'

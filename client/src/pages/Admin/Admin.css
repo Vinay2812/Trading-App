@@ -38,7 +38,6 @@
     overflow: scroll;
 }
 
-
 .reload{
     font-size: 16px;
 }
@@ -54,9 +53,24 @@
     font-weight: 700;
     font-size: 14px;
 }
-.publishedListBtn:nth-child(1){
+.stop-all{
     background-color: darkred;
 }
-.publishedListBtn:nth-child(2){
-    background-color: limegreen
+.publishedListBtn + .order{
+    background-color: darkgreen;
+}
+
+.inc-sale-rate{
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.inc-sale-rate > input{
+    width: 120px;
+}
+.inc-sale-rate > svg{
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
 }
