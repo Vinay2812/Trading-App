@@ -153,7 +153,7 @@ export async function getTenderBalances(req, res){
             paymenttoshortname, tenderdoshortname, season, Grade, 
             Quantal, Lifting_Date, Purc_Rate, Mill_Rate, mc, pt, itemcode, ic,
             tenderid, td, Mill_Code, Tender_Do, Payment_To, BALANCE as balance
-            from qrytenderdobalanceview WHERE balance > 0 AND Buyer_Party = 2
+            from qrytenderdobalanceview WHERE balance > 0 AND Buyer = 2
         `;
 
         const tenderBalances = await executeQuery(GET_TENDER_BALANCES);
