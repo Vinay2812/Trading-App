@@ -13,3 +13,4 @@ export const stopAllTrade = async() => await API.patch("/admin/trade/stop/all");
 export const startSingleTrade = async(data) => await API.patch("/admin/trade/start", data);
 export const updateSingleSaleRate = async(data) => await API.patch("/admin/sale_rate", data);
 export const updateAllSaleRate = async(data) => await API.patch("/admin/sale_rate/all", data);
+export const modifySingleTrade = async(data) => await API.patch("/admin/trade/update", data);

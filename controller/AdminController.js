@@ -268,7 +268,7 @@ export async function stopSingleTrade(req, res){
             UPDATE trDailypublish SET status = 'N' WHERE tenderid = '${tenderid}'
         `
         await executeQuery(STOP_SINGLE_TENDER);
-        res.status(200).json("Stopped tender " + tenderid)
+        res.status(200).json("Stopped tender id" + tenderid)
     } catch (err) {
         res.status(500).json(err);
     }
@@ -293,12 +293,23 @@ export async function startSingleTrade(req, res){
             UPDATE trDailypublish SET status = 'Y' WHERE tenderid = '${tenderid}'
         `
         await executeQuery(START_SINGLE_TENDER);
-        res.status(200).json("Started tender " + tenderid)
+        res.status(200).json("Started tender id" + tenderid)
     } catch (err) {
         res.status(500).json(err);
     }
 }
 
+export async function startAllTrade(req, res){
+    try {
+        const START_ALL_TENDER = `
+            UPDATE trDailypublish SET status = 'Y'
+        `
+        await executeQuery(START_ALL_TENDER);
+        res.status(200).json("Started all tender")
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
 export async function updateAllSaleRate(req, res){
     const {sale_rate} = req.body;
     try {
@@ -319,8 +330,24 @@ export async function updateSingleSaleRate(req, res){
             UPDATE trDailypublish SET sale_rate = sale_rate + ${sale_rate} WHERE tenderid = '${tenderid}'
         `
         await executeQuery(UPDATE_SINGLE_SALE_RATE);
-        res.status(200).json("Updated sale rate for tender " + tenderid)
+        res.status(200).json("Updated sale rate for tender id" + tenderid)
     } catch (err) {
         res.status(500).json(err);
     }
 }
+
+export async function modifySingleTrade(req, res){
+    const {tenderid, sale_rate, published_qty} = req.body;
+    try {
+        const MODIFY_SINGLE_TRADE = `
+            UPDATE trDailypublish
+            SET sale_rate = ${sale_rate}, published_qty = ${published_qty}
+            WHERE tenderid = '${tenderid}'
+        `
+        await executeQuery(MODIFY_SINGLE_TRADE);
+        res.status(200).json("Modified trade for tender id" + tenderid)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+

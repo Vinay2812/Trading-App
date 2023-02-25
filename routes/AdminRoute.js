@@ -12,7 +12,8 @@ import {
   stopAllTrade,
   startSingleTrade,
   updateAllSaleRate,
-  updateSingleSaleRate
+  updateSingleSaleRate,
+  modifySingleTrade
 } from "../controller/AdminController.js";
 const router = Router();
 
@@ -35,5 +36,6 @@ router.patch("/trade/stop/all", stopAllTrade);
 router.patch("/trade/start", startSingleTrade);
 router.patch("/sale_rate", updateSingleSaleRate);
 router.patch("/sale_rate/all", updateAllSaleRate);
+router.patch("/trade/update", modifySingleTrade);
 
 export default router;
