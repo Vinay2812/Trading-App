@@ -60,7 +60,7 @@ function PublishListItem({ publishListItem }) {
           <option value="L">Litre </option>
         </select>
       </div>
-      <div className="publish-list-cell">{listItemData.Quantal}</div>
+      <div className="publish-list-cell">{listItemData.balance}</div>
       <div className="publish-list-cell">
         {convertDate(listItemData.Lifting_Date)}
       </div>
