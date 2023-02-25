@@ -6,13 +6,11 @@ import { useSelector } from "react-redux";
 import PublishList from "../../components/PublishList/PublishList";
 import {
   TfiReload,
-  AiOutlinePlusCircle,
-  AiOutlineMinusCircle,
   AiOutlineArrowUp,
   AiOutlineArrowDown,
 } from "react-icons/all";
 import PublishedList from "../../components/PublishedList/PublishedList";
-import { stopAllTrade, updateAllSaleRate } from "../../api/AdminRequest";
+import { startAllTrade, stopAllTrade, updateAllSaleRate } from "../../api/AdminRequest";
 
 function Admin() {
   // hooks
@@ -26,6 +24,7 @@ function Admin() {
   const [refreshPublishList, setRefreshPublishList] = useState(false);
   const [refreshPublishedList, setRefreshPublishedList] = useState(false);
   const [saleRateChange, setSaleRateChange] = useState("");
+  const [isResumeTrading, setIsResumeTrading] = useState(false);
 
   //useEffects
   useEffect(() => {
@@ -75,6 +74,18 @@ function Admin() {
       if (res.status === 200) {
         handleRefreshPublishedList();
         alert("All trading stopped successfully");
+      }
+    } catch (err) {
+      setRefreshPublishedList(false);
+    }
+  }
+
+  async function handleResumeTrading() {
+    try {
+      const res = await startAllTrade();
+      if (res.status === 200) {
+        handleRefreshPublishedList();
+        alert("All trading resumed successfully");
       }
     } catch (err) {
       setRefreshPublishedList(false);
@@ -141,9 +152,9 @@ function Admin() {
             </div>
             <button
               className="publishedListBtn stop-all"
-              onClick={handleStopTrading}
+              onClick={() => isResumeTrading ? handleResumeTrading() : handleStopTrading()}
             >
-              Stop Trading
+              {isResumeTrading ? "Resume Trading" : "Stop Trading"}
             </button>
             <button className="publishedListBtn order">Order Book</button>
           </div>
@@ -156,7 +167,13 @@ function Admin() {
             setRefresh={setRefreshPublishList}
           />
         )}
-        {activeTab === 1 && <PublishedList refresh={refreshPublishedList} />}
+        {activeTab === 1 && (
+          <PublishedList
+            refresh={refreshPublishedList}
+            setIsResumeTrading={setIsResumeTrading}
+            isResumeTrading = {isResumeTrading}
+          />
+        )}
       </div>
     </div>
   );
