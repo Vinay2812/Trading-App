@@ -74,6 +74,7 @@ function Admin() {
       if (res.status === 200) {
         handleRefreshPublishedList();
         alert("All trading stopped successfully");
+        setIsResumeTrading(true);
       }
     } catch (err) {
       setRefreshPublishedList(false);
@@ -86,6 +87,7 @@ function Admin() {
       if (res.status === 200) {
         handleRefreshPublishedList();
         alert("All trading resumed successfully");
+        setIsResumeTrading(false);
       }
     } catch (err) {
       setRefreshPublishedList(false);
