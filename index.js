@@ -8,13 +8,14 @@ import path from "path"
 import AuthRoute from "./routes/AuthRoute.js"
 import AdminRoute from "./routes/AdminRoute.js"
 import UserRoute from "./routes/UserRoute.js"
+import "./socket.io/socket.js"
 
 import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const app = express();
-const port = process.env.PORT
+const port = process.env.SERVER_PORT
 app.use(cors());
 app.use(bodyParser.json());
 app.use(helmet())
@@ -30,5 +31,5 @@ app.get("*", (req, res)=>{
 })
 
 app.listen(port, ()=>{
-    console.log(`Listening on port ${port}`);
+    console.log(`Server Listening on port ${port}`);
 })

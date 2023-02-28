@@ -3,6 +3,7 @@ import Loader from "../Loader/Loader";
 import { useEffect, useState } from "react";
 import { getQryTrDailyBalance } from "../../api/AdminRequest";
 import PublishedListItem from "./components/PublishedListItem";
+import socket from "../../socket.io/socket";
 
 function PublishedList({ refresh, setIsResumeTrading }) {
   // useStates
