@@ -11,6 +11,7 @@ import {
 } from "react-icons/all";
 import PublishedList from "../../components/PublishedList/PublishedList";
 import { startAllTrade, stopAllTrade, updateAllSaleRate } from "../../api/AdminRequest";
+import socket from "../../socket.io/socket";
 
 function Admin() {
   // hooks
@@ -74,6 +75,7 @@ function Admin() {
       if (res.status === 200) {
         handleRefreshPublishedList();
         alert("All trading stopped successfully");
+        socket.emit("update_client_list", "Req received - start updating client list")
         setIsResumeTrading(true);
       }
     } catch (err) {
@@ -87,6 +89,7 @@ function Admin() {
       if (res.status === 200) {
         handleRefreshPublishedList();
         alert("All trading resumed successfully");
+        socket.emit("update_client_list", "Req received - start updating client list")
         setIsResumeTrading(false);
       }
     } catch (err) {
@@ -106,6 +109,7 @@ function Admin() {
       const res = await updateAllSaleRate({ sale_rate: val });
       if (res.status === 200) {
         handleRefreshPublishedList();
+        socket.emit("update_client_list", "Req received - start updating client list")
         setTimeout(() => {
           alert("Sale rate updated successfully");
         }, 500);
@@ -176,6 +180,12 @@ function Admin() {
             isResumeTrading = {isResumeTrading}
           />
         )}
+        {activeTab === 2 && (
+          <PublishedList
+            isPublishedList={false}
+          />
+        )
+        }
       </div>
     </div>
   );

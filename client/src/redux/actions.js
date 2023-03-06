@@ -6,6 +6,3 @@ export const ADMIN_AUTH_START = "ADMIN_AUTH_START"
 export const ADMIN_AUTH_SUCCESS = "ADMIN_AUTH_SUCCESS"
 export const ADMIN_AUTH_FAIL = "ADMIN_AUTH_FAIL"
 export const ADMIN_TAB = "ADMIN_TAB"
-
-export const LOGOUT_USER = "LOGOUT_USER"
-export const LOGOUT_ADMIN = "LOGOUT_ADMIN"

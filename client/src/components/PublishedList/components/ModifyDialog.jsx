@@ -3,7 +3,7 @@ import { modifySingleTrade } from '../../../api/AdminRequest';
 import convertDate from '../../../utils/convertDate';
 import convertUnit from '../../../utils/convertUnit';
 
-function ModifyDialog({dialogData, setShowModifyDialog, setListItemData}) {
+function ModifyDialog({dialogData, setShowModifyDialog, setListItemData, socket}) {
     // useStates
     const [saleRate, setSaleRate] = useState(dialogData.sale_rate);
     const [publishQuantal, setPublishQuantal] = useState(dialogData.published_qty);
@@ -35,6 +35,7 @@ function ModifyDialog({dialogData, setShowModifyDialog, setListItemData}) {
                 setListItemData(prev => ({...prev, sale_rate: saleRate, published_qty: publishQuantal}))
                 alert(res.data)
                 setShowModifyDialog(false);
+                socket.emit("update_client_list", "Req received - client list updation")
             }
         } catch (err) {
             alert("Modify failed")

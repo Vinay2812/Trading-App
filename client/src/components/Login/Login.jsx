@@ -11,7 +11,7 @@ import { getComapanies, getUser, resendOTP } from "../../api/AuthRequest";
 import { adminLogin } from "../../redux/actions/adminActions";
 import { login } from "../../redux/actions/authActions"
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 
 function Login({ setRegisterPage }) {
   const INITIAL_LOGIN_DATA = {
@@ -62,24 +62,9 @@ function Login({ setRegisterPage }) {
 
   async function handleLogin() {
     if (isAdmin) {
-      try {
-        // const res = await adminLogin(loginData);
-        dispatch(adminLogin(loginData))
-        if (res.status === 200) {
-          navigate("/admin");
-        } else {
-          alert(res.data);
-        }
-      } catch (err) {}
+      dispatch(adminLogin(loginData));
     } else {
-      try {
-        dispatch(login({...loginData, mobile: loginData.mobile.substring(loginData.mobile.length - 10, loginData.mobile.length)}));
-        if (res.status === 200) {
-          alert("Login successful");
-        } else {
-          alert(res.data);
-        }
-      } catch (err) {}
+      dispatch(login({...loginData, mobile: loginData.mobile.substring(loginData.mobile.length - 10, loginData.mobile.length)}));
     }
   }
 
@@ -130,8 +115,8 @@ function Login({ setRegisterPage }) {
             defaultValue="none"
           >
             <option value="none" hidden={true}></option>
-            {companies.map((company) => {
-              return <option value={company} key={company}>{company}</option>;
+            {companies.map((company, index) => {
+              return <option value={company} key={index}>{company}</option>;
             })}
           </select>
         </div>

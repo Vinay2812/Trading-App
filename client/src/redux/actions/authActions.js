@@ -1,4 +1,4 @@
-import { LOGOUT_USER, USER_AUTH_FAIL, USER_AUTH_START, USER_AUTH_SUCCESS } from "../actions"
+import { USER_AUTH_FAIL, USER_AUTH_START, USER_AUTH_SUCCESS } from "../actions"
 import * as AuthApi from "../../api/AuthRequest"
 
 export function register(registerData){
@@ -22,11 +22,5 @@ export function login(loginData){
         } catch (err) {
             dispatch({type: USER_AUTH_FAIL});
         }
-    }
-}
-
-export function logout(){
-    return async function(dispatch){
-        dispatch({type: LOGOUT_USER});
     }
 }

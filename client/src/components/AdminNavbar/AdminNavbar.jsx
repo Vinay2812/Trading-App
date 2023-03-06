@@ -1,15 +1,19 @@
-
 import { useDispatch, useSelector } from "react-redux";
-import { adminLogout, setAdminTab } from "../../redux/actions/adminActions";
+import { setAdminTab } from "../../redux/actions/adminActions";
 import { FiLogOut } from "react-icons/all"
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../utils/logout";
 
 function AdminNavbar() {
+  // hooks
   const dispatch = useDispatch();
-  const active = useSelector(state => state.adminReducer?.activeTab)
   const navigate = useNavigate();
 
+  // redux
+  const active = useSelector(state => state.adminReducer?.activeTab)
+
+  // useEffects
   useEffect(() => {
       switch (active){
         case 0: 
@@ -23,8 +27,9 @@ function AdminNavbar() {
       }
   }, [active])
 
+  // functions
   function handleLogout(){
-    dispatch(adminLogout());
+    logout();
   }
 
   function setAdminActiveTab(tab){

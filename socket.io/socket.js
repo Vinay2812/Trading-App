@@ -11,7 +11,11 @@ const io = new Server(httpServer, {
 });
 
 io.on("connect", (socket) => {
-  console.log("A user connected to socket");
+  console.log(`${socket.id} connected to socket`);
+  socket.on("update_client_list", (msg) => {
+    console.log(msg);
+    io.emit("refresh_client_list");
+  })
   socket.on("disconnect", () => {
     console.log("A user disconnected to socket");
   });

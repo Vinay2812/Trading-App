@@ -1,4 +1,4 @@
-import { ADMIN_AUTH_FAIL, ADMIN_AUTH_START, ADMIN_AUTH_SUCCESS, ADMIN_TAB, LOGOUT_ADMIN } from "../actions";
+import { ADMIN_AUTH_FAIL, ADMIN_AUTH_START, ADMIN_AUTH_SUCCESS, ADMIN_TAB } from "../actions";
 
 const INITIAL_STATE = {adminData: {}, error: null, loading: null, activeTab: 0}
 export default function AdminReducer (state = INITIAL_STATE, action) {
@@ -11,9 +11,6 @@ export default function AdminReducer (state = INITIAL_STATE, action) {
             return {...state, error: true, loading: false}
         case ADMIN_TAB:
             return {...state, activeTab: action.data}
-        case LOGOUT_ADMIN:
-            localStorage.removeItem('store');
-            return null
         default:
             return state;
     }

@@ -21,6 +21,11 @@
     width: 125%;
 }
 
+.client-list-row{
+    display: grid;      /* */
+    grid-template-columns: 0.75fr 1.5fr repeat(8, 1fr);
+    width: 100%;
+}
 .published-list-cell{
     padding: 0.5rem;
     text-align: left;
@@ -30,14 +35,14 @@
     width: calc(100% - 1rem) !important;
 }
 
-.published-list-row > *:not(:last-child){
+:is(.published-list-row, .client-list-row) > *:not(:last-child){
     border-right: 2px solid #ffffff;
 }
 
-.published-list-row:not(.head):nth-child(odd){
+:is(.published-list-row, .client-list-row):not(.head):nth-child(odd){
     background-color: whitesmoke;
 }
-.published-list-row:not(.head):nth-child(even){
+:is(.published-list-row, .client-list-row):not(.head):nth-child(even){
     background-color: lightgrey;
 }
 
@@ -77,11 +82,15 @@
 .btns-container > .start{
     color: darkgreen;
 }
-
+.btns-container > .buy{
+    background-color: rebeccapurple;
+    position: absolute;
+    top: 1rem;
+}
 .btns-container > .edit > span{
     right: 2px;
 }
-.btns-container > :is(.stop, .start) > span{
+.btns-container > :is(.stop, .start,) > span{
     right: 5px;
 }
 

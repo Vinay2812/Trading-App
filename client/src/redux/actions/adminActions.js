@@ -1,5 +1,5 @@
 import * as AdminApi from "../../api/AdminRequest"
-import { ADMIN_AUTH_FAIL, ADMIN_AUTH_START, ADMIN_AUTH_SUCCESS, ADMIN_TAB, LOGOUT_ADMIN } from "../actions"
+import { ADMIN_AUTH_FAIL, ADMIN_AUTH_START, ADMIN_AUTH_SUCCESS, ADMIN_TAB } from "../actions"
 
 export function adminLogin(loginData){
     return async function(dispatch){
@@ -10,12 +10,6 @@ export function adminLogin(loginData){
         } catch (err) {
             dispatch({type: ADMIN_AUTH_FAIL})
         }
-    }
-}
-
-export function adminLogout(){
-    return async function(dispatch){
-        dispatch({type: LOGOUT_ADMIN});
     }
 }
 
