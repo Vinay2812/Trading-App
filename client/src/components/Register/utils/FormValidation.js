@@ -1,5 +1,3 @@
-import { getUser } from "../../../api/AuthRequest";
-
 const alphabetRegex = /^[A-Za-z\s]+$/;
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const phoneRegex =
@@ -9,7 +7,7 @@ export default function validateForm(
   { userData, bankData, contactData },
   setError
 ) {
-  async function validateUserData() {
+  function validateUserData() {
     const {
       company_name,
       email,
@@ -19,15 +17,14 @@ export default function validateForm(
       mobile,
       gst,
       pan,
-      constitution_of_firm,
+      constitution_of_firm
     } = userData;
-
-    if (!alphabetRegex.test(company_name)) {
+    if (company_name.length === 0 || !alphabetRegex.test(company_name)) {
       setError("Invalid company name");
       return false;
     }
 
-    if (!emailRegex.test(email)) {
+    if (email.length === 0 || !emailRegex.test(email)) {
       setError("Invalid email");
       return false;
     }
@@ -50,20 +47,6 @@ export default function validateForm(
     if (mobile.length < 10) {
       setError("Invalid phone number");
       return false;
-    }
-    try {
-      const data = {
-        company_name,
-        mobile: mobile.substring(mobile.length - 10, mobile.length),
-      };
-      const res = await getUser(data);
-      if (res.status == 400) {
-        setError(res.data);
-        return;
-      }
-    } catch (err) {
-      setError(err);
-      return;
     }
     if (pan.length !== 10) {
       setError("Invalid Pan");

@@ -1,27 +1,26 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
-import dotenv from "dotenv";
+import { SOCKET_PORT } from "../utils/config.js";
+import logger from "../utils/logger.js";
 
-dotenv.config();
-
-const socket_port = process.env.SOCKET_PORT;
+const socket_port = SOCKET_PORT;
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: "*",
 });
 
 io.on("connect", (socket) => {
-  console.log(`${socket.id} connected to socket`);
+  logger.log(`${socket.id} connected to socket`);
   socket.on("update_client_list", (msg) => {
-    console.log(msg);
+    logger.log(msg);
     io.emit("refresh_client_list");
   })
   socket.on("disconnect", () => {
-    console.log("A user disconnected to socket");
+    logger.log("A user disconnected to socket");
   });
 });
 
 httpServer.listen(socket_port, () =>
-  console.log("Socket listening on port 5500")
+  logger.log("Socket listening on port 5500")
 );
 export default io;

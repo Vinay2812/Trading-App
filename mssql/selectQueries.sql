@@ -87,3 +87,14 @@ AS
                          dbo.trDailypublish.grade, dbo.trDailypublish.unit, dbo.trDailypublish.qty, dbo.trDailypublish.mill_rate, dbo.trDailypublish.sale_rate, dbo.trDailypublish.purc_rate, dbo.trDailypublish.selling_type, dbo.trDailypublish.multipal_of, 
                          dbo.trDailypublish.auto_confirm, dbo.trDailypublish.status, dbo.trDailypublish.autoid, mill.Ac_Name_E, dbo.qryItemMaster.System_Name_E, pt.Short_Name, tdo.Short_Name
 GO
+
+select * from trading_app_errors
+drop table trading_app_errors
+
+IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='${table_name}')
+      SELECT 1 AS res ELSE SELECT 0 AS res
+
+
+INSERT into trading_app_errors (error, error_time)
+      OUTPUT inserted.*
+      VALUES ('{ query : \n SELECT Ac_Name_E, accoid from nt_1_accountmaster \n WHERE company_code = 1 AND userId is null\n ORDER BY Ac_Name_E\n , time : 148ms }', '1678727056275')

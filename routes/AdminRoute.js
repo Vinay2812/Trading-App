@@ -14,7 +14,7 @@ import {
   updateAllSaleRate,
   updateSingleSaleRate,
   modifySingleTrade,
-  startAllTrade
+  startAllTrade,
 } from "../controller/AdminController.js";
 const router = Router();
 

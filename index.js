@@ -8,14 +8,17 @@ import path from "path"
 import AuthRoute from "./routes/AuthRoute.js"
 import AdminRoute from "./routes/AdminRoute.js"
 import UserRoute from "./routes/UserRoute.js"
+import ErrorRoute from "./routes/ErrorRoute.js"
 import "./socket.io/socket.js"
+import { SERVER_PORT } from "./utils/config.js";
 
 import { fileURLToPath } from "url";
+import logger from "./utils/logger.js";
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const app = express();
-const port = process.env.SERVER_PORT
+const port = SERVER_PORT
 app.use(cors());
 app.use(bodyParser.json());
 app.use(helmet())
@@ -24,6 +27,7 @@ app.use(morgan(":status :method :url :response-time ms"));
 app.use("/auth", AuthRoute);
 app.use("/admin", AdminRoute);
 app.use("/user", UserRoute);
+app.use("/error", ErrorRoute);
 
 app.use(express.static(path.join(__dirname, "client", "dist")));
 app.get("*", (req, res)=>{
@@ -31,5 +35,5 @@ app.get("*", (req, res)=>{
 })
 
 app.listen(port, ()=>{
-    console.log(`Server Listening on port ${port}`);
+    logger.log(`Server Listening on port ${port}`);
 })

@@ -11,3 +11,4 @@ data/.~lock.Vinay.xlsx#
 .DS_Store
 .env
 *.log
+debug/
