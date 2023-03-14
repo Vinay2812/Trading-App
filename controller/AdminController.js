@@ -1,6 +1,7 @@
 import logger from "../utils/logger.js";
 import executeQuery from "../database/executeQuery.js";
 import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../utils/config.js";
+import { NT_1_ACCOUNTMASTER, ONLINE_USER_DETAILS, QRY_TENDER_DO_BALANCE_VIEW, QRY_TR_DAILY_BALANCE, TR_DAILY_PUBLISH, USER_BANK_DETAILS } from "../utils/db.js";
 
 export async function adminLogin(req, res) {
   const { username, password } = req.body;
@@ -22,7 +23,7 @@ export async function getUsers(req, res) {
   try {
     const USERS_QUERY = `
             SELECT userId, company_name, email, mobile, authorized, accoid 
-            from onlineUserDetails
+            from ${ONLINE_USER_DETAILS}
         `;
     const users = await executeQuery(USERS_QUERY);
     res.status(200).json(users);
@@ -38,7 +39,7 @@ export async function updateAuthorization(req, res) {
 
   try {
     const UPDATE_AUTHORIZATION_QUERY = `
-            UPDATE onlineUserDetails
+            UPDATE ${ONLINE_USER_DETAILS}
             SET 
                 authorized = ${authorized}
             WHERE
@@ -56,14 +57,14 @@ export async function addUser(req, res) {
   const { userId } = req.params;
   try {
     const MAX_AC_CODE_QUERY = `
-            SELECT max(Ac_code) as max_ac_code from nt_1_accountmaster WHERE company_code = 1;
+            SELECT max(Ac_code) as max_ac_code from ${NT_1_ACCOUNTMASTER} WHERE company_code = 1;
         `;
     const next_ac_code =
       (await (await executeQuery(MAX_AC_CODE_QUERY))[0]).max_ac_code + 1;
 
     const SELECT_USER_QUERY = `
             SELECT company_name, address, pincode, gst, email, pan, mobile, fssai, state, whatsapp, tan
-            from onlineUserDetails
+            from ${ONLINE_USER_DETAILS}
             WHERE userId = '${userId}'
         `;
     const userData = await (await executeQuery(SELECT_USER_QUERY))[0];
@@ -83,14 +84,14 @@ export async function addUser(req, res) {
     } = userData;
 
     const BANK_QUERY = `
-            SELECT TOP 1 bank_name, account_number, ifsc, account_name from userBankDetails
+            SELECT TOP 1 bank_name, account_number, ifsc, account_name from ${USER_BANK_DETAILS}
             WHERE userId = '${userId}'
         `;
     const bankData = await (await executeQuery(BANK_QUERY))[0];
     const { bank_name, account_number, ifsc, account_name } = bankData;
 
     const INSERT_NT1_ACCOUNT_MASTER_QUERY = `
-            INSERT into nt_1_accountmaster
+            INSERT into ${NT_1_ACCOUNTMASTER}
             (
                 Ac_Code, Ac_Name_E, Ac_Name_R, Ac_type, Address_E, 
                 Address_R, Pincode, Gst_No, Email_Id, Other_Narration, 
@@ -130,7 +131,7 @@ export async function addUser(req, res) {
     )[0];
     console.log(output);
     const UPDATE_USER_DETAILS = `
-            UPDATE onlineUserDetails SET accoid = '${output.accoid}' WHERE userId = '${userId}';
+            UPDATE ${ONLINE_USER_DETAILS} SET accoid = '${output.accoid}' WHERE userId = '${userId}';
         `;
 
     await executeQuery(UPDATE_USER_DETAILS);
@@ -145,13 +146,13 @@ export async function mapClient(req, res) {
   const { userId, accoid } = req.body;
   try {
     const UPDATE_ONLINE_USER = `
-            UPDATE onlineUserDetails
+            UPDATE ${ONLINE_USER_DETAILS}
             SET accoid = ${accoid}
             WHERE userId = '${userId}'
         `;
 
-    const UPDATE_NT_1_ACCOUNTMASTER = `
-            UPDATE nt_1_accountmaster
+        const UPDATE_NT_1_ACCOUNTMASTER = `
+            UPDATE ${NT_1_ACCOUNTMASTER}
             SET userId = '${userId}'
             WHERE accoid = '${accoid}'
         `;
@@ -175,7 +176,7 @@ export async function getTenderBalances(req, res) {
             paymenttoshortname, tenderdoshortname, season, Grade,
             Quantal, Lifting_Date, Purc_Rate, Mill_Rate, mc, pt, itemcode, ic,
             tenderid, td, Mill_Code, Tender_Do, Payment_To, BALANCE as balance
-            from qrytenderdobalanceview WHERE balance > 0 AND Buyer = 2
+            from ${QRY_TENDER_DO_BALANCE_VIEW} WHERE balance > 0 AND Buyer = 2
         `;
     const tenderBalances = await executeQuery(GET_TENDER_BALANCES);
 
@@ -226,7 +227,7 @@ export async function insertIntoTrDailyPublish(req, res) {
 
   try {
     const CHECK_TENDER_ID_EXIST = `
-            SELECT tenderid from trDailypublish WHERE tenderid = '${tenderid}'
+            SELECT tenderid from ${TR_DAILY_PUBLISH} WHERE tenderid = '${tenderid}'
         `;
     const tenderIdExist = await executeQuery(CHECK_TENDER_ID_EXIST);
     if (tenderIdExist.length > 0) {
@@ -235,7 +236,7 @@ export async function insertIntoTrDailyPublish(req, res) {
     }
     const publish_date = new Date().toISOString();
     const INSERT_INTO_TR_DAILY_PUBLISH = `
-        INSERT into trDailypublish 
+        INSERT into ${TR_DAILY_PUBLISH} 
         (
             tender_no, tenderid, tender_date, publish_date, 
             lifting_date, mill_code, mc, item_code, it, payment_to, 
@@ -263,7 +264,7 @@ export async function insertIntoTrDailyPublish(req, res) {
 export async function getQryTrDailyBalance(req, res) {
   try {
     const GET_TR_DAILY_PUBLISH = `
-            SELECT * from qrytrdailybalance where balance > 0
+            SELECT * from ${QRY_TR_DAILY_BALANCE} where balance > 0
         `;
     const trDailyPublishList = await executeQuery(GET_TR_DAILY_PUBLISH);
 
@@ -289,7 +290,7 @@ export async function stopSingleTrade(req, res) {
   const { tenderid } = req.body;
   try {
     const STOP_SINGLE_TENDER = `
-            UPDATE trDailypublish SET status = 'N' WHERE tenderid = '${tenderid}'
+            UPDATE ${TR_DAILY_PUBLISH} SET status = 'N' WHERE tenderid = '${tenderid}'
         `;
     await executeQuery(STOP_SINGLE_TENDER);
     res.status(200).json("Stopped tender id" + tenderid);
@@ -302,7 +303,7 @@ export async function stopSingleTrade(req, res) {
 export async function stopAllTrade(req, res) {
   try {
     const STOP_ALL_TENDER = `
-            UPDATE trDailypublish SET status = 'N'
+            UPDATE ${TR_DAILY_PUBLISH} SET status = 'N'
         `;
     await executeQuery(STOP_ALL_TENDER);
     res.status(200).json("Stopped all tender");
@@ -316,7 +317,7 @@ export async function startSingleTrade(req, res) {
   const { tenderid } = req.body;
   try {
     const START_SINGLE_TENDER = `
-            UPDATE trDailypublish SET status = 'Y' WHERE tenderid = '${tenderid}'
+            UPDATE ${TR_DAILY_PUBLISH} SET status = 'Y' WHERE tenderid = '${tenderid}'
         `;
     await executeQuery(START_SINGLE_TENDER);
     res.status(200).json("Started tender id" + tenderid);
@@ -329,7 +330,7 @@ export async function startSingleTrade(req, res) {
 export async function startAllTrade(req, res) {
   try {
     const START_ALL_TENDER = `
-            UPDATE trDailypublish SET status = 'Y'
+            UPDATE ${TR_DAILY_PUBLISH} SET status = 'Y'
         `;
     await executeQuery(START_ALL_TENDER);
     res.status(200).json("Started all tender");
@@ -342,7 +343,7 @@ export async function updateAllSaleRate(req, res) {
   const { sale_rate } = req.body;
   try {
     const UPDATE_ALL_SALE_RATE = `
-            UPDATE trDailypublish SET sale_rate = sale_rate + ${sale_rate}
+            UPDATE ${TR_DAILY_PUBLISH} SET sale_rate = sale_rate + ${sale_rate}
         `;
     await executeQuery(UPDATE_ALL_SALE_RATE);
     res.status(200).json("Updated all sale rate");
@@ -356,7 +357,7 @@ export async function updateSingleSaleRate(req, res) {
   const { tenderid, sale_rate } = req.body;
   try {
     const UPDATE_SINGLE_SALE_RATE = `
-            UPDATE trDailypublish SET sale_rate = sale_rate + ${sale_rate} WHERE tenderid = '${tenderid}'
+            UPDATE ${TR_DAILY_PUBLISH} SET sale_rate = sale_rate + ${sale_rate} WHERE tenderid = '${tenderid}'
         `;
     await executeQuery(UPDATE_SINGLE_SALE_RATE);
     res.status(200).json("Updated sale rate for tender id" + tenderid);
@@ -370,7 +371,7 @@ export async function modifySingleTrade(req, res) {
   const { tenderid, sale_rate, published_qty } = req.body;
   try {
     const MODIFY_SINGLE_TRADE = `
-            UPDATE trDailypublish
+            UPDATE ${TR_DAILY_PUBLISH}
             SET sale_rate = ${sale_rate}, published_qty = ${published_qty}
             WHERE tenderid = '${tenderid}'
         `;

@@ -1,6 +1,7 @@
 import fs from "fs";
 import executeQuery from "../database/executeQuery.js";
 import { NODE_ENV } from "./config.js";
+import { TRADING_APP_ERRORS } from "./db.js";
 
 export default async function dump(msg, error = false) {
   if (NODE_ENV !== "production") {
@@ -13,7 +14,7 @@ export default async function dump(msg, error = false) {
     );
   } else {
     const INSERT_ERROR_TO_TABLE = `
-      INSERT into trading_app_errors (error, error_time)
+      INSERT into ${TRADING_APP_ERRORS} (error, error_time)
       VALUES ('${(msg.replace(/[{}]/), "")}', '${Date.now()}')
     `;
     if (error) {
