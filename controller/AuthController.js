@@ -3,12 +3,13 @@ import genereateOTP from "../utils/otp.js";
 import sendEMail from "../utils/email.js";
 import bcrypt from "bcrypt";
 import logger from "../utils/logger.js";
+import { ONLINE_USER_DETAILS, USER_BANK_DETAILS, USER_CONTACT_DETAILS } from "../utils/db.js";
 
 export async function register(req, res) {
   const { userData, bankData, contactData } = req.body;
   try {
     const CHECK_USER = `
-            SELECT userId from onlineUserDetails
+            SELECT userId from ${ONLINE_USER_DETAILS}
             WHERE company_name = '${
               userData.company_name
             }' AND mobile like '%${userData.mobile.substring(
@@ -23,7 +24,7 @@ export async function register(req, res) {
       return;
     }
     const USER_DATA_QUERY = `
-            INSERT into onlineUserDetails
+            INSERT into ${ONLINE_USER_DETAILS}
                 (company_name, email, address, state, district, pincode, mobile, whatsapp, gst, pan, fssai, tan, constitution_of_firm)
             OUTPUT
                 inserted.*
@@ -57,7 +58,7 @@ export async function register(req, res) {
           ifsc,
         } = data;
         const BANK_DATA_QUERY = `
-                INSERT into userBankDetails
+                INSERT into ${USER_BANK_DETAILS}
                     (userId, account_name, account_number, account_type, bank_name, branch, ifsc)
                 OUTPUT
                     inserted.*
@@ -83,7 +84,7 @@ export async function register(req, res) {
       contactData.map(async (data) => {
         const { full_name, designation, mobile, whatsapp, email } = data;
         const CONTACT_QUERY = `
-                INSERT into userContactDetails
+                INSERT into ${USER_CONTACT_DETAILS}
                     (userId, full_name, designation, mobile, whatsapp, email)
                 OUTPUT
                     inserted.*
@@ -166,7 +167,7 @@ export async function getCompany(req, res) {
   const { mobile } = req.params;
   try {
     const COMPANY_QUERY = `
-            SELECT company_name from onlineUserDetails
+            SELECT company_name from ${ONLINE_USER_DETAILS}
             WHERE
                 mobile like '%${mobile}'
         `;
@@ -182,7 +183,7 @@ export async function login(req, res) {
   const { mobile, company_name, password } = req.body;
   try {
     const USER_ID_QUERY = `
-            SELECT * from onlineUserDetails
+            SELECT * from ${ONLINE_USER_DETAILS}
             WHERE
                 mobile like '%${mobile}' AND company_name = '${company_name}'
         `;
@@ -201,12 +202,12 @@ export async function login(req, res) {
     }
 
     const BANK_QUERY = `
-            SELECT * from userBankDetails
+            SELECT * from ${USER_BANK_DETAILS}
             WHERE
                 userId = '${userData.userId}'
         `;
     const CONTACT_QUERY = `
-            SELECT * from userContactDetails
+            SELECT * from ${USER_CONTACT_DETAILS}
             WHERE
                 userId = '${userData.userId}'
         `;
@@ -227,7 +228,7 @@ export async function updatePassword(req, res) {
     const hashedPassword = await bcrypt.hash(password, genSalt);
 
     const UPDATE_PASSWORD_QUERY = `
-            UPDATE onlineUserDetails 
+            UPDATE ${ONLINE_USER_DETAILS} 
             SET password = '${hashedPassword}'
             WHERE
                 userId = '${userId}'
@@ -252,7 +253,7 @@ export async function sendOTP(req, res) {
     await executeQuery(DELETE_QUERY);
 
     const GET_EMAIL_QUERY = `
-            SELECT email from onlineUserDetails
+            SELECT email from ${ONLINE_USER_DETAILS}
             WHERE
                 userId = '${userId}'
         `;
@@ -286,7 +287,7 @@ export async function getUser(req, res) {
   const { company_name, mobile } = req.body;
   try {
     const GET_USER_QUERY = `
-            SELECT userId from onlineUserDetails
+            SELECT userId from ${ONLINE_USER_DETAILS}
             WHERE company_name = '${company_name}' AND mobile = '${mobile}'
         `;
     const queryOutput = await (await executeQuery(GET_USER_QUERY))[0];
