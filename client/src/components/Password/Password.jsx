@@ -18,7 +18,7 @@ function Password() {
   const { userId }= params;
   console.log(params);
   useEffect(()=>{
-    if(!user.userData){
+    if(!(user?.userData)){
       navigate("/auth");
       return;
     }
@@ -26,7 +26,6 @@ function Password() {
       navigate("/home");
       return;
     }
-    console.log(user)
   },[user])
 
   useEffect(() => {

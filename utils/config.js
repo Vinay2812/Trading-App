@@ -1,0 +1,19 @@
+import { config } from "dotenv";
+config();
+export const {
+  DATABASE,
+  DB_SERVER,
+  DB_USER,
+  DB_PASSWORD,
+  SERVER_PORT,
+  ADMIN_USERNAME,
+  ADMIN_PASSWORD,
+  MAIL_EMAIL,
+  MAIL_PASSWORD,
+  OTP_LENGTH,
+  SOCKET_PORT,
+  NODE_ENV,
+  MONGO_URL_TEST,
+  MONGO_URL_PROD,
+  CACHE_REFRESH_INTERVAL = 1000 * 15
+} = process.env;

@@ -4,7 +4,7 @@ import allDistricts from "./data/districts.json";
 import states from "./data/states.json";
 import { constitutionFirm } from "./data/contitution-firm";
 import { AiFillSave } from "react-icons/ai";
-import validateForm from "./utils/FormValidation";
+import validateForm from "./utils/FormValidation.js";
 // import { register } from "../../redux/actions/authActions";
 import { register } from "../../api/AuthRequest";
 import { useNavigate } from "react-router-dom";
@@ -148,14 +148,14 @@ function Register({ setRegisterPage }) {
         contactData: contactArray,
       };
       register(formData)
-        .then((res) => res.json())
-        .then((user) => {
+        .then((res) => {
+          const user = res.data;
           navigate(`/register/${user.userData.userId}`);
           setLoading(false);
         })
         .catch((err) => {
           setLoading(false);
-          alert(err.message);
+          alert(err);
         });
     }
   }
