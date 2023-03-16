@@ -10,24 +10,15 @@ import {
 import { login } from "../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import logger from "../../utils/logger";
+import Navbar from "../Navbar/Navbar";
 
 function Password() {
   const navigate = useNavigate();
   const params = useParams();
 
-  const user = useSelector( state => state.authReduder?.authData)
+  const user = useSelector( state => state.authReducer?.authData)
   const { userId }= params;
-  console.log(params);
-  useEffect(()=>{
-    if(!(user?.userData)){
-      navigate("/auth");
-      return;
-    }
-    if(user?.userData?.password){
-      navigate("/home");
-      return;
-    }
-  },[user])
+
 
   useEffect(() => {
     if (userId == undefined || userId == null) {
@@ -80,6 +71,7 @@ function Password() {
     };
 
     const validation = await verifyOTP(otpData);
+    console.log(validation)
     if (validation.status === 200) {
       setPasswordPage(true);
     }
@@ -102,10 +94,13 @@ function Password() {
     const res = await updatePassword(updatePasswordData);
     if (res.status === 200) {
       dispatch(login({mobile: user.userData.mobile, company_name: user.userData.company_name, password: passwordDetails.password}))
+      navigate("/home/no-authorization")
     }
   }
   return (
-    <div className="password-container">
+    <>
+    <Navbar />
+    <div className="password-container page">
       <div className="container">
         <div className="password-title">
           {passwordPage
@@ -165,6 +160,7 @@ function Password() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -5,6 +5,7 @@ class ErrorBoundary extends React.Component {
   state = { hasError: false };
 
   static getDerivedStateFromError(error) {
+    logger.log(error + "fallback")
     return { hasError: true };
   }
 
