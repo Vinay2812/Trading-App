@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import Loader from "../Loader/Loader";
 import BankDetails from "./components/BankDetails/BankDetails";
 import ContactDetails from "./components/ContactDetails/ContactDetails";
+import { login } from "../../redux/actions/authActions";
 
 function Register({ setRegisterPage }) {
   states.sort((a, b) => a.code - b.code);
@@ -149,8 +150,9 @@ function Register({ setRegisterPage }) {
       };
       register(formData)
         .then((res) => {
-          const user = res.data;
-          navigate(`/register/${user.userData.userId}`);
+          const { mobile, company_name, password, userId } = res.data.userData;
+          dispatch(login({mobile, company_name, password}))
+          navigate(`/register/${userId}`)
           setLoading(false);
         })
         .catch((err) => {
