@@ -13,7 +13,7 @@ export async function getUserCompanyDataById(req, res) {
 
     res.status(200).json(userData);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -29,7 +29,7 @@ export async function getAllCompanyName(req, res) {
     const companies = await executeQuery(GET_COMPANY_QUERY);
     res.status(200).json(companies);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -46,7 +46,7 @@ export async function getUserDataFromNt1AccountMaster(req, res) {
     const userData = await (await executeQuery(GET_DATA_QUERY))[0];
     res.status(200).json(userData);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }

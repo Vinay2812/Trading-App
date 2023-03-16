@@ -1,7 +1,7 @@
 import fs from "fs";
-import executeQuery from "../database/executeQuery.js";
-import { NODE_ENV } from "./config.js";
-import { TRADING_APP_ERRORS } from "./db.js";
+import executeQuery from "../../database/executeQuery.js";
+import { NODE_ENV } from "../config.js";
+import { TRADING_APP_ERRORS } from "../db.js";
 
 export default async function dump(msg, error = false) {
   if (NODE_ENV !== "production") {

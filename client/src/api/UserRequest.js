@@ -1,5 +1,27 @@
+import logger from "../utils/logger";
 import { API } from "./AxiosInstance";
 
-export const getCompanyUserDataById = async (userId, signal) => await API.get(`/user/company/${userId}`, signal);
-export const getAllCompanyNames = async (signal) => await API.get("/user/company-names", signal);
-export const getUserDataFromNt1AccountMaster = async (accoid) => await API.get(`/user/nt_1_account_master/${accoid}`)
+export async function getCompanyUserDataById(userId, signal) {
+  try {
+    const res = await API.get(`/user/company/${userId}`, signal);
+    return res;
+  } catch (err) {
+    logger.log(err);
+  }
+}
+export async function getAllCompanyNames(signal) {
+  try {
+    const res = await API.get("/user/company-names", signal);
+    return res;
+  } catch (err) {
+    logger.log(err);
+  }
+}
+export async function getUserDataFromNt1AccountMaster(accoid) {
+  try {
+    const res = await API.get(`/user/nt_1_account_master/${accoid}`);
+    return res;
+  } catch (err) {
+    logger.log(err);
+  }
+}

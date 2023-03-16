@@ -2,8 +2,12 @@ import executeQuery from "../database/executeQuery.js";
 import genereateOTP from "../utils/otp.js";
 import sendEMail from "../utils/email.js";
 import bcrypt from "bcrypt";
-import logger from "../utils/logger.js";
-import { ONLINE_USER_DETAILS, USER_BANK_DETAILS, USER_CONTACT_DETAILS } from "../utils/db.js";
+import logger from "../utils/logger/logger.js";
+import {
+  ONLINE_USER_DETAILS,
+  USER_BANK_DETAILS,
+  USER_CONTACT_DETAILS,
+} from "../utils/db.js";
 
 export async function register(req, res) {
   const { userData, bankData, contactData } = req.body;
@@ -128,7 +132,7 @@ export async function register(req, res) {
       contactData: contactDetails,
     });
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -158,7 +162,7 @@ export async function validateOTP(req, res) {
     await executeQuery(DELETE_QUERY);
     res.status(200).json("Validation successful");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -174,7 +178,7 @@ export async function getCompany(req, res) {
     const companies = await executeQuery(COMPANY_QUERY);
     res.status(200).json(companies);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -216,7 +220,7 @@ export async function login(req, res) {
     const data = { userData, bankData, contactData };
     res.status(200).json(data);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -237,7 +241,7 @@ export async function updatePassword(req, res) {
     await executeQuery(UPDATE_PASSWORD_QUERY);
     res.status(200).json("Password updated successfully");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -278,7 +282,7 @@ export async function sendOTP(req, res) {
     await executeQuery(OTP_QUERY);
     res.status(200).json("Otp sent successfull");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -293,7 +297,7 @@ export async function getUser(req, res) {
     const queryOutput = await (await executeQuery(GET_USER_QUERY))[0];
     res.status(200).json(queryOutput);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -314,7 +318,7 @@ export async function getOTP(req, res) {
     }
     res.status(200).json("Valid");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }

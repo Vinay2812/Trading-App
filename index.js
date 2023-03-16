@@ -14,7 +14,7 @@ import "./socket.io/socket.js"
 import { SERVER_PORT } from "./utils/config.js";
 
 import { fileURLToPath } from "url";
-import logger from "./utils/logger.js";
+import logger from "./utils/logger/logger.js";
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 

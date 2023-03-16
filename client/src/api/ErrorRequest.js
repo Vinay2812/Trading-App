@@ -1,2 +1,10 @@
-import {API} from "./AxiosInstance"
-export const postError = async(err) => API.post("/error", err);
+import logger from "../utils/logger";
+import { API } from "./AxiosInstance";
+export async function postError(error) {
+  try {
+    const res = await API.post("/error", { error });
+    return res;
+  } catch (err) {
+    logger.log(err);
+  }
+}

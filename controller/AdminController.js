@@ -1,10 +1,30 @@
-import logger from "../utils/logger.js";
+import logger from "../utils/logger/logger.js";
 import executeQuery from "../database/executeQuery.js";
 import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../utils/config.js";
-import { NT_1_ACCOUNTMASTER, ONLINE_USER_DETAILS, QRY_TENDER_DO_BALANCE_VIEW, QRY_TR_DAILY_BALANCE, TR_DAILY_PUBLISH, USER_BANK_DETAILS } from "../utils/db.js";
+import {
+  NT_1_ACCOUNTMASTER,
+  ONLINE_USER_DETAILS,
+  QRY_TENDER_DO_BALANCE_VIEW,
+  QRY_TR_DAILY_BALANCE,
+  TR_DAILY_PUBLISH,
+  USER_BANK_DETAILS,
+} from "../utils/db.js";
+import {
+  adminLoginReq,
+  updateAuthorizationReq,
+  addUserReq,
+  mapClientReq,
+  insertIntoTrDailyPublishReq,
+  stopSingleTradeReq,
+} from "../validator/AdminValidator.js";
+import { validateReq, joiErrorRes } from "../validator/joiErrorHandler.js";
 
 export async function adminLogin(req, res) {
-  const { username, password } = req.body;
+  const { error, value } = validateReq(adminLoginReq, req.body);
+  if (error) {
+    return joiErrorRes(res, error, "adminLogin");
+  }
+  const { username, password } = value;
   try {
     if (username !== ADMIN_USERNAME) {
       return res.status(400).json("Invalid admin username");
@@ -14,7 +34,7 @@ export async function adminLogin(req, res) {
     }
     res.status(200).json({ username, admin: 1 });
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -28,7 +48,7 @@ export async function getUsers(req, res) {
     const users = await executeQuery(USERS_QUERY);
     res.status(200).json(users);
   } catch (err) {
-    logger.log(err);
+    logger.error(err, true);
     res.status(500).json(err);
   }
 }
@@ -36,7 +56,10 @@ export async function getUsers(req, res) {
 export async function updateAuthorization(req, res) {
   const { authorized } = req.body;
   const { userId } = req.params;
-
+  let { error } = validateReq(updateAuthorizationReq, { authorized, userId });
+  if (error) {
+    return joiErrorRes(res, error, "updateAuthorization");
+  }
   try {
     const UPDATE_AUTHORIZATION_QUERY = `
             UPDATE ${ONLINE_USER_DETAILS}
@@ -48,13 +71,19 @@ export async function updateAuthorization(req, res) {
     await executeQuery(UPDATE_AUTHORIZATION_QUERY);
     res.status(200).json("Updated successfully");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
 
 export async function addUser(req, res) {
-  const { userId } = req.params;
+  const { error, value } = validateReq(addUserReq, req.params);
+  if (error) {
+    logger.joiError(error, addUser);
+    return res.status(422).json(error.details);
+  }
+  const { userId } = value;
+
   try {
     const MAX_AC_CODE_QUERY = `
             SELECT max(Ac_code) as max_ac_code from ${NT_1_ACCOUNTMASTER} WHERE company_code = 1;
@@ -124,26 +153,27 @@ export async function addUser(req, res) {
 
             )
         `;
-
-    console.log(INSERT_NT1_ACCOUNT_MASTER_QUERY);
     const output = await (
       await executeQuery(INSERT_NT1_ACCOUNT_MASTER_QUERY)
     )[0];
-    console.log(output);
+    res.status(200).json(output);
     const UPDATE_USER_DETAILS = `
             UPDATE ${ONLINE_USER_DETAILS} SET accoid = '${output.accoid}' WHERE userId = '${userId}';
         `;
-
     await executeQuery(UPDATE_USER_DETAILS);
-    res.status(200).json(output);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
 
 export async function mapClient(req, res) {
-  const { userId, accoid } = req.body;
+  const { error, value } = validateReq(mapClientReq, req.body);
+  if (error) {
+    logger.joiError(error, mapClient);
+    return res.status(422).json(error.details);
+  }
+  const { userId, accoid } = value;
   try {
     const UPDATE_ONLINE_USER = `
             UPDATE ${ONLINE_USER_DETAILS}
@@ -151,7 +181,7 @@ export async function mapClient(req, res) {
             WHERE userId = '${userId}'
         `;
 
-        const UPDATE_NT_1_ACCOUNTMASTER = `
+    const UPDATE_NT_1_ACCOUNTMASTER = `
             UPDATE ${NT_1_ACCOUNTMASTER}
             SET userId = '${userId}'
             WHERE accoid = '${accoid}'
@@ -161,7 +191,6 @@ export async function mapClient(req, res) {
       executeQuery(UPDATE_ONLINE_USER),
       executeQuery(UPDATE_NT_1_ACCOUNTMASTER),
     ]);
-    console.log("called");
     res.status(200).json("Mapping was successful");
   } catch (error) {
     logger.log(err);
@@ -193,12 +222,17 @@ export async function getTenderBalances(req, res) {
     });
     res.status(200).json(uniqueList);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
 
 export async function insertIntoTrDailyPublish(req, res) {
+  const { error, value } = validateReq(insertIntoTrDailyPublishReq, req.body);
+  if (error) {
+    logger.joiError(error, insertIntoTrDailyPublish);
+    return res.status(422).json(error.details);
+  }
   const {
     Tender_No,
     Tender_Date,
@@ -223,7 +257,7 @@ export async function insertIntoTrDailyPublish(req, res) {
     type,
     Mill_Code,
     Payment_To,
-  } = req.body;
+  } = value;
 
   try {
     const CHECK_TENDER_ID_EXIST = `
@@ -256,7 +290,7 @@ export async function insertIntoTrDailyPublish(req, res) {
     await executeQuery(INSERT_INTO_TR_DAILY_PUBLISH);
     res.status(200).json("Inserted into trDailypublish");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -281,13 +315,14 @@ export async function getQryTrDailyBalance(req, res) {
     });
     res.status(200).json(uniqueList);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
 
 export async function stopSingleTrade(req, res) {
-  const { tenderid } = req.body;
+  const { error, value } = validateReq(stopSingleTradeReq, stopSingleTrade);
+  const { tenderid } = value;
   try {
     const STOP_SINGLE_TENDER = `
             UPDATE ${TR_DAILY_PUBLISH} SET status = 'N' WHERE tenderid = '${tenderid}'
@@ -295,7 +330,7 @@ export async function stopSingleTrade(req, res) {
     await executeQuery(STOP_SINGLE_TENDER);
     res.status(200).json("Stopped tender id" + tenderid);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -308,7 +343,7 @@ export async function stopAllTrade(req, res) {
     await executeQuery(STOP_ALL_TENDER);
     res.status(200).json("Stopped all tender");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -322,7 +357,7 @@ export async function startSingleTrade(req, res) {
     await executeQuery(START_SINGLE_TENDER);
     res.status(200).json("Started tender id" + tenderid);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -335,7 +370,7 @@ export async function startAllTrade(req, res) {
     await executeQuery(START_ALL_TENDER);
     res.status(200).json("Started all tender");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -348,7 +383,7 @@ export async function updateAllSaleRate(req, res) {
     await executeQuery(UPDATE_ALL_SALE_RATE);
     res.status(200).json("Updated all sale rate");
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -362,7 +397,7 @@ export async function updateSingleSaleRate(req, res) {
     await executeQuery(UPDATE_SINGLE_SALE_RATE);
     res.status(200).json("Updated sale rate for tender id" + tenderid);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }
@@ -378,7 +413,7 @@ export async function modifySingleTrade(req, res) {
     await executeQuery(MODIFY_SINGLE_TRADE);
     res.status(200).json("Modified trade for tender id" + tenderid);
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
     res.status(500).json(err);
   }
 }

@@ -11,7 +11,7 @@ import {
   CACHE_REFRESH_INTERVAL,
   NODE_ENV,
 } from "../utils/config.js";
-import logger from "../utils/logger.js";
+import logger from "../utils/logger/logger.js";
 
 const config = {
   database: DATABASE,
@@ -34,7 +34,7 @@ mongoose
       );
     }, CACHE_REFRESH_INTERVAL);
   })
-  .catch((err) => logger.log("failed to connect mongodb " + err));
+  .catch((err) => logger.error("failed to connect mongodb " + err));
 
 const connection = mssql
   .connect(config)
@@ -42,6 +42,6 @@ const connection = mssql
     logger.log("mssql connected");
     return new mssql.Request();
   })
-  .catch((err) => logger.log("DB not connected - \n" + err));
+  .catch((err) => logger.error("DB not connected - \n" + err));
 
 export default connection;

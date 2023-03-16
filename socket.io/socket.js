@@ -1,7 +1,7 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { SOCKET_PORT } from "../utils/config.js";
-import logger from "../utils/logger.js";
+import logger from "../utils/logger/logger.js";
 
 const socket_port = SOCKET_PORT;
 const httpServer = createServer();
