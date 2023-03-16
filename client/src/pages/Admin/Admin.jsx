@@ -12,6 +12,7 @@ import {
 import PublishedList from "../../components/PublishedList/PublishedList";
 import { startAllTrade, stopAllTrade, updateAllSaleRate } from "../../api/AdminRequest";
 import socket from "../../socket.io/socket";
+import logger from "../../utils/logger";
 
 function Admin() {
   // hooks
@@ -74,12 +75,12 @@ function Admin() {
       const res = await stopAllTrade();
       if (res.status === 200) {
         handleRefreshPublishedList();
-        alert("All trading stopped successfully");
         socket.emit("update_client_list", "Req received - start updating client list")
         setIsResumeTrading(true);
       }
     } catch (err) {
       setRefreshPublishedList(false);
+      logger.error(err)
     }
   }
 
@@ -88,12 +89,12 @@ function Admin() {
       const res = await startAllTrade();
       if (res.status === 200) {
         handleRefreshPublishedList();
-        alert("All trading resumed successfully");
         socket.emit("update_client_list", "Req received - start updating client list")
         setIsResumeTrading(false);
       }
     } catch (err) {
       setRefreshPublishedList(false);
+      logger.error(err)
     }
   }
 
@@ -110,9 +111,6 @@ function Admin() {
       if (res.status === 200) {
         handleRefreshPublishedList();
         socket.emit("update_client_list", "Req received - start updating client list")
-        setTimeout(() => {
-          alert("Sale rate updated successfully");
-        }, 500);
       }
     }
   }

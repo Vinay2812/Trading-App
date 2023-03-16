@@ -38,6 +38,7 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
         }
       } catch (err) {
         setLoading(false);
+        logger.error(err);
       }
     }
 

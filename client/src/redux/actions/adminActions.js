@@ -1,4 +1,5 @@
 import * as AdminApi from "../../api/AdminRequest"
+import logger from "../../utils/logger";
 import { ADMIN_AUTH_FAIL, ADMIN_AUTH_START, ADMIN_AUTH_SUCCESS, ADMIN_TAB } from "../actions"
 
 export function adminLogin(loginData){
@@ -9,6 +10,7 @@ export function adminLogin(loginData){
             dispatch({type: ADMIN_AUTH_SUCCESS, data: res.data});
         } catch (err) {
             dispatch({type: ADMIN_AUTH_FAIL})
+            logger.error(err);
         }
     }
 }

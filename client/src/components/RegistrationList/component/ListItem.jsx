@@ -13,7 +13,7 @@ function ListItem({ data, fetchUsers }) {
       const res = await addUser(data.userId);
       if (res.status === 200) await fetchUsers();
     } catch (err) {
-      alert("Failed");
+      logger.log(err);
     }
   }
   function handleMap() {

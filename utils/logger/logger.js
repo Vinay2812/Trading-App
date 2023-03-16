@@ -8,7 +8,7 @@ const symbolMap = {
   ok: "\u221A",
   err: '\u00D7',
 }
-function log({ message, colorCode = 90, error = false, print = true, symbol = "ok"}) {
+function log({ message, colorCode = 90, error = false, print = true, symbol = "ok", client}) {
   let data = {
     msg: message,
     time: convertDate(new Date().toString()),
@@ -25,7 +25,7 @@ function log({ message, colorCode = 90, error = false, print = true, symbol = "o
   if (NODE_ENV !== "production" && print) {
     console.log(" \u001b[" + colorCode + "m" + symbolMap[symbol] + " " + data + "\u001b[0m");
   }
-  dump(data, error);
+  dump(data, error, client);
 }
 
 function logData(message) {
@@ -35,8 +35,8 @@ function logData(message) {
   });
 }
 
-function logError(message) {
-  log({ message, colorCode: 31, symbol: "err", error: true });
+function logError(message, client = false) {
+  log({ message, colorCode: 31, symbol: "err", error: true, client });
 }
 
 function logJoiError(error, controller = "") {

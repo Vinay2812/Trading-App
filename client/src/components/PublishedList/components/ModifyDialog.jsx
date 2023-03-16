@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { modifySingleTrade } from '../../../api/AdminRequest';
 import convertDate from '../../../utils/convertDate';
 import convertUnit from '../../../utils/convertUnit';
+import logger from '../../../utils/logger';
 
 function ModifyDialog({dialogData, setShowModifyDialog, setListItemData, socket}) {
     // useStates
@@ -33,13 +34,12 @@ function ModifyDialog({dialogData, setShowModifyDialog, setListItemData, socket}
             const res = await modifySingleTrade(data);
             if(res.status === 200){
                 setListItemData(prev => ({...prev, sale_rate: saleRate, published_qty: publishQuantal}))
-                alert(res.data)
                 setShowModifyDialog(false);
                 socket.emit("update_client_list", "Req received - client list updation")
             }
         } catch (err) {
-            alert("Modify failed")
             setShowModifyDialog(false);
+            logger.error(err)
         }
     }
   return (

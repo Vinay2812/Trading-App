@@ -3,6 +3,7 @@ import "./RegistrationList.css";
 import { getUsers} from "../../api/AdminRequest";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import ListItem from "./component/ListItem";
+import logger from "../../utils/logger";
 
 function RegistrationList() {
   const [users, setUsers] = useState([]);
@@ -11,7 +12,9 @@ function RegistrationList() {
     try {
       const { data } = await getUsers();
       setUsers(data);
-    } catch (err) {}
+    } catch (err) {
+      logger.error(err)
+    }
   }
 
   useEffect(() => {

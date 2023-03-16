@@ -8,6 +8,7 @@ import {
   USER_BANK_DETAILS,
   USER_CONTACT_DETAILS,
 } from "../utils/db.js";
+import { OTP_VALID_INTERVAL } from "../utils/config.js";
 
 export async function register(req, res) {
   const { userData, bankData, contactData } = req.body;
@@ -115,14 +116,17 @@ export async function register(req, res) {
 
     const genSalt = await bcrypt.genSalt(10);
     const hashedOTP = await bcrypt.hash(OTP, genSalt);
-
+    const create_time = Date.now();
+    const delete_time = create_time + OTP_VALID_INTERVAL // valid for 5 minutes
     const OTP_QUERY = `
             INSERT into userOTPDetails
-                (userId, otp)
+                (userId, otp, create_time, delete_time)
             VALUES
             (
                 '${userId}',
-                '${hashedOTP}'
+                '${hashedOTP}',
+                '${create_time}',
+                '${delete_time}'
             )
         `;
     await executeQuery(OTP_QUERY);
@@ -159,8 +163,8 @@ export async function validateOTP(req, res) {
     if (!isValidOtp) {
       return res.status(403).json("Invalid otp");
     }
-    await executeQuery(DELETE_QUERY);
     res.status(200).json("Validation successful");
+    executeQuery(DELETE_QUERY);
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);
@@ -267,20 +271,23 @@ export async function sendOTP(req, res) {
 
     const genSalt = await bcrypt.genSalt(10);
     const hashedOTP = await bcrypt.hash(OTP, genSalt);
-
+    const create_time = Date.now();
+    const delete_time = create_time + OTP_VALID_INTERVAL;
     const OTP_QUERY = `
             INSERT into userOTPDetails
-                (userId, otp)
+                (userId, otp, create_time, delete_time)
             OUTPUT
                 inserted.*
             VALUES
             (
                 '${userId}',
-                '${hashedOTP}'
+                '${hashedOTP}',
+                '${create_time}',
+                '${delete_time}'
             )
         `;
-    await executeQuery(OTP_QUERY);
-    res.status(200).json("Otp sent successfull");
+        res.status(200).json("Otp sent successfull");
+        executeQuery(OTP_QUERY);
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);
@@ -320,5 +327,13 @@ export async function getOTP(req, res) {
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);
+  }
+}
+
+export async function invalidateOtp (){
+  try {
+    
+  } catch (err) {
+    
   }
 }

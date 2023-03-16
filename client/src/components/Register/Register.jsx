@@ -155,7 +155,7 @@ function Register({ setRegisterPage }) {
         })
         .catch((err) => {
           setLoading(false);
-          alert(err);
+          logger.error(err)
         });
     }
   }

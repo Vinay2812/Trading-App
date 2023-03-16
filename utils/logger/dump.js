@@ -3,9 +3,9 @@ import executeQuery from "../../database/executeQuery.js";
 import { NODE_ENV } from "../config.js";
 import { TRADING_APP_ERRORS } from "../db.js";
 
-export default async function dump(msg, error = false) {
+export default async function dump(msg, error = false, client = false) {
   if (NODE_ENV !== "production") {
-    const file = "debug/debug.log";
+    const file = `debug/${client ? "client.log" : "server.log"}`;
     if (!fs.existsSync(file)) {
       fs.mkdirSync("debug", { recursive: true });
     }
@@ -14,8 +14,8 @@ export default async function dump(msg, error = false) {
     );
   } else {
     const INSERT_ERROR_TO_TABLE = `
-      INSERT into ${TRADING_APP_ERRORS} (error, error_time)
-      VALUES ('${(msg.replace(/[{}]/), "")}', '${Date.now()}')
+      INSERT into ${TRADING_APP_ERRORS} (error_from, error, error_time)
+      VALUES ('${client ? "client" : "server"}', '${(msg.replaceAll('\\', ''))}', '${Date.now()}')
     `;
     if (error) {
       executeQuery(INSERT_ERROR_TO_TABLE, false).catch((err) =>

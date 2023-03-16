@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getAllCompanyNames, getCompanyUserDataById, getUserDataFromNt1AccountMaster } from "../../api/UserRequest";
 import Loader from "../Loader/Loader"
 import { mapClient } from "../../api/AdminRequest";
+import logger from "../../utils/logger";
 
 function MapClient() {
   // react hooks
@@ -65,6 +66,7 @@ function MapClient() {
       setLoading(false);
     } catch (err) {
       setLoading(false);
+      logger.log(err)
     }
   }
 
@@ -83,13 +85,12 @@ function MapClient() {
           userId: userId, 
           accoid: accountData.accoid
         }
-        console.log(mapData)
-        const res = await mapClient(mapData);
-        alert(res.data);
+        await mapClient(mapData);
         setLoading(false);
         navigate("/admin/registration-list")
       }catch(err){
         setLoading(false);
+        logger.log(err)
       }
     }
     else{

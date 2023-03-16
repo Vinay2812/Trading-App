@@ -4,8 +4,7 @@ const router = Router();
 
 router.post("/", (req, res)=>{
     const err = req.body;
-    console.log(err)
-    logger.error(`react - ${JSON.stringify(err)}`);
+    logger.error(`react - ${JSON.stringify(err)}`, true);
     res.send("Error appended")
 })
 

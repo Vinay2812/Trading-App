@@ -1,5 +1,6 @@
 import { legacy_createStore as createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk"
+import logger from "../../utils/logger";
 import reducers from "../reducer"
 
 
@@ -9,7 +10,7 @@ function saveToLocalStorage(store) {
         const serializedStore = JSON.stringify(store);
         localStorage.setItem('store', serializedStore);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
     }
 }
 
@@ -19,7 +20,7 @@ function loadFromLocalStorage() {
         if (serializedStore === null) return undefined;
         return JSON.parse(serializedStore);
     } catch (e) {
-        // console.log(e);
+        logger.error(e)
         return undefined;
     }
 }

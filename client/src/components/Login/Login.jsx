@@ -12,6 +12,7 @@ import { adminLogin } from "../../redux/actions/adminActions";
 import { login } from "../../redux/actions/authActions"
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux"
+import logger from "../../utils/logger";
 
 function Login({ setRegisterPage }) {
   const INITIAL_LOGIN_DATA = {
@@ -43,7 +44,9 @@ function Login({ setRegisterPage }) {
           modifiedCompanies.sort();
           return modifiedCompanies;
         });
-      } catch (err) {}
+      } catch (err) {
+        logger.error(err);
+      }
     }
     if (loginData.mobile.length >= 10) {
       fetchCompanies();
@@ -85,7 +88,9 @@ function Login({ setRegisterPage }) {
         await resendOTP({userId: data.userId});
         navigate(`/register/${res.data.userId}`);
       }
-    } catch (err) {}
+    } catch (err) {
+      logger.error(err);
+    }
   }
   return (
     <div className="login-container">

@@ -9,6 +9,7 @@ import {
 } from "../../api/AuthRequest";
 import { login } from "../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 function Password() {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ function Password() {
       try {
         await getUserOTP(userId);
       } catch (err) {
+        logger.error(err);
         navigate("/auth");
       }
     }
@@ -81,7 +83,6 @@ function Password() {
     if (validation.status === 200) {
       setPasswordPage(true);
     }
-    alert(validation.data);
   }
 
   async function handleSubmit() {
@@ -100,7 +101,6 @@ function Password() {
     };
     const res = await updatePassword(updatePasswordData);
     if (res.status === 200) {
-      alert("password updated successfully");
       dispatch(login({mobile: user.userData.mobile, company_name: user.userData.company_name, password: passwordDetails.password}))
     }
   }

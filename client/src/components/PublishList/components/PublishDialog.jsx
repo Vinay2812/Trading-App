@@ -3,6 +3,7 @@ import { insertIntoTrDailyPublish } from "../../../api/AdminRequest";
 import Loader from "../../Loader/Loader";
 import convertDate from "../../../utils/convertDate";
 import convertUnit from "../../../utils/convertUnit";
+import logger from "../../../utils/logger";
 
 function PublishDialog({ publishItem, setShowDialog }) {
   // useStates
@@ -30,12 +31,11 @@ function PublishDialog({ publishItem, setShowDialog }) {
       const res = await insertIntoTrDailyPublish(dialogData);
       if (res.status === 200) {
         setLoading(false);
-        alert(res.data);
         setShowDialog(false);
       }
     } catch (err) {
       setLoading(false);
-      alert("Failed to insert");
+      logger.error(err)
     }
   }
 

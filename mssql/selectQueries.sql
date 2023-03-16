@@ -90,10 +90,24 @@ GO
 
 select * from trading_app_errors
 drop table trading_app_errors
+drop table userOTPDetails
 
 IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='${table_name}')
       SELECT 1 AS res ELSE SELECT 0 AS res
 
+CREATE table trading_app_errors(
+    id int IDENTITY(1, 1) PRIMARY KEY,
+    error_from nvarchar(10),
+    error nvarchar(4000),
+    error_time bigint
+)
+
+CREATE table userOTPDetails(
+    userId int PRIMARY KEY,
+    otp nvarchar(200),
+    create_time bigint,
+    delete_time bigint,
+)
 
 INSERT into trading_app_errors (error, error_time)
       OUTPUT inserted.*

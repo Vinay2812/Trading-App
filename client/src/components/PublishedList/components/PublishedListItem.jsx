@@ -29,7 +29,7 @@ function PublishedListItem({ index = null, publishedItemData, isPublishedList, s
         }
       }
     } catch (err) {
-      alert("Something went wrong");
+      logger.error(err)
     }
   }
 
