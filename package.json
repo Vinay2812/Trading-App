@@ -6,8 +6,8 @@
     "type": "module",
     "scripts": {
         "start": "node index.js",
-        "dev": "nodemon index.js",
-        "mssql": "sudo docker start sql1 && sudo docker exec -it sql1 \"bash\""
+        "dev": "nodemon --inspect index.js",
+        "mssql": "sudo docker start sql1 && sudo docker exec -it sql1 \"bash\" && brockvs28"
     },
     "keywords": [],
     "author": "",

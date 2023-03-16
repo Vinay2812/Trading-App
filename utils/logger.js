@@ -9,15 +9,18 @@ const logger = {
   log: (message, error = false) => {
     let data = {
       msg: message,
-      time: convertDate(new Date().toString())
+      time: convertDate(new Date().toString()),
     };
-    data = JSON.stringify(data).split(/[\s\n"]/g)
-    .filter((d) => d !== "")
-    .join(" ").replaceAll("\\n", "");
-    if (NODE_ENV !== "production") {
-      console.log(data);
-    }
-    dump(data, true, false);
+    data =
+      NODE_ENV !== "production"
+        ? JSON.stringify(data)
+            .split(/[\s\n"]/g)
+            .filter((d) => d !== "")
+            .join(" ")
+            .replaceAll("\\n", "")
+        : JSON.stringify(data);
+    NODE_ENV !== "production" && console.log(data);
+    dump(data, error);
   },
 };
 export default logger;
