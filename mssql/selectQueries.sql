@@ -109,6 +109,20 @@ CREATE table userOTPDetails(
     delete_time bigint,
 )
 
+SELECT * from userOTPDetails
+
+DELETE from userOTPDetails 
+OUTPUT deleted.userId
+WHERE userId in 
+(
+    SELECT u1.userId from 
+    userOTPDetails u1 INNER JOIN userOTPDetails u2 
+    ON u1.userId = u2.userId 
+    AND u1.delete_time - u2.create_time  >= 5 * 60 * 1000
+)
+
+SELECT * FROM userOTPDetails
+WHERE (delete_time) >= 1678997265398 
 INSERT into trading_app_errors (error, error_time)
       OUTPUT inserted.*
       VALUES ('{ query : \n SELECT Ac_Name_E, accoid from nt_1_accountmaster \n WHERE company_code = 1 AND userId is null\n ORDER BY Ac_Name_E\n , time : 148ms }', '1678727056275')

@@ -5,18 +5,21 @@ const symbolMap = {
   err: "\u00D7",
 };
 function log({ message, colorCode = 0, error = false, symbol = "ok" }) {
-  if (import.meta.env.DEV) {
-    console.log(
-      " \u001b[" +
-        colorCode +
-        "m" +
-        symbolMap[symbol] +
-        " " +
-        message +
-        "\u001b[0m"
-    );
-  }
-  error && postError(message)
+  try {
+    let msg = JSON.stringify(message);
+    if (import.meta.env.DEV) {
+      console.log(
+        " \u001b[" +
+          colorCode +
+          "m" +
+          symbolMap[symbol] +
+          " " +
+          msg +
+          "\u001b[0m"
+      );
+    }
+    error && postError(message);
+  } catch (err) {}
 }
 
 function logData(message) {
@@ -24,7 +27,14 @@ function logData(message) {
 }
 
 function logError(message) {
-  log({ message, colorCode: 31, error: true, symbol: "err" });
+  let errMsg = message.response
+    ? `${message.response?.data} in ${
+        message.response?.status
+      } ${message.response?.config?.method?.toUpperCase()} ${
+        message.response?.config?.url
+      }`
+    : message;
+  log({ message: errMsg, colorCode: 31, error: true, symbol: "err" });
 }
 
 const logger = {

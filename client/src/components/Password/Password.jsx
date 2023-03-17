@@ -25,16 +25,6 @@ function Password() {
       navigate("/auth");
       return;
     }
-    checkValidUser();
-
-    async function checkValidUser() {
-      try {
-        await getUserOTP(userId);
-      } catch (err) {
-        logger.error(err);
-        navigate("/auth");
-      }
-    }
   }, [userId]);
 
   const INITIAL_PASSWORD_DETAILS = useMemo(
@@ -61,7 +51,7 @@ function Password() {
   }
 
   async function handleResend() {
-    await resendOTP({userId});
+    resendOTP({userId})
   }
 
   async function handleVerify() {
@@ -71,7 +61,6 @@ function Password() {
     };
 
     const validation = await verifyOTP(otpData);
-    console.log(validation)
     if (validation.status === 200) {
       setPasswordPage(true);
     }

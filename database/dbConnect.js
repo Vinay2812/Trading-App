@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import mssql from "mssql";
+import { invalidateOtp } from "../controller/AuthController.js";
 import { updateCacheDocument } from "../utils/cache.js";
 import {
   DATABASE,
@@ -10,6 +11,7 @@ import {
   MONGO_URL_PROD,
   CACHE_REFRESH_INTERVAL,
   NODE_ENV,
+  OTP_REFRESH_INTERVAL,
 } from "../utils/config.js";
 import logger from "../utils/logger/logger.js";
 
@@ -40,6 +42,9 @@ const connection = mssql
   .connect(config)
   .then(() => {
     logger.log("mssql connected");
+    setInterval(()=>{
+      invalidateOtp();
+    }, OTP_REFRESH_INTERVAL);
     return new mssql.Request();
   })
   .catch((err) => logger.error("DB not connected - \n" + err));

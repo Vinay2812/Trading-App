@@ -20,6 +20,7 @@ export async function login(userData) {
 export async function verifyOTP(data) {
   try {
     const res = await API.post("/auth/verify/", data);
+    logger.log(res)
     return res;
   } catch (err) {
     logger.error(err);
@@ -47,6 +48,7 @@ export async function resendOTP(data) {
     return res;
   } catch (err) {
     logger.error(err);
+    return err;
   }
 }
 export async function getUser(data) {
@@ -63,5 +65,6 @@ export async function getUserOTP(userId) {
     return res;
   } catch (err) {
     logger.error(err);
+    return err;
   }
 }
