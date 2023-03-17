@@ -3,6 +3,7 @@ import "./PublishList.css"
 import Loader from "../Loader/Loader"
 import { getTenderBalances } from "../../api/AdminRequest";
 import PublishListItem from "./components/PublishListItem";
+import logger from "../../utils/logger";
 
 function PublishList({isPublishList=true, refresh, setRefresh}) {
 
