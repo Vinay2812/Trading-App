@@ -15,6 +15,12 @@ io.on("connect", (socket) => {
     logger.log(msg);
     io.emit("refresh_client_list");
   })
+  socket.on("user_authorized_by_admin", (msg, accoid, userId)=>{
+    logger.log(msg);
+    io.emit("user_login", userId, accoid, (msg)=>{
+      logger.log(msg);
+    });
+  })
   socket.on("disconnect", () => {
     logger.log("A user disconnected to socket");
   });

@@ -30,6 +30,7 @@ function PublishDialog({ publishItem, setShowDialog }) {
     try {
       const res = await insertIntoTrDailyPublish(dialogData);
       if (res.status === 200) {
+        socket.emit("update_client_list", "Req received - client list updation")
         setLoading(false);
         setShowDialog(false);
       }

@@ -321,7 +321,7 @@ export async function getQryTrDailyBalance(req, res) {
 }
 
 export async function stopSingleTrade(req, res) {
-  const { error, value } = validateReq(stopSingleTradeReq, stopSingleTrade);
+  const { error, value } = validateReq(stopSingleTradeReq, req.body);
   const { tenderid } = value;
   try {
     const STOP_SINGLE_TENDER = `

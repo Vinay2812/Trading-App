@@ -1,4 +1,4 @@
-import { USER_AUTH_FAIL, USER_AUTH_START, USER_AUTH_SUCCESS } from "../actions"
+import { USER_AUTH_FAIL, USER_AUTH_START, USER_AUTH_SUCCESS, USER_UPDATE_ACCOID } from "../actions"
 import * as AuthApi from "../../api/AuthRequest"
 import logger from "../../utils/logger";
 
@@ -25,5 +25,11 @@ export function login(loginData){
             dispatch({type: USER_AUTH_FAIL});
             logger.error(err)
         }
+    }
+}
+
+export function updateAccoid({accoid}){
+    return function (dispatch){
+        dispatch({type: USER_UPDATE_ACCOID, data: {accoid}})
     }
 }

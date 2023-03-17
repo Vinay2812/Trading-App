@@ -14,4 +14,4 @@ export default function AdminReducer (state = INITIAL_STATE, action) {
         default:
             return state;
     }
-}   
+}

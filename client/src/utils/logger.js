@@ -8,6 +8,7 @@ function log({ message, colorCode = 0, error = false, symbol = "ok" }) {
   try {
     let msg = JSON.stringify(message);
     if (import.meta.env.DEV) {
+      console.log(message);
       console.log(
         " \u001b[" +
           colorCode +

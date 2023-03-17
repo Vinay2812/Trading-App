@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { addUser } from "../../../api/AdminRequest";
 import { setAdminTab } from "../../../redux/actions/adminActions";
 
+import logger from "../../../utils/logger";
+
 function ListItem({ data, fetchUsers }) {
   // const [authorized, setAuthorized] = useState(data.authorized === 1)
   const navigate = useNavigate();
