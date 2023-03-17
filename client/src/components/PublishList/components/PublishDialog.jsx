@@ -4,6 +4,7 @@ import Loader from "../../Loader/Loader";
 import convertDate from "../../../utils/convertDate";
 import convertUnit from "../../../utils/convertUnit";
 import logger from "../../../utils/logger";
+import socket from "../../../socket.io/socket";
 
 function PublishDialog({ publishItem, setShowDialog }) {
   // useStates
