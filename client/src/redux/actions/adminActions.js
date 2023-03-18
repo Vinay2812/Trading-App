@@ -7,7 +7,7 @@ export function adminLogin(loginData){
         dispatch({type: ADMIN_AUTH_START});
         try {
             const res = await AdminApi.adminLogin(loginData);
-            dispatch({type: ADMIN_AUTH_SUCCESS, data: res.data});
+            dispatch({type: ADMIN_AUTH_SUCCESS, data: res?.data});
         } catch (err) {
             dispatch({type: ADMIN_AUTH_FAIL})
             logger.error(err);

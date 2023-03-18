@@ -75,7 +75,7 @@ function Admin() {
       const res = await stopAllTrade();
       if (res.status === 200) {
         handleRefreshPublishedList();
-        socket.emit("update_client_list", "Req received - start updating client list")
+        socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
         setIsResumeTrading(true);
       }
     } catch (err) {
@@ -89,7 +89,7 @@ function Admin() {
       const res = await startAllTrade();
       if (res.status === 200) {
         handleRefreshPublishedList();
-        socket.emit("update_client_list", "Req received - start updating client list")
+        socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
         setIsResumeTrading(false);
       }
     } catch (err) {
@@ -110,7 +110,7 @@ function Admin() {
       const res = await updateAllSaleRate({ sale_rate: val });
       if (res.status === 200) {
         handleRefreshPublishedList();
-        socket.emit("update_client_list", "Req received - start updating client list")
+        socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
       }
     }
   }

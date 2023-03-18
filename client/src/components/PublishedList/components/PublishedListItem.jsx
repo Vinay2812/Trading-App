@@ -18,14 +18,14 @@ function PublishedListItem({ index = null, publishedItemData, isPublishedList, s
         if (res.status === 200) {
           setListItemData((prev) => ({ ...prev, status: "N" }));
           alert(listItemData.tender_no + " Trade Stopped");
-          socket.emit("update_client_list", "Req received - client list updation")
+          socket.connected && socket.emit("update_client_list", "Req received - client list updation")
         }
       } else {
         const res = await startSingleTrade({ tenderid: listItemData.tenderid });
         if (res.status === 200) {
           setListItemData((prev) => ({ ...prev, status: "Y" }));
           alert(listItemData.tender_no + " Trade Started");
-          socket.emit("update_client_list", "Req received - client list updation")
+          socket.connected && socket.emit("update_client_list", "Req received - client list updation")
         }
       }
     } catch (err) {

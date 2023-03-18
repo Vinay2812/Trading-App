@@ -21,6 +21,7 @@ io.on("connect", (socket) => {
     });
   });
   socket.on("disconnect", () => {
+    console.clear()
     logger.log("A user disconnected to socket");
   });
 });

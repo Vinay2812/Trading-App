@@ -11,9 +11,11 @@ import ErrorRoute from "./routes/ErrorRoute.js";
 import InvalidRoute from "./routes/InvalidRoute.js";
 import { SERVER_PORT } from "./utils/config.js";
 import { fileURLToPath } from "url";
-import "./database/dbConnect.js";
 import "./utils/logger/logger.js";
+import "./database/dbSchema.js";
+import "./database/dbConnect.js";
 import "./socket.io/socket.js";
+import { createRequiredTablesAndViews } from "./database/dbSchema.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -29,7 +31,11 @@ app.use(
     },
   })
 );
-
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 app.use("/auth", AuthRoute);
 app.use("/admin", AdminRoute);
 app.use("/user", UserRoute);
@@ -43,4 +49,5 @@ app.get("*", (req, res) => {
 
 app.listen(port, () => {
   logger.log(`Server Listening on port ${port}`);
+  createRequiredTablesAndViews();
 });

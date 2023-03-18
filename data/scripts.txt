@@ -154,7 +154,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[onlineUserDetails](
-	[userId] [int] IDENTITY(1,1) NOT NULL,
+	[userId] [nvarchar](100) NOT NULL,
 	[company_name] [nvarchar](1000) NULL,
 	[email] [nvarchar](100) NULL,
 	[address] [nvarchar](250) NULL,
@@ -183,7 +183,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[userBankDetails](
-	[userId] [int] NULL,
+	[userId] [nvarchar](100) NULL,
 	[account_name] [nvarchar](100) NULL,
 	[account_number] [nvarchar](20) NULL,
 	[account_type] [nvarchar](50) NULL,

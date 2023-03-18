@@ -6,13 +6,10 @@ export default async function executeQuery(query, log = true) {
   const queryOutput = await request.query(query);
   let stop = Date.now();
   const queryData = {
-    query,
+    query: JSON.stringify(query).split(/\s/).filter(d => d!=="").join(" ").replaceAll("\\n", "").replaceAll('"', ""),
+    output: queryOutput,
     exec_time: stop - start + " ms",
   };
-  const queryOutputData = {
-    output: queryOutput.recordset,
-  };
   log && logger.sql(queryData);
-  log && logger.sql(queryOutputData);
   return queryOutput.recordset;
 }

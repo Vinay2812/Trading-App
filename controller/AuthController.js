@@ -7,7 +7,7 @@ import {
   USER_BANK_DETAILS,
   USER_CONTACT_DETAILS,
   USER_OTP_DETAILS,
-} from "../utils/db.js";
+} from "../database/dbSchema.js";
 import { OTP_VALID_INTERVAL } from "../utils/config.js";
 
 export async function register(req, res) {

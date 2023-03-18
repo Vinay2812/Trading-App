@@ -1,5 +1,8 @@
 import executeQuery from "../database/executeQuery.js";
-import { NT_1_ACCOUNTMASTER, ONLINE_USER_DETAILS } from "../utils/db.js";
+import {
+  NT_1_ACCOUNTMASTER,
+  ONLINE_USER_DETAILS,
+} from "../database/dbSchema.js";
 
 export async function getUserCompanyDataById(req, res) {
   const { userId } = req.params;

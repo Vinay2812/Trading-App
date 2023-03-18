@@ -28,7 +28,7 @@ const config = {
 mongoose
   .connect(`${NODE_ENV === "production" ? MONGO_URL_PROD : MONGO_URL_TEST}`)
   .then(() => {
-    logger.log("mongodb connected", "its second string");
+    logger.log("mongodb connected");
     setInterval(() => {
       updateCacheDocument().then(
         (res) => res && logger.log(`Deleted ${res} caches`)

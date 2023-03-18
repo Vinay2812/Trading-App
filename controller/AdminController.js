@@ -7,7 +7,7 @@ import {
   QRY_TR_DAILY_BALANCE,
   TR_DAILY_PUBLISH,
   USER_BANK_DETAILS,
-} from "../utils/db.js";
+} from "../database/dbSchema.js";
 import {
   adminLoginReq,
   updateAuthorizationReq,
@@ -321,6 +321,9 @@ export async function getQryTrDailyBalance(req, res) {
 
 export async function stopSingleTrade(req, res) {
   const { error, value } = validateReq(stopSingleTradeReq, req.body);
+  if(error){
+    return joiErrorRes(res, error, "stopSingleTrade")
+  }
   const { tenderid } = value;
   try {
     const STOP_SINGLE_TENDER = `
@@ -348,7 +351,11 @@ export async function stopAllTrade(req, res) {
 }
 
 export async function startSingleTrade(req, res) {
-  const { tenderid } = req.body;
+  const { error, value } = validateReq(stopSingleTradeReq, req.body);
+  if(error){
+    return joiErrorRes(res, error, "stopSingleTrade")
+  }
+  const { tenderid } = value;
   try {
     const START_SINGLE_TENDER = `
             UPDATE ${TR_DAILY_PUBLISH} SET status = 'Y' WHERE tenderid = '${tenderid}'

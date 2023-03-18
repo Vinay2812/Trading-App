@@ -93,12 +93,14 @@ function MapClient() {
           accoid: accountData.accoid,
         };
         await mapClient(mapData);
-        socket.emit(
-          "user_authorized_by_admin",
-          `UserId ${userId} is now authorized by admin`,
-          mapData.accoid,
-          userId
-        );
+        if (socket.connected) {
+          socket.emit(
+            "user_authorized_by_admin",
+            `UserId ${userId} is now authorized by admin`,
+            mapData.accoid,
+            userId
+          );
+        }
         setLoading(false);
         navigate("/admin/registration-list");
       } catch (err) {

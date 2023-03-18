@@ -35,7 +35,7 @@ function ModifyDialog({dialogData, setShowModifyDialog, setListItemData, socket}
             if(res.status === 200){
                 setListItemData(prev => ({...prev, sale_rate: saleRate, published_qty: publishQuantal}))
                 setShowModifyDialog(false);
-                socket.emit("update_client_list", "Req received - client list updation")
+                socket.connected && socket.emit("update_client_list", "Req received - client list updation")
             }
         } catch (err) {
             setShowModifyDialog(false);
