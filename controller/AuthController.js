@@ -1,8 +1,7 @@
 import executeQuery from "../database/executeQuery.js";
-import genereateOTP from "../utils/otp.js";
+import { getRandomOtp } from "../utils/random.js";
 import sendEMail from "../utils/email.js";
 import bcrypt from "bcrypt";
-import logger from "../utils/logger/logger.js";
 import {
   ONLINE_USER_DETAILS,
   USER_BANK_DETAILS,
@@ -81,7 +80,7 @@ export async function register(req, res) {
         )[0];
       })
     );
-    
+
     // insert all contact details
     Promise.all(
       contactData.map(async (data) => {
@@ -108,7 +107,7 @@ export async function register(req, res) {
       })
     );
 
-    const OTP = genereateOTP();
+    const OTP = getRandomOtp();
     await sendEMail(email, OTP);
 
     const genSalt = await bcrypt.genSalt(10);
@@ -145,12 +144,12 @@ export async function validateOTP(req, res) {
         `;
 
     const queryOutput = await executeQuery(VALIDATE_QUERY);
-    logger.log(queryOutput)
+    logger.log(queryOutput);
     if (!queryOutput || !queryOutput?.length) {
       return res.status(400).json("Invalid user id");
     }
     const isValidOtp = await bcrypt.compare(otp, (await queryOutput[0]).otp);
-    logger.log(isValidOtp)
+    logger.log(isValidOtp);
     if (!isValidOtp) {
       return res.status(403).json("Invalid otp");
     }
@@ -254,13 +253,13 @@ export async function sendOTP(req, res) {
             WHERE userId = '${userId}'
         `;
     const email = await (await executeQuery(GET_EMAIL_QUERY))[0].email;
-    const OTP = genereateOTP();
+    const OTP = getRandomOtp();
     await sendEMail(email, OTP);
 
     const genSalt = await bcrypt.genSalt(10);
     const hashedOTP = await bcrypt.hash(OTP, genSalt);
     const create_time = Date.now();
-    const delete_time = (create_time + parseInt(OTP_VALID_INTERVAL));
+    const delete_time = create_time + parseInt(OTP_VALID_INTERVAL);
     const OTP_QUERY = `
             INSERT into userOTPDetails
                 (userId, otp, create_time, delete_time)
@@ -324,7 +323,12 @@ export async function invalidateOtp() {
       WHERE delete_time  <= ${Date.now()}
     `;
     const deletedOtps = await executeQuery(DELETE_OTPS_QUERY, false);
-    deletedOtps.length && logger.log(`Deleted ${deletedOtps.map(data => "userId - " + data.userId).join("-")} otps`);
+    deletedOtps.length &&
+      logger.log(
+        `Deleted ${deletedOtps
+          .map((data) => "userId - " + data.userId)
+          .join("-")} otps`
+      );
   } catch (err) {
     logger.error(err);
   }

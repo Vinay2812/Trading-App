@@ -1,4 +1,3 @@
-import logger from "../utils/logger/logger.js";
 import connection from "./dbConnect.js";
 
 export default async function executeQuery(query, log = true) {

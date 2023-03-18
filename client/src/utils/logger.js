@@ -8,7 +8,8 @@ function log({ message, colorCode = 0, error = false, symbol = "ok" }) {
   try {
     let msg = JSON.stringify(message);
     if (import.meta.env.DEV) {
-      console.log(message);
+      (message instanceof Object || message instanceof Array) &&
+        console.log(message);
       console.log(
         " \u001b[" +
           colorCode +
@@ -23,19 +24,21 @@ function log({ message, colorCode = 0, error = false, symbol = "ok" }) {
   } catch (err) {}
 }
 
-function logData(message) {
-  log({ message });
+function logData(...message) {
+  message.map((msg) => log({ msg }));
 }
 
-function logError(message) {
-  let errMsg = message.response
-    ? `${message.response?.data} in ${
-        message.response?.status
-      } ${message.response?.config?.method?.toUpperCase()} ${
-        message.response?.config?.url
-      }`
-    : message;
-  log({ message: errMsg, colorCode: 31, error: true, symbol: "err" });
+function logError(...message) {
+  message.map((msg) => {
+    let errMsg = msg.response
+      ? `${msg.response?.data} with status - ${
+          msg.response?.status
+        } method - ${msg.response?.config?.method?.toUpperCase()} url - ${
+          msg.response?.config?.url
+        }`
+      : msg;
+    log({ message: errMsg, colorCode: 31, error: true, symbol: "err" });
+  });
 }
 
 const logger = {

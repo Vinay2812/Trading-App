@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, HashRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Auth from "./pages/Auth/Auth";
 import Password from "./components/Password/Password";
 import Admin from "./pages/Admin/Admin";
@@ -35,7 +35,7 @@ function App() {
                 />
                 <Route path="/admin/map/:id" element={<MapClient />} />
               </Route>
-              <Route path="*" element={<Error404 />}/>
+              <Route path="/404" element={<Error404 />}/>
             </Routes>
           </div>
         </Redirect>

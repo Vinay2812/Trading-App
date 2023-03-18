@@ -1,7 +1,6 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { SOCKET_PORT } from "../utils/config.js";
-import logger from "../utils/logger/logger.js";
 
 const socket_port = SOCKET_PORT;
 const httpServer = createServer();
@@ -14,13 +13,13 @@ io.on("connect", (socket) => {
   socket.on("update_client_list", (msg) => {
     logger.log(msg);
     io.emit("refresh_client_list");
-  })
-  socket.on("user_authorized_by_admin", (msg, accoid, userId)=>{
+  });
+  socket.on("user_authorized_by_admin", (msg, accoid, userId) => {
     logger.log(msg);
-    io.emit("user_login", userId, accoid, (msg)=>{
+    io.emit("user_login", userId, accoid, (msg) => {
       logger.log(msg);
     });
-  })
+  });
   socket.on("disconnect", () => {
     logger.log("A user disconnected to socket");
   });

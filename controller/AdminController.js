@@ -1,4 +1,3 @@
-import logger from "../utils/logger/logger.js";
 import executeQuery from "../database/executeQuery.js";
 import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../utils/config.js";
 import {

@@ -16,7 +16,7 @@ function Navbar() {
   }
 
   function toHome() {
-    navigate("/home");
+    user.accoid && navigate("/home");
   }
   return (
     <div className="navbar">

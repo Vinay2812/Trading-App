@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose";
-import logger from "./logger/logger.js";
 const CacheSchema = new Schema({
   key: {
     type: String,
