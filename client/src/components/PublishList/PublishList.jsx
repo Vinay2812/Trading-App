@@ -33,7 +33,7 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
       setLoading(true)
       try {
         const tenderBalances = await getTenderBalances(signal);
-        if(tenderBalances.status === 200){
+        if(tenderBalances?.status == 200){
           setPublishList(tenderBalances.data);
           setLoading(false)
         }

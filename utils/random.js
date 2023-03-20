@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { OTP_LENGTH, UNIQUE_ID_LENGTH } from './config.js';
 
 export function getRandomId(){
-    const uniqueId = crypto.randomBytes(UNIQUE_ID_LENGTH).toString('hex');
+    const uniqueId = crypto.randomBytes(parseInt(UNIQUE_ID_LENGTH)).toString('hex');
     logger.log(uniqueId);
     return uniqueId;
 }
