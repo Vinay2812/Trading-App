@@ -1,5 +1,5 @@
 import executeQuery from "../../database/executeQuery.js";
-import { getRandomOtp } from "../../utils/random.js";
+import { getRandomId, getRandomOtp } from "../../utils/random.js";
 import sendEMail from "../../utils/email.js";
 import bcrypt from "bcrypt";
 import {
@@ -23,12 +23,14 @@ export async function register(req, res) {
       res.status(400).json("User already exist with this company and mobile");
       return;
     }
+    const new_user_id = getRandomId();
     const USER_DATA_QUERY = `
             INSERT into ${ONLINE_USER_DETAILS}
-                (company_name, email, address, state, district, pincode, mobile, whatsapp, gst, pan, fssai, tan, constitution_of_firm)
+                (userId, company_name, email, address, state, district, pincode, mobile, whatsapp, gst, pan, fssai, tan, constitution_of_firm)
             OUTPUT inserted.*
             VALUES
-                ('${userData.company_name}', 
+                ( '${new_user_id}',
+                  '${userData.company_name}', 
                  '${userData.email}', 
                  '${userData.address}', 
                  '${userData.state}',
@@ -66,7 +68,7 @@ export async function register(req, res) {
                 OUTPUT inserted.*
                 VALUES
                 (
-                    ${userId},
+                    '${userId}',
                     '${account_name}',
                     '${account_number}',
                     '${account_type}',
@@ -92,7 +94,7 @@ export async function register(req, res) {
                 OUTPUT inserted.*
                 VALUES
                 (
-                    ${userId},
+                    '${userId}',
                     '${full_name}',
                     '${designation}',
                     '${mobile}',
@@ -191,7 +193,7 @@ export async function login(req, res) {
       res.status(400).json("Invalid mobile and company name");
       return;
     }
-    const userData = (await queryOutput)[0];
+    const userData = queryOutput[0];
     if (userData.password) {
       const passwordMatched = await bcrypt.compare(password, userData.password);
       if (!passwordMatched) {

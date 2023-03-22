@@ -3,6 +3,7 @@ import { DataTypes } from "sequelize";
 import {
   ONLINE_USER_DETAILS,
   USER_BANK_DETAILS,
+  USER_CONTACT_DETAILS,
 } from "../database/dbSchema.js";
 
 export const UserOnlineDetails = mssql.define(ONLINE_USER_DETAILS, {
@@ -13,67 +14,65 @@ export const UserOnlineDetails = mssql.define(ONLINE_USER_DETAILS, {
   },
   company_name: {
     type: DataTypes.STRING(100),
-    defaultValue: null,
+    allowNull: false
   },
   email: {
     type: DataTypes.STRING(100),
-    defaultValue: null,
+    allowNull: false
   },
   password: {
     type: DataTypes.STRING(100),
-    defaultValue: null,
+    allowNull: true
   },
   address: {
     type: DataTypes.STRING(250),
-    defaultValue: null,
+    allowNull: false
   },
   state: {
     type: DataTypes.STRING(50),
-    defaultValue: null,
+    allowNull: false
   },
   district: {
     type: DataTypes.STRING(50),
-    defaultValue: null,
+    allowNull: false
   },
   pincode: {
     type: DataTypes.INTEGER,
-    defaultValue: null,
+    allowNull: false
   },
   mobile: {
-    type: DataTypes.INTEGER,
-    defaultValue: null,
+    type: DataTypes.STRING(10),
+    allowNull: false
   },
   whatsapp: {
-    type: DataTypes.INTEGER,
-    defaultValue: null,
+    type: DataTypes.STRING(10),
+    allowNull: true
   },
-  gstin: {
+  gst: {
     type: DataTypes.STRING(15),
-    defaultValue: null,
+    allowNull: true
   },
   pan: {
     type: DataTypes.STRING(10),
-    defaultValue: null,
+    allowNull: false
   },
   fssai: {
     type: DataTypes.STRING(15),
-    defaultValue: null,
+    allowNull: true
   },
   tan: {
     type: DataTypes.STRING(10),
-    defaultValue: null,
+    allowNull: true
   },
   constitution_of_firm: {
     type: DataTypes.STRING(50),
-    defaultValue: null,
+    allowNull: false
   },
   authorized: {
     type: DataTypes.BOOLEAN,
-    defaultValue: null,
   },
   accoid: {
     type: DataTypes.INTEGER,
-    defaultValue: null,
   },
 });
 
