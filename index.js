@@ -4,19 +4,27 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
+import { fileURLToPath } from "url";
+
+// connections
+import { connectMssql, connectSocket } from "./connections/index.js";
+import syncMssql from "./models/sync.js";
+
+// routes
 import AuthRoute from "./routes/AuthRoute.js";
 import AdminRoute from "./routes/AdminRoute.js";
 import UserRoute from "./routes/UserRoute.js";
 import ErrorRoute from "./routes/ErrorRoute.js";
 import InvalidRoute from "./routes/InvalidRoute.js";
+
+// utils
 import { SERVER_PORT } from "./utils/config.js";
-import { fileURLToPath } from "url";
-import "./socket.io/socket.js";
-import "./models/User.js";
 import logger from "./utils/logger.js";
-import { connectMongodb } from "./connections/mongo-connection.js";
-import { connectMssql } from "./connections/mssql-connection.js";
-import { connectSocket, syncMssql } from "./connections/index.js";
+
+// others
+import "./socket.io/socket.js";
+import { invalidateOtps } from "./controller/Auth/AuthController.js";
+import { updateCacheDocument } from "./utils/cache.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -48,10 +56,15 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
 
-app.listen(port, () => {
+function startServer(){
+  logger.info("Starting server.............");
   logger.info(`Server Listening on port ${port}`);
-  connectMongodb();
   connectMssql();
   connectSocket();
   syncMssql();
+  updateCacheDocument();
+  invalidateOtps();
+}
+app.listen(port, () => {
+  startServer();
 });

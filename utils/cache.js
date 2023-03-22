@@ -1,34 +1,15 @@
-import { Schema, model } from "mongoose";
+import { Cache } from "../models/Cache.js";
+import { CACHE_REFRESH_INTERVAL } from "./config.js";
 import logger from "./logger.js";
-const CacheSchema = new Schema({
-  key: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  value: {
-    type: String,
-    required: true,
-  },
-  createTime: {
-    type: Number,
-  },
-  expireTime: {
-    type: Number,
-  },
-});
-
-const Cache = model("cache", CacheSchema);
 
 export async function setCache(key, value, time_in_seconds) {
   const cache = {
     key,
-    value,
-    createTime: Date.now(),
-    expireTime: Date.now() + time_in_seconds * 1000,
+    value: JSON.stringify(value),
+    expiry: Date.now() + time_in_seconds * 1000,
   };
   try {
-    await Cache.updateOne({ key }, JSON.stringify(cache), { upsert: true });
+    await Cache.create(cache);
   } catch (err) {
     logger.error(err);
   }
@@ -36,7 +17,9 @@ export async function setCache(key, value, time_in_seconds) {
 
 export async function getCache(key) {
   try {
-    let cache = await Cache.findOne({ key });
+    let cache = await Cache.findOne({
+      where: { key },
+    });
     cache = JSON.parse(cache);
     return cache;
   } catch (err) {
@@ -47,7 +30,9 @@ export async function getCache(key) {
 
 export async function deleteCache(key) {
   try {
-    await Cache.deleteOne({ key });
+    await Cache.destroy({
+      where: { key },
+    });
   } catch (err) {
     logger.error(err);
   }
@@ -56,12 +41,18 @@ export async function deleteCache(key) {
 export async function updateCacheDocument() {
   const currTime = Date.now();
   try {
-    const deletedDocuments = await Cache.deleteMany({
-      expireTime: { $lte: currTime },
-    });
-    return deletedDocuments.deletedCount;
+    const deletedCache = await Cache.destroy({
+      where: {
+        expiry:{
+          $lte: currTime
+        }
+      }
+    })
+    logger.debug(`Deleted ${deletedCache} cache(s) from cache table`);
+    setInterval(() => {
+      updateCacheDocument()
+    }, CACHE_REFRESH_INTERVAL)
   } catch (err) {
     logger.error(err);
-    return 0;
   }
 }

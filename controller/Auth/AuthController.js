@@ -8,7 +8,10 @@ import {
   USER_CONTACT_DETAILS,
   USER_OTP_DETAILS,
 } from "../../database/dbSchema.js";
-import { OTP_VALID_INTERVAL } from "../../utils/config.js";
+import {
+  OTP_REFRESH_INTERVAL,
+  OTP_VALID_INTERVAL,
+} from "../../utils/config.js";
 import logger from "../../utils/logger.js";
 
 export async function register(req, res) {
@@ -201,18 +204,6 @@ export async function login(req, res) {
         return;
       }
     }
-    // const BANK_QUERY = `
-    //         SELECT * from ${USER_BANK_DETAILS}
-    //         WHERE
-    //             userId = '${userData.userId}'
-    //     `;
-    // const CONTACT_QUERY = `
-    //         SELECT * from ${USER_CONTACT_DETAILS}
-    //         WHERE
-    //             userId = '${userData.userId}'
-    //     `;
-    // const bankData = await executeQuery(BANK_QUERY);
-    // const contactData = await executeQuery(CONTACT_QUERY);
     const data = { userData };
     res.status(200).json(data);
   } catch (err) {
@@ -318,7 +309,7 @@ export async function getOTP(req, res) {
   }
 }
 
-export async function invalidateOtp() {
+export async function invalidateOtps() {
   try {
     const DELETE_OTPS_QUERY = `
       DELETE from ${USER_OTP_DETAILS} 
@@ -330,8 +321,11 @@ export async function invalidateOtp() {
       logger.info(
         `Deleted ${deletedOtps
           .map((data) => "userId - " + data.userId)
-          .join("-")} otps`
+          .join("-")} otp(s)`
       );
+    setInterval(() => {
+      invalidateOtps();
+    }, OTP_REFRESH_INTERVAL);
   } catch (err) {
     logger.error(err);
   }

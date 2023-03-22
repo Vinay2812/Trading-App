@@ -12,3 +12,4 @@ data/.~lock.Vinay.xlsx#
 .env
 *.log
 debug/
+logs/
