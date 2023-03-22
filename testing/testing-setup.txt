@@ -23,4 +23,4 @@ else =>  git checkout "testing"
 git pull upstream develop
 
 // debugging
-logger.log() => to print the statements
+logger.info() => to print the statements

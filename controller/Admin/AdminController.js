@@ -1,5 +1,5 @@
-import executeQuery from "../database/executeQuery.js";
-import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../utils/config.js";
+import executeQuery from "../../database/executeQuery.js";
+import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../../utils/config.js";
 import {
   NT_1_ACCOUNTMASTER,
   ONLINE_USER_DETAILS,
@@ -7,7 +7,7 @@ import {
   QRY_TR_DAILY_BALANCE,
   TR_DAILY_PUBLISH,
   USER_BANK_DETAILS,
-} from "../database/dbSchema.js";
+} from "../../database/dbSchema.js";
 import {
   adminLoginReq,
   updateAuthorizationReq,
@@ -15,8 +15,9 @@ import {
   mapClientReq,
   insertIntoTrDailyPublishReq,
   stopSingleTradeReq,
-} from "../validator/AdminValidator.js";
-import { validateReq, joiErrorRes } from "../validator/joiErrorHandler.js";
+} from "./AdminValidator.js";
+import { validateReq, joiErrorRes } from "../../utils/joi.js";
+import logger from "../../utils/logger.js";
 
 export async function adminLogin(req, res) {
   const { error, value } = validateReq(adminLoginReq, req.body);
@@ -192,7 +193,7 @@ export async function mapClient(req, res) {
     ]);
     res.status(200).json("Mapping was successful");
   } catch (error) {
-    logger.log(err);
+    logger.info(err);
     res.status(500).json(err);
   }
 }
@@ -321,8 +322,8 @@ export async function getQryTrDailyBalance(req, res) {
 
 export async function stopSingleTrade(req, res) {
   const { error, value } = validateReq(stopSingleTradeReq, req.body);
-  if(error){
-    return joiErrorRes(res, error, "stopSingleTrade")
+  if (error) {
+    return joiErrorRes(res, error, "stopSingleTrade");
   }
   const { tenderid } = value;
   try {
@@ -352,8 +353,8 @@ export async function stopAllTrade(req, res) {
 
 export async function startSingleTrade(req, res) {
   const { error, value } = validateReq(stopSingleTradeReq, req.body);
-  if(error){
-    return joiErrorRes(res, error, "stopSingleTrade")
+  if (error) {
+    return joiErrorRes(res, error, "stopSingleTrade");
   }
   const { tenderid } = value;
   try {

@@ -11,11 +11,12 @@ import ErrorRoute from "./routes/ErrorRoute.js";
 import InvalidRoute from "./routes/InvalidRoute.js";
 import { SERVER_PORT } from "./utils/config.js";
 import { fileURLToPath } from "url";
-import "./utils/logger/logger.js";
-import "./database/dbSchema.js";
-import "./database/dbConnect.js";
 import "./socket.io/socket.js";
-import { createRequiredTablesAndViews } from "./database/dbSchema.js";
+import "./models/User.js";
+import logger from "./utils/logger.js";
+import { connectMongodb } from "./connections/mongo-connection.js";
+import { connectMssql } from "./connections/mssql-connection.js";
+import { connectSocket, syncMssql } from "./connections/index.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -27,7 +28,7 @@ app.use(helmet());
 app.use(
   morgan(":status :method :url :response-time ms", {
     skip: (req, res) => {
-      logger.log(`${res.statusCode} ${req.method} ${req.url}`);
+      logger.info(`${res.statusCode} ${req.method} ${req.url}`);
     },
   })
 );
@@ -48,6 +49,9 @@ app.get("*", (req, res) => {
 });
 
 app.listen(port, () => {
-  logger.log(`Server Listening on port ${port}`);
-  createRequiredTablesAndViews();
+  logger.info(`Server Listening on port ${port}`);
+  connectMongodb();
+  connectMssql();
+  connectSocket();
+  syncMssql();
 });
