@@ -1,5 +1,5 @@
 import executeQuery from "./executeQuery.js";
-import logger from "../utils/logger/logger.js";
+import logger from "../utils/logger.js";
 
 export const ONLINE_USER_DETAILS = "onlineUserDetails";
 export const USER_BANK_DETAILS = "userBankDetails";
@@ -375,11 +375,11 @@ async function createView(view_name) {
     }
 
     if (curr_view.get("create") === null) {
-      logger.log(`create query doesn't exist for ${view_name}`);
+      logger.info(`create query doesn't exist for ${view_name}`);
       return false;
     }
     await executeQuery(curr_view.get("create"), false);
-    logger.log(`Created view ${view_name}`);
+    logger.info(`Created view ${view_name}`);
     return true;
   } catch (err) {
     logger.error(`Failed to create ${view_name}`);
@@ -425,10 +425,10 @@ export async function createRequiredTablesAndViews() {
         return { [table_or_view]: isCreated };
       })
     );
-    failed_to_create && logger.log(all_create_output);
-      logger.log("All schema created in - " + (Date.now() - start) + " ms");
+    failed_to_create && logger.info(all_create_output);
+    logger.info("All schema created in - " + (Date.now() - start) + " ms");
   } catch (err) {
     logger.error(err);
-    logger.log("All schema created in - " + (Date.now() - start) + " ms");
+    logger.info("All schema created in - " + (Date.now() - start) + " ms");
   }
 }

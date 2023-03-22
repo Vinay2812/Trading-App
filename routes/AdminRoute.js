@@ -15,7 +15,7 @@ import {
   updateSingleSaleRate,
   modifySingleTrade,
   startAllTrade,
-} from "../controller/AdminController.js";
+} from "../controller/Admin/AdminController.js";
 const router = Router();
 
 router.post("/login", adminLogin);

@@ -1,15 +1,25 @@
-import connection from "./dbConnect.js";
+import logger from "../utils/logger.js";
+import mssql from "../connections/mssql-connection.js";
+import { QueryTypes } from "sequelize";
+const type = {
+  select: QueryTypes.SELECT,
+  insert: QueryTypes.INSERT,
+  update: QueryTypes.UPDATE,
+  delete: QueryTypes.DELETE,
+};
 
-export default async function executeQuery(query, log = true) {
+export default async function executeQuery(query) {
   let start = Date.now();
-  const request = await connection;
-  const queryOutput = await request.query(query);
+  const query_type = query.split(" ")[0].toLowerCase();
+  let [results, metadata] = await mssql.query(query, {
+    type: type[query_type],
+  });
   let stop = Date.now();
-  const queryData = {
-    query: JSON.stringify(query).split(/\s/).filter(d => d!=="").join(" ").replaceAll("\\n", "").replaceAll('"', ""),
-    output: queryOutput,
-    exec_time: stop - start + " ms",
-  };
-  log && logger.sql(queryData);
-  return queryOutput.recordset;
+  logger.debug(
+    `Query executed in ${stop - start} ms with rows affected: ${metadata}`
+  );
+  if (!(results instanceof Array)) {
+    results = [results];
+  }
+  return results;
 }

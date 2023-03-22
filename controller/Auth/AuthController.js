@@ -1,14 +1,15 @@
-import executeQuery from "../database/executeQuery.js";
-import { getRandomOtp } from "../utils/random.js";
-import sendEMail from "../utils/email.js";
+import executeQuery from "../../database/executeQuery.js";
+import { getRandomOtp } from "../../utils/random.js";
+import sendEMail from "../../utils/email.js";
 import bcrypt from "bcrypt";
 import {
   ONLINE_USER_DETAILS,
   USER_BANK_DETAILS,
   USER_CONTACT_DETAILS,
   USER_OTP_DETAILS,
-} from "../database/dbSchema.js";
-import { OTP_VALID_INTERVAL } from "../utils/config.js";
+} from "../../database/dbSchema.js";
+import { OTP_VALID_INTERVAL } from "../../utils/config.js";
+import logger from "../../utils/logger.js";
 
 export async function register(req, res) {
   const { userData, bankData, contactData } = req.body;
@@ -144,12 +145,12 @@ export async function validateOTP(req, res) {
         `;
 
     const queryOutput = await executeQuery(VALIDATE_QUERY);
-    logger.log(queryOutput);
+    logger.info(queryOutput);
     if (!queryOutput || !queryOutput?.length) {
       return res.status(400).json("Invalid user id");
     }
     const isValidOtp = await bcrypt.compare(otp, (await queryOutput[0]).otp);
-    logger.log(isValidOtp);
+    logger.info(isValidOtp);
     if (!isValidOtp) {
       return res.status(403).json("Invalid otp");
     }
@@ -324,7 +325,7 @@ export async function invalidateOtp() {
     `;
     const deletedOtps = await executeQuery(DELETE_OTPS_QUERY, false);
     deletedOtps.length &&
-      logger.log(
+      logger.info(
         `Deleted ${deletedOtps
           .map((data) => "userId - " + data.userId)
           .join("-")} otps`

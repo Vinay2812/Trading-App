@@ -108,7 +108,10 @@ CREATE table userOTPDetails(
     create_time bigint,
     delete_time bigint,
 )
-
+-- Drop 'ColumnName' from table 'TableName' in schema 'SchemaName'
+ALTER TABLE onlineUserDetails
+    DROP COLUMN updatedAt
+GO
 SELECT * from userOTPDetails
 
 DELETE from userOTPDetails 

@@ -1,32 +1,25 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { SOCKET_PORT } from "../utils/config.js";
+import logger from "../utils/logger.js";
+import io from "../connections/socket-connection.js";
 
-const socket_port = SOCKET_PORT;
-const httpServer = createServer();
-const io = new Server(httpServer, {
-  cors: "*",
-});
-
+let count = 0;
 io.on("connect", (socket) => {
-  logger.log(`${socket.id} connected to socket`);
+  count++;
+  logger.info(`${count} users connected to socket`);
   socket.on("update_client_list", (msg) => {
-    logger.log(msg);
+    logger.info(msg);
     io.emit("refresh_client_list");
   });
   socket.on("user_authorized_by_admin", (msg, accoid, userId) => {
-    logger.log(msg);
+    logger.info(msg);
     io.emit("user_login", userId, accoid, (msg) => {
-      logger.log(msg);
+      logger.info(msg);
     });
   });
   socket.on("disconnect", () => {
-    console.clear()
-    logger.log("A user disconnected to socket");
+    console.clear();
+    logger.info(`A user disconnected to socket`);
   });
 });
-
-httpServer.listen(socket_port, () =>
-  logger.log("Socket listening on port 5500")
-);
-export default io;
