@@ -1,6 +1,3 @@
-import executeQuery from "./executeQuery.js";
-import logger from "../utils/logger.js";
-
 export const ONLINE_USER_DETAILS = "onlineUserDetails";
 export const USER_BANK_DETAILS = "userBankDetails";
 export const USER_CONTACT_DETAILS = "userContactDetails";
@@ -10,7 +7,6 @@ export const QRY_TENDER_DO_BALANCE_VIEW = "qrytenderdobalanceview";
 export const TR_DAILY_PUBLISH = "trDailypublish";
 export const QRY_TR_DAILY_BALANCE = "qrytrdailybalance";
 export const TRADING_APP_ERRORS = "trading_app_errors";
-export const TRADING_APP_CACHES = "trading_app_caches";
 /*** Queries Required ***/
 export const QRY_TENDER_DO_BALANCE_VIEW_RAW = "qrytenderdobalanceviewraw";
 export const QRY_TENDER_HEAD = "qrytenderhead";

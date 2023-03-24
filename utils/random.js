@@ -4,7 +4,6 @@ import logger from "./logger.js";
 
 export function getRandomId() {
   const uniqueId = crypto.randomBytes(parseInt(UNIQUE_ID_LENGTH)).toString("hex");
-  logger.info(uniqueId);
   return uniqueId;
 }
 
@@ -14,6 +13,5 @@ export function getRandomOtp() {
     otp.push(Math.floor(Math.random() * 10));
   }
   otp = otp.join("");
-  logger.info(otp);
   return otp;
 }
