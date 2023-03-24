@@ -211,7 +211,7 @@ export async function getTenderBalances(req, res) {
 
     let uniqueKeys = [];
     let uniqueList = [];
-    for (let ele of tenderBalances) {
+    for (let ele of tenderBalances || []) {
       if (!uniqueKeys.includes(ele.tenderid)) {
         uniqueKeys.push(ele.tenderid);
         uniqueList.push(ele);
@@ -264,7 +264,7 @@ export async function insertIntoTrDailyPublish(req, res) {
             SELECT tenderid from ${TR_DAILY_PUBLISH} WHERE tenderid = '${tenderid}'
         `;
     const tenderIdExist = await executeQuery(CHECK_TENDER_ID_EXIST);
-    if (tenderIdExist.length > 0) {
+    if (tenderIdExist?.length) {
       res.status(200).json("Tender Id already exist");
       return;
     }
@@ -304,7 +304,7 @@ export async function getQryTrDailyBalance(req, res) {
 
     let uniqueKeys = [];
     let uniqueList = [];
-    for (let ele of trDailyPublishList) {
+    for (let ele of trDailyPublishList || []) {
       if (!uniqueKeys.includes(ele.tenderid)) {
         uniqueKeys.push(ele.tenderid);
         uniqueList.push(ele);

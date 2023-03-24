@@ -9,15 +9,10 @@ const type = {
 };
 
 export default async function executeQuery(query) {
-  let start = Date.now();
   const query_type = query.split(" ")[0].toLowerCase();
-  let [results, metadata] = await mssql.query(query, {
+  let [results] = await mssql.query(query, {
     type: type[query_type],
   });
-  let stop = Date.now();
-  logger.debug(
-    `Query executed in ${stop - start} ms with rows affected: ${metadata}`
-  );
   if (!(results instanceof Array)) {
     results = [results];
   }

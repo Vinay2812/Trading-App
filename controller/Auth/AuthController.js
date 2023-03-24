@@ -22,7 +22,7 @@ export async function register(req, res) {
             WHERE company_name = '${userData.company_name}' AND mobile like '%${userData.mobile}'
         `;
     const checkUserExist = await executeQuery(CHECK_USER);
-    if (checkUserExist.length) {
+    if (checkUserExist?.length) {
       res.status(400).json("User already exist with this company and mobile");
       return;
     }
@@ -154,7 +154,7 @@ export async function validateOTP(req, res) {
     if (!queryOutput || !queryOutput?.length) {
       return res.status(400).json("Invalid user id");
     }
-    const isValidOtp = await bcrypt.compare(otp, (await queryOutput[0]).otp);
+    const isValidOtp = await bcrypt.compare(otp, queryOutput[0].otp);
     logger.info(isValidOtp);
     if (!isValidOtp) {
       return res.status(403).json("Invalid otp");
@@ -298,7 +298,7 @@ export async function getOTP(req, res) {
         `;
 
     const queryOutput = await executeQuery(GET_OTP_QUERY);
-    if (!queryOutput.length) {
+    if (!queryOutput?.length) {
       res.status(400).json("Invalid user id");
       return;
     }
@@ -317,14 +317,14 @@ export async function invalidateOtps() {
       WHERE delete_time  <= ${Date.now()}
     `;
     const deletedOtps = await executeQuery(DELETE_OTPS_QUERY, false);
-    deletedOtps.length &&
+    deletedOtps?.length &&
       logger.info(
         `Deleted ${deletedOtps
           .map((data) => "userId - " + data.userId)
           .join("-")} otp(s)`
       );
-    setInterval(() => {
-      invalidateOtps();
+    setTimeout(() => {
+      return invalidateOtps();
     }, OTP_REFRESH_INTERVAL);
   } catch (err) {
     logger.error(err);

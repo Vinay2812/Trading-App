@@ -9,7 +9,9 @@ import logger from "../utils/logger.js";
 
 const mssql = new Sequelize(DATABASE, DB_USER, DB_PASSWORD, {
   host: DB_SERVER,
-  logging: (msg) => logger.debug(msg),
+  plain: true,
+  benchmark: true,
+  logging: (msg, timing) => logger.warn(`Executed query - ${msg} in ${timing} ms`),
   dialect: "mssql",
   define: {
     timestamps: false,
@@ -19,7 +21,7 @@ const mssql = new Sequelize(DATABASE, DB_USER, DB_PASSWORD, {
 
 export function connectMssql() {
   mssql
-    .authenticate()
+    .authenticate({ logging: false})
     .then(() => {
       logger.info("Sequelize mssql Connected");
     })

@@ -7,7 +7,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // connections
-import { connectMssql, connectSocket } from "./connections/index.js";
+import {
+  connectMssql,
+  connectRedis,
+  connectSocket,
+} from "./connections/index.js";
 import syncMssql from "./models/sync.js";
 
 // routes
@@ -24,7 +28,6 @@ import logger from "./utils/logger.js";
 // others
 import "./socket.io/socket.js";
 import { invalidateOtps } from "./controller/Auth/AuthController.js";
-import { updateCacheDocument } from "./utils/cache.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -56,13 +59,13 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
 
-function startServer(){
+function startServer() {
   logger.info("Starting server.............");
   logger.info(`Server Listening on port ${port}`);
   connectMssql();
   connectSocket();
+  connectRedis();
   syncMssql();
-  updateCacheDocument();
   invalidateOtps();
 }
 app.listen(port, () => {

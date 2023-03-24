@@ -1,15 +1,9 @@
-import { Cache } from "../models/Cache.js";
-import { CACHE_REFRESH_INTERVAL } from "./config.js";
+import RedisClient from "../connections/redis-connection.js";
 import logger from "./logger.js";
 
 export async function setCache(key, value, time_in_seconds) {
-  const cache = {
-    key,
-    value: JSON.stringify(value),
-    expiry: Date.now() + time_in_seconds * 1000,
-  };
   try {
-    await Cache.create(cache);
+    await RedisClient.setEx(key, time_in_seconds, JSON.stringify(value));
   } catch (err) {
     logger.error(err);
   }
@@ -17,9 +11,8 @@ export async function setCache(key, value, time_in_seconds) {
 
 export async function getCache(key) {
   try {
-    let cache = await Cache.findOne({
-      where: { key },
-    });
+    let cache = await RedisClient.get(key);
+    if(!cache)return null;
     cache = JSON.parse(cache);
     return cache;
   } catch (err) {
@@ -30,29 +23,9 @@ export async function getCache(key) {
 
 export async function deleteCache(key) {
   try {
-    await Cache.destroy({
-      where: { key },
-    });
+    await RedisClient.del(key)
   } catch (err) {
     logger.error(err);
   }
 }
 
-export async function updateCacheDocument() {
-  const currTime = Date.now();
-  try {
-    const deletedCache = await Cache.destroy({
-      where: {
-        expiry:{
-          $lte: currTime
-        }
-      }
-    })
-    logger.debug(`Deleted ${deletedCache} cache(s) from cache table`);
-    setInterval(() => {
-      updateCacheDocument()
-    }, CACHE_REFRESH_INTERVAL)
-  } catch (err) {
-    logger.error(err);
-  }
-}

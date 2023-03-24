@@ -3,7 +3,6 @@ import { AccountMaster } from "./AccountMaster.js";
 import { AppErrors } from "./AppErrors.js";
 import { DailyPublish } from "./DailyPublish.js";
 import { UserBankDetails, UserOnlineDetails } from "./User.js";
-import { Cache } from "./Cache.js";
 
 export default async function syncMssql() {
   const options = {
@@ -34,10 +33,5 @@ export default async function syncMssql() {
     await DailyPublish.sync(options);
   } catch (err) {
     logger.error("failed to sync tr daily publish " + err);
-  }
-  try {
-    await Cache.sync(options);
-  } catch (err) {
-    logger.error("failed to sync trading app caches " + err);
   }
 }
