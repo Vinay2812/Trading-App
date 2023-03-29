@@ -70,7 +70,7 @@ export const UserOnlineDetails = mssql.define(ONLINE_USER_DETAILS, {
     allowNull: false,
   },
   authorized: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.STRING(1),
   },
   accoid: {
     type: DataTypes.INTEGER,

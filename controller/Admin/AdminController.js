@@ -14,89 +14,124 @@ import {
   addUserReq,
   mapClientReq,
   insertIntoTrDailyPublishReq,
-  stopSingleTradeReq,
+  updateSingleTradeReq,
 } from "./AdminValidator.js";
 import { validateReq, joiErrorRes } from "../../utils/joi.js";
 import logger from "../../utils/logger.js";
+import createError from "http-errors";
+import {
+  getDataFromAccountMaster,
+  getDataFromTenderBalanceView,
+  getOnlineUsersByQuery,
+  getUserBankDetailsByQuery,
+  getDataFromDailyPublish,
+  insertIntoAccountMaster,
+  updateAccountMasterByQuery,
+  updateOnlineUserByQuery,
+  insertIntoDailyPublish,
+  getDataFromDailyBalance,
+  updateDailyPublishByQuery,
+} from "./service.js";
+import { Op, Sequelize } from "sequelize";
 
-export async function adminLogin(req, res) {
-  const { error, value } = validateReq(adminLoginReq, req.body);
-  if (error) {
-    return joiErrorRes(res, error, "adminLogin");
-  }
-  const { username, password } = value;
+export async function adminLogin(req, res, next) {
   try {
+    const { error, value } = validateReq(adminLoginReq, req.body);
+    if (error) {
+      throw createError.UnprocessableEntity(error.details);
+    }
+    const { username, password } = value;
     if (username !== ADMIN_USERNAME) {
-      return res.status(400).json("Invalid admin username");
+      throw createError.BadRequest("Invalid username");
     }
     if (password !== ADMIN_PASSWORD) {
-      return res.status(400).json("Invalid password");
+      throw createError.BadRequest("Invalid password");
     }
-    res.status(200).json({ username, admin: 1 });
+    next({ username, admin: 1 });
   } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
+    if (!err.status) err.status = 500;
+    next(err);
   }
 }
 
-export async function getUsers(req, res) {
+export async function getUsers(req, res, next) {
   try {
-    const USERS_QUERY = `
-            SELECT userId, company_name, email, mobile, authorized, accoid 
-            from ${ONLINE_USER_DETAILS}
-        `;
-    const users = await executeQuery(USERS_QUERY);
-    res.status(200).json(users);
+    const users = await getOnlineUsersByQuery({
+      attributes: [
+        "userId",
+        "company_name",
+        "email",
+        "mobile",
+        "authorized",
+        "accoid",
+      ],
+    });
+    next(users);
   } catch (err) {
-    logger.error(err, true);
-    res.status(500).json(err);
+    if (!err.status) err.status = 500;
+    next(err);
   }
 }
 
-export async function updateAuthorization(req, res) {
-  const { authorized } = req.body;
-  const { userId } = req.params;
-  let { error } = validateReq(updateAuthorizationReq, { authorized, userId });
-  if (error) {
-    return joiErrorRes(res, error, "updateAuthorization");
-  }
+export async function updateAuthorization(req, res, next) {
   try {
-    const UPDATE_AUTHORIZATION_QUERY = `
-            UPDATE ${ONLINE_USER_DETAILS}
-            SET 
-                authorized = ${authorized}
-            WHERE
-                userId = ${userId}
-        `;
-    await executeQuery(UPDATE_AUTHORIZATION_QUERY);
-    res.status(200).json("Updated successfully");
+    const { authorized } = req.body;
+    const { userId } = req.params;
+    let { error } = validateReq(updateAuthorizationReq, { authorized, userId });
+    if (error) {
+      throw createError.UnprocessableEntity(error.details);
+    }
+    await updateOnlineUserByQuery(
+      { authorized },
+      { where: { userId }, returning: true }
+    );
+    next(`Authorization updated successfully for ${userId}`);
   } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
+    if (!err.status) err.status = 500;
+    next(err);
   }
 }
 
-export async function addUser(req, res) {
-  const { error, value } = validateReq(addUserReq, req.params);
-  if (error) {
-    logger.joiError(error, addUser);
-    return res.status(422).json(error.details);
-  }
-  const { userId } = value;
-
+export async function addUser(req, res, next) {
   try {
-    const MAX_AC_CODE_QUERY = `
-            SELECT max(Ac_code) as max_ac_code from ${NT_1_ACCOUNTMASTER} WHERE company_code = 1;
-        `;
-    const next_ac_code =
-      (await (await executeQuery(MAX_AC_CODE_QUERY))[0]).max_ac_code + 1;
+    const { error, value } = validateReq(addUserReq, req.params);
+    if (error) {
+      throw createError.UnprocessableEntity(error.details);
+    }
+    const { userId } = value;
 
-    const SELECT_USER_QUERY = `
-            SELECT company_name, address, pincode, gst, email, pan, mobile, fssai, state, whatsapp, tan
-            from ${ONLINE_USER_DETAILS}
-            WHERE userId = '${userId}'
-        `;
-    const userData = await (await executeQuery(SELECT_USER_QUERY))[0];
+    const max_ac_code_query = {
+      attributes: [
+        [Sequelize.fn("max", Sequelize.col("Ac_code")), "max_ac_code"],
+      ],
+      where: {
+        company_code: 1,
+      },
+    };
+    const { max_ac_code } = (
+      await getDataFromAccountMaster(max_ac_code_query)
+    )[0];
+    const next_ac_code = max_ac_code + 1;
+    const get_user_by_id_query = {
+      attributes: [
+        "company_name",
+        "address",
+        "pincode",
+        "gst",
+        "email",
+        "pan",
+        "mobile",
+        "fssai",
+        "state",
+        "whatsapp",
+        "tan",
+      ],
+      where: { userId },
+    };
+    const userData = (await getOnlineUsersByQuery(get_user_by_id_query))[0];
+    if (!userData) {
+      throw createError.BadRequest("User not found");
+    }
 
     const {
       company_name,
@@ -112,208 +147,257 @@ export async function addUser(req, res) {
       tan,
     } = userData;
 
-    const BANK_QUERY = `
-            SELECT TOP 1 bank_name, account_number, ifsc, account_name from ${USER_BANK_DETAILS}
-            WHERE userId = '${userId}'
-        `;
-    const bankData = await (await executeQuery(BANK_QUERY))[0];
-    const { bank_name, account_number, ifsc, account_name } = bankData;
+    const bankDataQuery = {
+      attributes: ["bank_name", "account_number", "ifsc", "account_name"],
+      where: { userId },
+    };
+    const bankData = await getUserBankDetailsByQuery(bankDataQuery);
+    if (!bankData.length) {
+      throw createError.BadRequest("Bank details not found for this user");
+    }
+    const { bank_name, account_number, ifsc, account_name } = bankData[0];
 
-    const INSERT_NT1_ACCOUNT_MASTER_QUERY = `
-            INSERT into ${NT_1_ACCOUNTMASTER}
-            (
-                Ac_Code, Ac_Name_E, Ac_Name_R, Ac_type, Address_E, 
-                Address_R, Pincode, Gst_No, Email_Id, Other_Narration, 
-                Bank_Name, Bank_Ac_No, bank_Op_Drcr, Drcr, Short_Name, 
-                carporate_party, CompanyPan, Mobile_No, Is_Login, IFSC, 
-                FSSAI, Branch1Drcr, Branch2Drcr, Locked, GSTStateCode, 
-                UnregisterGST, whatsup_no, Limit_By, Tan_no, TDSApplicable,
-                MsOms,
-                AC_rate, City_Code, Bank_Opening, Opening_Balance,
-                Group_Code, Commission, OffPhone, Branch1OB, Branch2OB, Distance,
-                Bal_Limit, bsid, cityid, company_code
-            )
-            OUTPUT
-                inserted.accoid
-            VALUES
-            (
-                '${next_ac_code}', '${company_name}', '${company_name}', 'P', '${address}', 
-                '${address}', '${pincode}', '${gst}', '${email}', 'Online', 
-                '${bank_name}', '${account_number}','D', 'D', '${account_name.substring(
-      0,
-      Math.min(15, account_name.length - 1)
-    )}',
-                'N', '${pan}', '${mobile}', 'Y', '${ifsc}', 
-                '${fssai}', 'D', 'D', '0', '${state.substring(0, 2)}',
-                '${gst == null ? 0 : 1}', '${whatsapp}', 'N', '${tan}', 'Y',
-                'M',
-                '0', '0', '0', '0',
-                '0', '0', '0', '0', '0', '0',
-                '0', '0', '0', '1'
-
-            )
-        `;
-    const output = await (
-      await executeQuery(INSERT_NT1_ACCOUNT_MASTER_QUERY)
-    )[0];
-    res.status(200).json(output);
-    const UPDATE_USER_DETAILS = `
-            UPDATE ${ONLINE_USER_DETAILS} SET accoid = '${output.accoid}' WHERE userId = '${userId}';
-        `;
-    await executeQuery(UPDATE_USER_DETAILS);
+    const insertData = {
+      ac_code: next_ac_code,
+      ac_name_e: company_name,
+      ac_name_r: company_name,
+      ac_type: "P",
+      address_e: address,
+      address_r: address,
+      pincode,
+      gst_no: gst,
+      email_id: email,
+      other_narration: "Online",
+      bank_name,
+      bank_ac_no: account_number,
+      bank_op_drcr: "D",
+      drcr: "D",
+      short_name: account_name.substring(
+        0,
+        Math.min(15, account_name.length - 1)
+      ),
+      corporate_party: "N",
+      company_pan: pan,
+      mobile_no: mobile,
+      is_login: "Y",
+      ifsc,
+      fssai,
+      branch1drcr: "D",
+      branch2drcr: "D",
+      locked: "0",
+      gststatecode: state.substring(0, 2),
+      unregistergst: gst == null ? 0 : 1,
+      whatsapp_no: whatsapp,
+      limit_by: "N",
+      tan_no: tan,
+      tdsapplicable: "Y",
+      msoms: "M",
+      ac_rate: "0",
+      city_code: "0",
+      bank_opening: "0",
+      opening_balance: "0",
+      group_code: "0",
+      commission: "0",
+      offphone: "0",
+      branch1ob: "0",
+      branch2ob: "0",
+      distance: "0",
+      bal_limit: "0",
+      bsid: "0",
+      cityid: "0",
+      company_code: "1",
+    };
+    const { accoid } = await insertIntoAccountMaster(insertData);
+    let setQuery = { accoid };
+    let updateQuery = { where: { userId }, returning: false };
+    await updateOnlineUserByQuery(setQuery, updateQuery);
+    next("User added successfully");
   } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
+    if (!err.status) err.status = 500;
+    next(err);
   }
 }
 
-export async function mapClient(req, res) {
-  const { error, value } = validateReq(mapClientReq, req.body);
-  if (error) {
-    logger.joiError(error, mapClient);
-    return res.status(422).json(error.details);
-  }
-  const { userId, accoid } = value;
+export async function mapClient(req, res, next) {
   try {
-    const UPDATE_ONLINE_USER = `
-            UPDATE ${ONLINE_USER_DETAILS}
-            SET accoid = ${accoid}
-            WHERE userId = '${userId}'
-        `;
-
-    const UPDATE_NT_1_ACCOUNTMASTER = `
-            UPDATE ${NT_1_ACCOUNTMASTER}
-            SET userId = '${userId}'
-            WHERE accoid = '${accoid}'
-        `;
-
+    const { error, value } = validateReq(mapClientReq, req.body);
+    if (error) {
+      throw createError.UnprocessableEntity(error.details);
+    }
+    const { userId, accoid } = value;
+    let onlineUser_setQuery = { accoid };
+    let onlineUser_query = {
+      where: { userId },
+    };
+    let account_master_setQuery = { userId };
+    let account_master_query = {
+      where: { accoid },
+    };
     await Promise.all([
-      executeQuery(UPDATE_ONLINE_USER),
-      executeQuery(UPDATE_NT_1_ACCOUNTMASTER),
+      updateOnlineUserByQuery(onlineUser_setQuery, onlineUser_query),
+      updateAccountMasterByQuery(account_master_setQuery, account_master_query),
     ]);
-    res.status(200).json("Mapping was successful");
-  } catch (error) {
-    logger.info(err);
-    res.status(500).json(err);
+    next("Mapping was successful");
+  } catch (err) {
+    if (!err.status) err.status = 500;
+    next(err);
   }
 }
 
-export async function getTenderBalances(req, res) {
+export async function getTenderBalances(req, res, next) {
   try {
-    const GET_TENDER_BALANCES = `
-            SELECT Tender_No, Tender_Date, millshortname, itemname,
-            paymenttoshortname, tenderdoshortname, season, Grade,
-            Quantal, Lifting_Date, Purc_Rate, Mill_Rate, mc, pt, itemcode, ic,
-            tenderid, td, Mill_Code, Tender_Do, Payment_To, BALANCE as balance
-            from ${QRY_TENDER_DO_BALANCE_VIEW} WHERE balance > 0 AND Buyer = 2
-        `;
-    const tenderBalances = await executeQuery(GET_TENDER_BALANCES);
-
+    const getTenderDetailsQuery = {
+      where: {
+        [Op.and]: [{ balance: { [Op.gt]: 0 } }, { buyer: 2 }],
+      },
+    };
+    const tenderBalances = await getDataFromTenderBalanceView(
+      getTenderDetailsQuery
+    );
     let uniqueKeys = [];
     let uniqueList = [];
     for (let ele of tenderBalances || []) {
-      if (!uniqueKeys.includes(ele.tenderid)) {
-        uniqueKeys.push(ele.tenderid);
+      if (!uniqueKeys.includes(ele.tender_id)) {
+        uniqueKeys.push(ele.tender_id);
         uniqueList.push(ele);
       }
     }
     uniqueList.sort((a, b) => {
-      return new Date(b.Tender_Date) - new Date(a.Tender_Date);
+      return new Date(b.tender_date) - new Date(a.tender_date);
     });
-    res.status(200).json(uniqueList);
+    next(uniqueList);
   } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
+    if (!err.status) err.status = 500;
+    next(err);
   }
 }
 
-export async function insertIntoTrDailyPublish(req, res) {
-  const { error, value } = validateReq(insertIntoTrDailyPublishReq, req.body);
-  if (error) {
-    logger.joiError(error, insertIntoTrDailyPublish);
-    return res.status(422).json(error.details);
-  }
-  const {
-    Tender_No,
-    Tender_Date,
-    season,
-    Grade,
-    Quantal,
-    Lifting_Date,
-    Purc_Rate,
-    Mill_Rate,
-    mc,
-    pt,
-    itemcode,
-    ic,
-    tenderid,
-    td,
-    unit,
-    sale_rate,
-    publish_quantal,
-    multiple_of,
-    auto_confirm,
-    Tender_Do,
-    type,
-    Mill_Code,
-    Payment_To,
-  } = value;
-
+export async function insertIntoTrDailyPublish(req, res, next) {
   try {
-    const CHECK_TENDER_ID_EXIST = `
-            SELECT tenderid from ${TR_DAILY_PUBLISH} WHERE tenderid = '${tenderid}'
-        `;
-    const tenderIdExist = await executeQuery(CHECK_TENDER_ID_EXIST);
+    const { error, value } = validateReq(insertIntoTrDailyPublishReq, req.body);
+    if (error) {
+      throw createError.UnprocessableEntity(error.details);
+    }
+    const {
+      tender_no,
+      tender_date,
+      season,
+      grade,
+      quantal,
+      lifting_date,
+      purchase_rate,
+      mill_rate,
+      mc,
+      pt,
+      item_code,
+      ic,
+      tender_id,
+      td,
+      unit,
+      sale_rate,
+      publish_quantal,
+      multiple_of,
+      auto_confirm,
+      tender_do,
+      type,
+      mill_code,
+      payment_to,
+    } = value;
+
+    const tenderExistQuery = {
+      attributes: ["tenderid"],
+      where: { tenderid: tender_id },
+    };
+    const tenderIdExist = await getDataFromDailyPublish(tenderExistQuery);
     if (tenderIdExist?.length) {
-      res.status(200).json("Tender Id already exist");
-      return;
+      throw createError.Conflict("Tender id already exist");
     }
     const publish_date = new Date().toISOString();
-    const INSERT_INTO_TR_DAILY_PUBLISH = `
-        INSERT into ${TR_DAILY_PUBLISH} 
-        (
-            tender_no, tenderid, tender_date, publish_date, 
-            lifting_date, mill_code, mc, item_code, it, payment_to, 
-            pt, doac, doid, season, grade, unit, qty, mill_rate, 
-            purc_rate, sale_rate, published_qty, selling_type, multipal_of
-            ,auto_confirm, status
-        )
-        VALUES
-        (
-            '${Tender_No}', '${tenderid}', '${Tender_Date}', '${publish_date}',
-            '${Lifting_Date}', '${Mill_Code}', '${mc}', '${itemcode}', '${ic}', '${Payment_To}',
-            '${pt}', '${Tender_Do}', '${td}', '${season}', '${Grade}', '${unit}', '${Quantal}', '${Mill_Rate}',
-            '${Purc_Rate}', '${sale_rate}', '${publish_quantal}', '${type}', '${multiple_of}',
-            '${auto_confirm}', 'Y'
-        )
-        `;
-    await executeQuery(INSERT_INTO_TR_DAILY_PUBLISH);
-    res.status(200).json("Inserted into trDailypublish");
+    const insertData = {
+      tender_no,
+      tenderid: tender_id,
+      tender_date,
+      publish_date,
+      lifting_date,
+      mill_code,
+      mc,
+      item_code,
+      it: ic,
+      payment_to,
+      pt,
+      doac: tender_do,
+      doid: td,
+      season,
+      grade: grade,
+      unit,
+      qty: quantal,
+      mill_rate,
+      purc_rate: purchase_rate,
+      sale_rate,
+      published_qty: publish_quantal,
+      selling_type: type,
+      multiple_of,
+      auto_confirm,
+      status: "Y",
+    };
+    await insertIntoDailyPublish(insertData);
+    next("Inserted into trDailypublish");
   } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
+    if (!err.status) err.status = 500;
+    next(err);
   }
 }
 
-export async function getQryTrDailyBalance(req, res) {
+export async function getQryTrDailyBalance(req, res, next) {
   try {
-    const GET_TR_DAILY_PUBLISH = `
-            SELECT * from ${QRY_TR_DAILY_BALANCE} where balance > 0
-        `;
-    const trDailyPublishList = await executeQuery(GET_TR_DAILY_PUBLISH);
-
+    const getDailyBalanceQuery = {
+      where: { balance: { [Op.gt]: 0 } },
+    };
+    const dailybalances = await getDataFromDailyBalance(getDailyBalanceQuery);
     let uniqueKeys = [];
     let uniqueList = [];
-    for (let ele of trDailyPublishList || []) {
-      if (!uniqueKeys.includes(ele.tenderid)) {
-        uniqueKeys.push(ele.tenderid);
+    for (let ele of dailybalances || []) {
+      if (!uniqueKeys.includes(ele.tender_id)) {
+        uniqueKeys.push(ele.tender_id);
         uniqueList.push(ele);
       }
     }
     uniqueList.sort((a, b) => {
       return new Date(a.publish_date) - new Date(b.publish_date);
     });
-    res.status(200).json(uniqueList);
+    next(uniqueList);
+  } catch (err) {
+    if (!err.status) err.status = 500;
+    next(err);
+  }
+}
+
+export async function updateSingleTrade(req, res, next) {
+  try {
+    const { error, value } = validateReq(updateSingleTradeReq, req.body);
+    if (error) {
+      throw createError.UnprocessableEntity(error.details);
+    }
+    const { tender_id, status } = value;
+    const setQuery = { status };
+    const query = { where: { tenderid: tender_id } };
+
+    await updateDailyPublishByQuery(setQuery, query)
+    next("Updated trade for tender id " + tender_id);
+  } catch (err) {
+    if (!err.status) err.status = 500;
+    next(err);
+  }
+}
+
+
+export async function stopAllTrade(req, res) {
+  try {
+    const STOP_ALL_TENDER = `
+            UPDATE ${TR_DAILY_PUBLISH} SET status = 'N'
+        `;
+    await executeQuery(STOP_ALL_TENDER);
+    res.status(200).json("Stopped all tender");
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);
@@ -321,7 +405,7 @@ export async function getQryTrDailyBalance(req, res) {
 }
 
 export async function stopSingleTrade(req, res) {
-  const { error, value } = validateReq(stopSingleTradeReq, req.body);
+  const { error, value } = validateReq(updateSingleTradeReq, req.body);
   if (error) {
     return joiErrorRes(res, error, "stopSingleTrade");
   }
@@ -332,19 +416,6 @@ export async function stopSingleTrade(req, res) {
         `;
     await executeQuery(STOP_SINGLE_TENDER);
     res.status(200).json("Stopped tender id" + tenderid);
-  } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
-  }
-}
-
-export async function stopAllTrade(req, res) {
-  try {
-    const STOP_ALL_TENDER = `
-            UPDATE ${TR_DAILY_PUBLISH} SET status = 'N'
-        `;
-    await executeQuery(STOP_ALL_TENDER);
-    res.status(200).json("Stopped all tender");
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);

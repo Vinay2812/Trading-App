@@ -20,31 +20,32 @@ export const mapClientReq = Joi.object({
 }).required()
 
 export const insertIntoTrDailyPublishReq = Joi.object({
-    Tender_No: Joi.required(),
-    Tender_Date: Joi.required(),
+    tender_no: Joi.required(),
+    tender_date: Joi.required(),
     season: Joi.required(),
-    Grade: Joi.required(),
-    Quantal: Joi.required(),
-    Lifting_Date: Joi.required(),
-    Purc_Rate: Joi.required(),
-    Mill_Rate: Joi.required(),
+    grade: Joi.required(),
+    quantal: Joi.required(),
+    lifting_date: Joi.required(),
+    purchase_rate: Joi.required(),
+    mill_rate: Joi.required(),
     mc: Joi.required(),
     pt: Joi.required(),
-    itemcode: Joi.required(),
+    item_code: Joi.required(),
     ic: Joi.required(),
-    tenderid: Joi.required(),
+    tender_id: Joi.required(),
     td: Joi.required(),
     unit: Joi.allow(...['Q', 'M', 'L']).required(),
     sale_rate: Joi.required(),
     publish_quantal: Joi.required(),
     multiple_of: Joi.required(),
     auto_confirm: Joi.allow(...['Y', 'N']).required(),
-    Tender_Do: Joi.required(),
+    tender_do: Joi.required(),
     type: Joi.allow(...['F', 'P']).required(),
-    Mill_Code: Joi.required(),
-    Payment_To: Joi.required()
+    mill_code: Joi.required(),
+    payment_to: Joi.required()
 }).required()
 
-export const stopSingleTradeReq = Joi.object({
-    tenderid: Joi.required()
+export const updateSingleTradeReq = Joi.object({
+    tender_id: Joi.required(),
+    status: Joi.string().required().allow("Y", "N")
 }).required()

@@ -15,6 +15,7 @@ import {
   updateSingleSaleRate,
   modifySingleTrade,
   startAllTrade,
+  updateSingleTrade,
 } from "../controller/Admin/AdminController.js";
 const router = Router();
 
@@ -32,6 +33,7 @@ router.post("/trDailyPublish", insertIntoTrDailyPublish);
 
 // published-list
 router.get("/qrytrdailybalance", getQryTrDailyBalance);
+router.patch("/trade/update-status", updateSingleTrade);
 router.patch("/trade/stop", stopSingleTrade);
 router.patch("/trade/stop/all", stopAllTrade);
 router.patch("/trade/start", startSingleTrade);

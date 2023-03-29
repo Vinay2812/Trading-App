@@ -9,7 +9,7 @@ export const DailyBalance = mssql.define(QRY_TR_DAILY_BALANCE, {
   },
   tender_id: {
     type: DataTypes.INTEGER,
-    field: "tender_id",
+    field: "tenderid",
   },
   tender_date: {
     type: DataTypes.DATEONLY,
@@ -73,7 +73,7 @@ export const DailyBalance = mssql.define(QRY_TR_DAILY_BALANCE, {
   },
   quantity: {
     type: DataTypes.ABSTRACT,
-    field: "quantity",
+    field: "qty",
   },
   mill_rate: {
     type: DataTypes.ABSTRACT,
@@ -105,7 +105,8 @@ export const DailyBalance = mssql.define(QRY_TR_DAILY_BALANCE, {
   },
   auto_id: {
     type: DataTypes.ABSTRACT,
-    field: "auto_id",
+    field: "autoid",
+    primaryKey: true,
   },
   mill_short_name: {
     type: DataTypes.ABSTRACT,

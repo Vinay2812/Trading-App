@@ -1,0 +1,82 @@
+### Admin Login Request
+POST http://localhost:5000/admin/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin@123"
+}
+
+### Get Online users
+GET http://localhost:5000/admin/users
+
+### Update Authorizations
+PATCH http://localhost:5000/admin/user/d799d6adfe605445127eae81b9e4be/authorization
+Content-Type: application/json
+
+{
+    "authorized": 0
+}
+
+### Add User
+GET http://localhost:5000/admin/user/d799d6adfe605445127eae81b9e4be/add
+
+### Map Client
+PUT http://localhost:5000/admin/map
+Content-Type: application/json
+
+{
+    "userId": "d799d6adfe605445127eae81b9e4be",
+    "accoid": 1
+}
+
+### Get Tenderbalances Details
+GET http://localhost:5000/admin/tenderbalances
+
+### Inser into Daily Publish
+POST http://localhost:5000/admin/trDailyPublish
+Content-Type: application/json
+
+{
+    "tender_no": 2624,
+    "tender_date": "2022-09-13",
+    "mill_short_name": "AINDRESHWAR",
+    "item_name": "SUGAR 50 KG",
+    "payment_to_name": "AINDRESHWAR",
+    "tender_do_name": "SELF",
+    "season": "20-21",
+    "grade": "ORD S/30 (S2)",
+    "quantal": 18000,
+    "lifting_date": "2022-09-16",
+    "purchase_rate": 0,
+    "mill_rate": 3330,
+    "mc": 2462,
+    "pt": 2462,
+    "item_code": 1,
+    "tender_id": 2670,
+    "td": 2,
+    "mill_code": 80958,
+    "tender_do": 2,
+    "payment_to": 80958,
+    "balance": 18000,
+    "buyer": 2,
+    "unit": "Q",
+    "sale_rate": 100,
+    "publish_quantal": 150,
+    "multiple_of": 160,
+    "auto_confirm": "Y",
+    "type": "F",
+    "ic": 1
+}
+
+### Get Daily Publish
+GET http://localhost:5000/admin/qrytrdailybalance
+
+### Update
+PATCH http://localhost:5000/admin/trade/update-status
+Content-Type: application/json
+
+{
+    "tender_id": 2593,
+    "status": "N"
+}

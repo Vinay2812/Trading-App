@@ -129,3 +129,6 @@ WHERE (delete_time) >= 1678997265398
 INSERT into trading_app_errors (error, error_time)
       OUTPUT inserted.*
       VALUES ('{ query : \n SELECT Ac_Name_E, accoid from nt_1_accountmaster \n WHERE company_code = 1 AND userId is null\n ORDER BY Ac_Name_E\n , time : 148ms }', '1678727056275')
+
+
+SELECT * from qrytrdailybalance where balance > 0

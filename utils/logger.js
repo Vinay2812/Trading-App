@@ -22,8 +22,8 @@ function logData(info, next) {
   console.log(
     `${symbol} { level: ${
       levelMap[info.level]
-    }, time: ${new Date().toLocaleTimeString()} }\u001b[0m`,
-    info.message
+    } }\u001b[0m`,
+    {message: info.message}
   );
   next();
 }

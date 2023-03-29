@@ -1,11 +1,14 @@
 import { Router } from "express";
-import logger from "../utils/logger.js";
+import createError from "http-errors";
 const router = Router();
-router.all("*", (req, res) => {
-  const response = {
-    message: `Invalid route ${req.url}`,
-  };
-  logger.info(response);
-  res.status(404).json(response);
+router.all("*", (req, res, next) => {
+  try {
+    const message = `Invalid route '${
+      req.originalUrl
+    }' with '${req.method.toUpperCase()}' method`;
+    throw createError.NotFound(message);
+  } catch (err) {
+    next(err);
+  }
 });
 export default router;
