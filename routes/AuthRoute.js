@@ -11,13 +11,18 @@ import {
 } from "../controller/Auth/AuthController.js";
 const router = Router();
 
+// authentication
 router.post("/register", register);
 router.post("/login", login);
-router.post("/verify/", validateOTP);
 router.patch("/update/password", updatePassword);
-router.get("/company/:mobile", getCompany);
-router.post("/send", sendOTP);
+
+// user
 router.post("/user", getUser);
+router.get("/company/:mobile", getCompany);
+
+// otp
+router.post("/send", sendOTP);
 router.get("/user/:userId", getOTP);
+router.post("/verify/", validateOTP);
 
 export default router;

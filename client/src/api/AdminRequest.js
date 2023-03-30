@@ -1,159 +1,165 @@
 import logger from "../utils/logger";
 import { API } from "./AxiosInstance";
+import {
+  handleResponseError,
+  handleResponseSuccess,
+} from "./handleServerResponse";
 
 export const adminLogin = async (loginData) => {
   try {
     const res = await API.post("/admin/login", loginData);
-    logger.log("/admin/login");
-    alert("Login successful")
-    return res;
+    return handleResponseSuccess(res, "Login successful");
   } catch (err) {
-    alert("Login failed")
-    logger.error("/admin/login " + err);
+    return handleResponseError(err);
   }
 };
 
-export const getUsers = async () => {
+export const getRegistrationListUsers = async () => {
   try {
-    const res = await API.get("/admin/users");
-    logger.log("/admin/users");
-    return res;
+    const res = await API.get("/admin/registration-list/users");
+    return handleResponseSuccess(res);
   } catch (err) {
-    logger.error("/admin/users " + err);
+    return handleResponseError(err);
   }
 };
 export const updateAuthorization = async (userId, data) => {
   try {
-    const res = await API.patch(`/admin/user/${userId}/authorization`, data);
-    logger.log(`/admin/user/${userId}/authorization`);
-    alert("Authorization updated successfully")
-    return res;
+    const res = await API.patch(
+      `/admin/registration-list/user/${userId}/authorization`,
+      data
+    );
+    return handleResponseSuccess(res, "Authorization updated successfully");
   } catch (err) {
-    logger.error(`/admin/user/${userId}/authorization ` + err);
-    alert("Failed to update authorization")
+    return handleResponseError(err);
   }
 };
 export const addUser = async (userId) => {
   try {
-    const res = await API.get(`/admin/user/${userId}/add`);
-    logger.log(`/admin/user/${userId}/add`);
-    alert("User added successfully")
-    return res;
+    const res = await API.post(`/admin/registration-list/${userId}/add`);
+    return handleResponseSuccess(res, "User added successfully");
   } catch (err) {
-    logger.error(`/admin/user/${userId}/add ` + err);
-    alert("Failed to add user")
+    return handleResponseError(err);
   }
 };
 export const mapClient = async (mapData) => {
   try {
-    const res = await API.put("/admin/map", mapData);
-    logger.log("/admin/map");
-    alert("Client mapped successfully")
-    return res;
+    const res = await API.put("/admin/registration-list/map", mapData);
+    return handleResponseSuccess(res, "Client mapped successfully");
   } catch (err) {
     logger.error("/admin/map " + err);
-    alert("Failed to map client")
+    alert("Failed to map client");
   }
 };
 export async function getTenderBalances(signal) {
   try {
-    const res = await API.get("/admin/tenderbalances", signal);
-    logger.log("/admin/tenderbalances");
-    return res;
+    const res = await API.get("/admin/publish-list/tenderbalances", signal);
+    return handleResponseSuccess(res);
   } catch (err) {
     logger.error("/admin/tenderbalances " + err);
   }
 }
-export const insertIntoTrDailyPublish = async (data) => {
+export const postDailyPublish = async (data) => {
   try {
-    const res = await API.post("/admin/trDailyPublish", data);
-    logger.log("/admin/trDailyPublish");
-    alert("Inserted into tr_daily_publish successfully")
-    return res;
+    const res = await API.post("/admin/publish-list/dailypublish", data);
+    return handleResponseSuccess(res, "Trade published successfully");
   } catch (err) {
-    logger.error("/admin/trDailyPublish " + err);
-    alert("Failed to insert into tr_daily_publish")
+    return handleResponseError(err);
   }
 };
-export const getQryTrDailyBalance = async (signal) => {
+export const getDailyBalance = async (signal) => {
   try {
-    const res = await API.get("/admin/qrytrdailybalance", signal);
-    logger.log("/admin/qrytrdailybalance");
-    return res;
+    const res = await API.get("/admin/published-list/dailybalance", signal);
+    return handleResponseSuccess(res);
   } catch (err) {
-    logger.error("/admin/qrytrdailybalance " + err);
+    return handleResponseError(err);
   }
 };
+
+export const updateSingleTrade = async (data) => {
+  try {
+    const res = await API.patch("/admin/published-list/trade/status", data);
+    return handleResponseSuccess(res, "Trade updated successfully");
+  } catch (err) {
+    return handleResponseError(err);
+  }
+};
+
+export const updateAllTrade = async (data) => {
+  try {
+    const res = await API.patch("/admin/published-list/trade/status/all", data);
+    return handleResponseSuccess(res, "All trades updated successfully");
+  } catch (err) {
+    return handleResponseError(err);
+  }
+};
+
 export const stopSingleTrade = async (data) => {
   try {
     const res = await API.patch("/admin/trade/stop", data);
-    logger.log("/admin/trade/stop");
-    alert("Trade stopped successfully")
-    return res;
+    if (res.data.status === "success") {
+      alert("Trade stopped successfully");
+      return res.data.data;
+    }
+    return null;
   } catch (err) {
-    alert("Failed to stop trade")
-    logger.error("/admin/trade/stop " + err);
+    return handleResponseError(err);
   }
 };
 export const stopAllTrade = async () => {
   try {
     const res = await API.patch("/admin/trade/stop/all");
     logger.log("/admin/trade/stop/all");
-    alert("All trades stopped successfully")
+    alert("All trades stopped successfully");
     return res;
   } catch (err) {
     logger.error("/admin/trade/stop/all " + err);
-    alert("Failed to stop all trades")
+    alert("Failed to stop all trades");
   }
 };
 export const startSingleTrade = async (data) => {
   try {
     const res = await API.patch("/admin/trade/start", data);
     logger.log("/admin/trade/start");
-    alert("Trade started successfully")
+    alert("Trade started successfully");
     return res;
   } catch (err) {
     logger.error("/admin/trade/start " + err);
-    alert("Failed to start trade")
+    alert("Failed to start trade");
   }
 };
 export const startAllTrade = async () => {
   try {
     const res = await API.patch("/admin/trade/start/all");
     logger.log("/admin/trade/start/all");
-    alert("All trades started successfully")
+    alert("All trades started successfully");
     return res;
   } catch (err) {
     logger.error("/admin/trade/start/all " + err);
-    alert("Failed to start all trades")
+    alert("Failed to start all trades");
   }
 };
+
 export const updateSingleSaleRate = async (data) => {
   try {
-    const res = await API.patch("/admin/sale_rate", data);
-    logger.log("/admin/sale_rate");
-    alert("Sale rate updated successfully")
-    return res;
+    const res = await API.patch("/admin/published-list/trade/sale_rate", data);
+    return handleResponseSuccess(res, "Sale rate updated successfully");
   } catch (err) {
-    alert("Failed to update sale rate")
-    logger.error("/admin/sale_rate " + err);
+    return handleResponseError(err);
   }
 };
 export const updateAllSaleRate = async (data) => {
   try {
-    const res = await API.patch("/admin/sale_rate/all", data);
-    logger.log("/admin/sale_rate/all");
-    return res;
+    const res = await API.patch("/admin/published-list/sale_rate/all", data);
+    return handleResponseSuccess(res, "All sale rates updated successfully");
   } catch (err) {
-    logger.error("/admin/sale_rate/all " + err);
+    return handleResponseError(err);
   }
 };
 export const modifySingleTrade = async (data) => {
   try {
-    const res = await API.patch("/admin/trade/update", data);
-    logger.log("/admin/trade/update");
-    return res;
+    const res = await API.patch("/admin/published-list/trade/update", data);
+    return handleResponseSuccess(res, "Modified trade successfully");
   } catch (err) {
-    logger.error("/admin/trade/update " + err);
+    return handleResponseError(err);
   }
 };

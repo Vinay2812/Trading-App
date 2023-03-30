@@ -4,7 +4,7 @@ import { TR_DAILY_PUBLISH } from "../database/dbSchema.js";
 
 export const DailyPublish = mssql.define(TR_DAILY_PUBLISH, {
   tender_no: DataTypes.INTEGER,
-  tender_id: {type: DataTypes.INTEGER, field: "tenderid"},
+  tender_id: { type: DataTypes.INTEGER, field: "tenderid" },
   tender_date: DataTypes.DATEONLY,
   publish_date: DataTypes.DATEONLY,
   lifting_date: DataTypes.DATEONLY,

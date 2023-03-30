@@ -1,53 +1,49 @@
 import { useEffect, useState } from "react";
-import "./PublishList.css"
-import Loader from "../Loader/Loader"
+import "./PublishList.css";
+import Loader from "../Loader/Loader";
 import { getTenderBalances } from "../../api/AdminRequest";
 import PublishListItem from "./components/PublishListItem";
 import logger from "../../utils/logger";
 
-function PublishList({isPublishList=true, refresh, setRefresh}) {
+function PublishList({ isPublishList = true, refresh, setRefresh }) {
+  // useStates
+  const [loading, setLoading] = useState(false);
+  const [publishList, setPublishList] = useState([]);
 
-    // useStates
-    const [loading, setLoading] = useState(false);
-    const [publishList, setPublishList] = useState([])
+  // useEffects
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = { signal: controller.signal };
 
-    // useEffects
-    useEffect(()=>{
-      const controller = new AbortController();
-      const signal = { signal: controller.signal } 
-
-      if(refresh || (isPublishList !== null)){
-        fetchPublishList(signal)
-        setRefresh(false);
-      }
-
-      return ()=>{
-        setRefresh(false)
-        setLoading(false);
-        controller.abort();
-      }
-    }, [refresh, isPublishList, window.onload])
-
-    // functions
-    async function fetchPublishList(signal = null){
-      setLoading(true)
-      try {
-        const tenderBalances = await getTenderBalances(signal);
-        if(tenderBalances?.status == 200){
-          setPublishList(tenderBalances.data);
-          setLoading(false)
-        }
-      } catch (err) {
-        setLoading(false);
-        logger.error(err);
-      }
+    if (refresh || isPublishList !== null) {
+      fetchPublishList(signal);
+      setRefresh(false);
     }
+
+    return () => {
+      setRefresh(false);
+      setLoading(false);
+      controller.abort();
+    };
+  }, [refresh, isPublishList, window.onload]);
+
+  // functions
+  async function fetchPublishList(signal = null) {
+    setLoading(true);
+    const tenderBalances = await getTenderBalances(signal);
+    if (tenderBalances?.success) {
+      setPublishList(tenderBalances.data);
+    }
+    setLoading(false);
+  }
 
   return (
     <div className="publish-list-container">
-      {loading ? <Loader /> :
+      {loading ? (
+        <Loader />
+      ) : (
         <>
-        <div className="publish-list-row head">
+          <div className="publish-list-row head">
             <div className="publish-list-cell">T.no</div>
             <div className="publish-list-cell">Tender Date</div>
             <div className="publish-list-cell">Mill name</div>
@@ -64,17 +60,16 @@ function PublishList({isPublishList=true, refresh, setRefresh}) {
             <div className="publish-list-cell">Sale Rate</div>
             <div className="publish-list-cell">Publish Quantal</div>
             <div className="publish-list-cell">Action</div>
-        </div>
-        {
-          publishList.map((publishListItem, index)=>{
-            return <PublishListItem key={index} publishListItem={publishListItem}/>
-          })
-        }
-        
+          </div>
+          {publishList.map((publishListItem, index) => {
+            return (
+              <PublishListItem key={index} publishListItem={publishListItem} />
+            );
+          })}
         </>
-      }
+      )}
     </div>
-  )
+  );
 }
 
-export default PublishList
+export default PublishList;

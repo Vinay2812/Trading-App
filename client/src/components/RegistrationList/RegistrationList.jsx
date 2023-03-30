@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./RegistrationList.css";
-import { getUsers} from "../../api/AdminRequest";
+import { getRegistrationListUsers } from "../../api/AdminRequest";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import ListItem from "./component/ListItem";
 import logger from "../../utils/logger";
@@ -10,10 +10,10 @@ function RegistrationList() {
 
   async function fetchUsers() {
     try {
-      const { data } = await getUsers();
+      const { data } = await getRegistrationListUsers();
       setUsers(data);
     } catch (err) {
-      logger.error(err)
+      logger.error(err);
     }
   }
 
@@ -31,15 +31,13 @@ function RegistrationList() {
         <div className="list-row-item">Mobile</div>
         <div className="list-row-item">Action</div>
       </div>
-      {users.filter((userData) => userData.accoid == null).map((userData, index) => {
-        return (
-          <ListItem
-            data={userData}
-            fetchUsers = {fetchUsers}
-            key={index}
-          />
-        );
-      })}
+      {users
+        .filter((userData) => userData.accoid == null)
+        .map((userData, index) => {
+          return (
+            <ListItem data={userData} fetchUsers={fetchUsers} key={index} />
+          );
+        })}
     </div>
   );
 }

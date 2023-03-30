@@ -21,34 +21,32 @@ function PublishListItem({ publishListItem }) {
 
   function handlePublishBtnClicked() {
     if (!listItemData.sale_rate || listItemData.sale_rate?.length === 0) {
-      alert("Please enter sale rate for Tender no. " + listItemData.Tender_No);
+      alert("Please enter sale rate for Tender no. " + listItemData.tender_no);
       return;
     }
-
     if (
       !listItemData.publish_quantal ||
       listItemData.publish_quantal?.length === 0
     ) {
       alert(
-        "Please enter publish quantal for Tender no. " + listItemData.Tender_No
+        "Please enter publish quantal for Tender no. " + listItemData.tender_no
       );
       return;
     }
-
     setShowDialog((prev) => !prev);
   }
   return (
     <div className="publish-list-row">
-      <div className="publish-list-cell">{listItemData.Tender_No}</div>
+      <div className="publish-list-cell">{listItemData.tender_no}</div>
       <div className="publish-list-cell">
-        {convertDate(listItemData.Tender_Date)}
+        {convertDate(listItemData.tender_date)}
       </div>
-      <div className="publish-list-cell">{listItemData.millshortname}</div>
-      <div className="publish-list-cell">{listItemData.itemname}</div>
-      <div className="publish-list-cell">{listItemData.paymenttoshortname}</div>
-      <div className="publish-list-cell">{listItemData.tenderdoshortname}</div>
+      <div className="publish-list-cell">{listItemData.mill_short_name}</div>
+      <div className="publish-list-cell">{listItemData.item_name}</div>
+      <div className="publish-list-cell">{listItemData.payment_to_name}</div>
+      <div className="publish-list-cell">{listItemData.tender_do_name}</div>
       <div className="publish-list-cell">{listItemData.season}</div>
-      <div className="publish-list-cell">{listItemData.Grade}</div>
+      <div className="publish-list-cell">{listItemData.grade}</div>
       <div className="publish-list-cell">
         <select
           name="unit"
@@ -62,10 +60,10 @@ function PublishListItem({ publishListItem }) {
       </div>
       <div className="publish-list-cell">{listItemData.balance}</div>
       <div className="publish-list-cell">
-        {convertDate(listItemData.Lifting_Date)}
+        {convertDate(listItemData.lifting_date)}
       </div>
-      <div className="publish-list-cell">{listItemData.Purc_Rate}</div>
-      <div className="publish-list-cell">{listItemData.Mill_Rate}</div>
+      <div className="publish-list-cell">{listItemData.purchase_rate}</div>
+      <div className="publish-list-cell">{listItemData.mill_rate}</div>
       <div className="publish-list-cell">
         <input
           type="number"

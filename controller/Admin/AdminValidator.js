@@ -19,7 +19,7 @@ export const mapClientReq = Joi.object({
   accoid: Joi.required(),
 }).required();
 
-export const insertIntoTrDailyPublishReq = Joi.object({
+export const postDailyPublishReq = Joi.object({
   tender_no: Joi.required(),
   tender_date: Joi.required(),
   season: Joi.required(),

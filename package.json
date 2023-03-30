@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "start": "node index.js",
-        "dev": "nodemon --inspect index.js",
+        "dev": "nodemon --inspect --ignore ./client/ index.js",
         "client": "cd client && npm run dev",
         "mssql": "sudo docker start sql1 && sudo docker exec -it sql1 \"bash\""
     },

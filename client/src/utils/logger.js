@@ -25,19 +25,12 @@ function log({ message, colorCode = 0, error = false, symbol = "ok" }) {
 }
 
 function logData(...message) {
-  message.map((msg) => log({ msg }));
+  message.forEach((msg) => log({ msg }));
 }
 
 function logError(...message) {
-  message.map((msg) => {
-    let errMsg = msg.response
-      ? `${msg.response?.data} with status - ${
-          msg.response?.status
-        } method - ${msg.response?.config?.method?.toUpperCase()} url - ${
-          msg.response?.config?.url
-        }`
-      : msg;
-    log({ message: errMsg, colorCode: 31, error: true, symbol: "err" });
+  message.forEach((msg) => {
+    log({ message: msg, colorCode: 31, error: true, symbol: "err" });
   });
 }
 

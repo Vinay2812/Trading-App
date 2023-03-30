@@ -3,18 +3,14 @@ import {
   addUser,
   adminLogin,
   getTenderBalances,
-  getQryTrDailyBalance,
-  getUsers,
-  insertIntoTrDailyPublish,
+  getDailyBalance,
+  getRegistrationListUsers,
+  postDailyPublish,
   mapClient,
   updateAuthorization,
-  stopSingleTrade,
-  stopAllTrade,
-  startSingleTrade,
   updateAllSaleRate,
   updateSingleSaleRate,
   modifySingleTrade,
-  startAllTrade,
   updateSingleTrade,
   updateAllTrade,
 } from "../controller/Admin/AdminController.js";
@@ -23,25 +19,21 @@ const router = Router();
 router.post("/login", adminLogin);
 
 // registration list
-router.get("/users", getUsers);
-router.patch("/user/:userId/authorization", updateAuthorization);
-router.get("/user/:userId/add", addUser);
-router.put("/map", mapClient);
+router.get("/registration-list/users", getRegistrationListUsers);
+router.patch("/registration-list/:userId/authorization", updateAuthorization);
+router.post("/registration-list/user/:userId/add", addUser);
+router.put("/registration-list/map", mapClient);
 
 //publish list
-router.get("/tenderbalances", getTenderBalances);
-router.post("/trDailyPublish", insertIntoTrDailyPublish);
+router.get("/publish-list/tenderbalances", getTenderBalances);
+router.post("/publish-list/dailypublish", postDailyPublish);
 
 // published-list
-router.get("/qrytrdailybalance", getQryTrDailyBalance);
-router.patch("/trade/status", updateSingleTrade);
-router.patch("/trade/status/all", updateAllTrade);
-router.patch("/trade/stop", stopSingleTrade);
-router.patch("/trade/stop/all", stopAllTrade);
-router.patch("/trade/start", startSingleTrade);
-router.patch("/trade/start/all", startAllTrade);
-router.patch("/trade/sale_rate", updateSingleSaleRate);
-router.patch("/trade/sale_rate/all", updateAllSaleRate);
-router.patch("/trade/update", modifySingleTrade);
+router.get("/published-list/dailybalance", getDailyBalance);
+router.patch("/published-list/trade/status", updateSingleTrade);
+router.patch("/published-list/trade/status/all", updateAllTrade);
+router.patch("/published-list/trade/sale_rate", updateSingleSaleRate);
+router.patch("/published-list/trade/sale_rate/all", updateAllSaleRate);
+router.patch("/published-list/trade/update", modifySingleTrade);
 
 export default router;

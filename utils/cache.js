@@ -1,4 +1,4 @@
-import RedisClient from "../connections/redis-connection.js";
+import RedisClient from "../../connections/redis-connection.js";
 import logger from "./logger.js";
 
 export async function setCache(key, value, time_in_seconds) {
@@ -12,7 +12,7 @@ export async function setCache(key, value, time_in_seconds) {
 export async function getCache(key) {
   try {
     let cache = await RedisClient.get(key);
-    if(!cache)return null;
+    if (!cache) return null;
     cache = JSON.parse(cache);
     return cache;
   } catch (err) {
@@ -23,9 +23,8 @@ export async function getCache(key) {
 
 export async function deleteCache(key) {
   try {
-    await RedisClient.del(key)
+    await RedisClient.del(key);
   } catch (err) {
     logger.error(err);
   }
 }
-

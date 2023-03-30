@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { insertIntoTrDailyPublish } from "../../../api/AdminRequest";
+import { postDailyPublish } from "../../../api/AdminRequest";
 import Loader from "../../Loader/Loader";
 import convertDate from "../../../utils/convertDate";
 import convertUnit from "../../../utils/convertUnit";
@@ -28,17 +28,16 @@ function PublishDialog({ publishItem, setShowDialog }) {
 
   async function handleDialogPublish() {
     setLoading(true);
-    try {
-      const res = await insertIntoTrDailyPublish(dialogData);
-      if (res.status === 200) {
-        socket.connected && socket.emit("update_client_list", "Req received - client list updation")
-        setLoading(false);
-        setShowDialog(false);
-      }
-    } catch (err) {
-      setLoading(false);
-      logger.error(err)
+    const res = await postDailyPublish(dialogData);
+    if (res?.success) {
+      socket.connected &&
+        socket.emit(
+          "update_client_list",
+          "Req received - client list updation"
+        );
+      setShowDialog(false);
     }
+    setLoading(false);
   }
 
   return (
@@ -52,17 +51,17 @@ function PublishDialog({ publishItem, setShowDialog }) {
             <div className="dialog-row">
               <div className="dialog-cell">
                 <label htmlFor="">Mill name: </label>
-                <span>{dialogData.millshortname}</span>
+                <span>{dialogData.mill_short_name}</span>
               </div>
               <div className="dialog-cell">
                 <label htmlFor="">Product: </label>
-                <span>{dialogData.itemname}</span>
+                <span>{dialogData.item_name}</span>
               </div>
             </div>
             <div className="dialog-row">
               <div className="dialog-cell">
                 <label htmlFor="">Grade: </label>
-                <span>{dialogData.Grade}</span>
+                <span>{dialogData.grade}</span>
               </div>
               <div className="dialog-cell">
                 <label htmlFor="">Season: </label>
@@ -76,7 +75,7 @@ function PublishDialog({ publishItem, setShowDialog }) {
               </div>
               <div className="dialog-cell">
                 <label htmlFor="">Lifting Date: </label>
-                <span>{convertDate(dialogData.Lifting_Date)}</span>
+                <span>{convertDate(dialogData.lifting_date)}</span>
               </div>
             </div>
             <div className="dialog-row">

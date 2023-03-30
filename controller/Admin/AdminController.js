@@ -1,26 +1,18 @@
-import executeQuery from "../../database/executeQuery.js";
 import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../../utils/config.js";
-import {
-  NT_1_ACCOUNTMASTER,
-  ONLINE_USER_DETAILS,
-  QRY_TENDER_DO_BALANCE_VIEW,
-  QRY_TR_DAILY_BALANCE,
-  TR_DAILY_PUBLISH,
-  USER_BANK_DETAILS,
-} from "../../database/dbSchema.js";
+
 import {
   adminLoginReq,
   updateAuthorizationReq,
   addUserReq,
   mapClientReq,
-  insertIntoTrDailyPublishReq,
+  postDailyPublishReq,
   updateSingleTradeReq,
   updateAllTradeReq,
   updateSingleSaleRateReq,
   updateAllSaleRateReq,
   modifySingleTradeReq,
 } from "./AdminValidator.js";
-import { validateReq, joiErrorRes } from "../../utils/joi.js";
+import { validateReq } from "../../utils/joi.js";
 import logger from "../../utils/logger.js";
 import createError from "http-errors";
 import {
@@ -51,14 +43,14 @@ export async function adminLogin(req, res, next) {
     if (password !== ADMIN_PASSWORD) {
       throw createError.BadRequest("Invalid password");
     }
-    next({ username, admin: 1 });
+    next({ username, admin: 1, message: "Login successful" });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
   }
 }
 
-export async function getUsers(req, res, next) {
+export async function getRegistrationListUsers(req, res, next) {
   try {
     const users = await getOnlineUsersByQuery({
       attributes: [
@@ -70,7 +62,10 @@ export async function getUsers(req, res, next) {
         "accoid",
       ],
     });
-    next(users);
+    next({
+      message: "Successfully fetched registration list users",
+      data: users,
+    });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -89,7 +84,7 @@ export async function updateAuthorization(req, res, next) {
       { authorized },
       { where: { userId }, returning: true }
     );
-    next(`Authorization updated successfully for ${userId}`);
+    next({ message: `Authorization updated successfully for ${userId}` });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -215,7 +210,7 @@ export async function addUser(req, res, next) {
     let setQuery = { accoid };
     let updateQuery = { where: { userId }, returning: false };
     await updateOnlineUserByQuery(setQuery, updateQuery);
-    next("User added successfully");
+    next({ message: "User added successfully" });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -241,7 +236,7 @@ export async function mapClient(req, res, next) {
       updateOnlineUserByQuery(onlineUser_setQuery, onlineUser_query),
       updateAccountMasterByQuery(account_master_setQuery, account_master_query),
     ]);
-    next("Mapping was successful");
+    next({ message: "Mapping was successful" });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -269,16 +264,16 @@ export async function getTenderBalances(req, res, next) {
     uniqueList.sort((a, b) => {
       return new Date(b.tender_date) - new Date(a.tender_date);
     });
-    next(uniqueList);
+    next({ message: "Successfully fetched tender balances", data: uniqueList });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
   }
 }
 
-export async function insertIntoTrDailyPublish(req, res, next) {
+export async function postDailyPublish(req, res, next) {
   try {
-    const { error, value } = validateReq(insertIntoTrDailyPublishReq, req.body);
+    const { error, value } = validateReq(postDailyPublishReq, req.body);
     if (error) {
       throw createError.UnprocessableEntity(error.details);
     }
@@ -345,14 +340,14 @@ export async function insertIntoTrDailyPublish(req, res, next) {
       status: "Y",
     };
     await insertIntoDailyPublish(insertData);
-    next("Inserted into trDailypublish");
+    next({ message: "Successfully inserted into daily publish" });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
   }
 }
 
-export async function getQryTrDailyBalance(req, res, next) {
+export async function getDailyBalance(req, res, next) {
   try {
     const getDailyBalanceQuery = {
       where: { balance: { [Op.gt]: 0 } },
@@ -369,7 +364,7 @@ export async function getQryTrDailyBalance(req, res, next) {
     uniqueList.sort((a, b) => {
       return new Date(a.publish_date) - new Date(b.publish_date);
     });
-    next(uniqueList);
+    next({ data: uniqueList, message: "Successfully fetched daily balances" });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -387,7 +382,11 @@ export async function updateSingleTrade(req, res, next) {
     const query = { where: { tenderid: tender_id } };
 
     await updateDailyPublishByQuery(setQuery, query);
-    next("Updated trade for tender id " + tender_id);
+    next({
+      message: `${
+        status === "Y" ? "Started" : "Stoped"
+      } trade for tender id ${tender_id}`,
+    });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -403,87 +402,11 @@ export async function updateAllTrade(req, res, next) {
     const { status } = value;
     const setQuery = { status };
     await updateDailyPublishByQuery(setQuery);
-    next("Updated all trades");
-  } catch (err) {
-    if (!err.status) err.status = 500;
-    next(err);
-  }
-}
-
-export async function stopSingleTrade(req, res) {
-  const { error, value } = validateReq(updateSingleTradeReq, req.body);
-  if (error) {
-    return joiErrorRes(res, error, "stopSingleTrade");
-  }
-  const { tenderid } = value;
-  try {
-    const STOP_SINGLE_TENDER = `
-            UPDATE ${TR_DAILY_PUBLISH} SET status = 'N' WHERE tenderid = '${tenderid}'
-        `;
-    await executeQuery(STOP_SINGLE_TENDER);
-    res.status(200).json("Stopped tender id" + tenderid);
-  } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
-  }
-}
-
-export async function startSingleTrade(req, res) {
-  const { error, value } = validateReq(stopSingleTradeReq, req.body);
-  if (error) {
-    return joiErrorRes(res, error, "stopSingleTrade");
-  }
-  const { tenderid } = value;
-  try {
-    const START_SINGLE_TENDER = `
-            UPDATE ${TR_DAILY_PUBLISH} SET status = 'Y' WHERE tenderid = '${tenderid}'
-        `;
-    await executeQuery(START_SINGLE_TENDER);
-    res.status(200).json("Started tender id" + tenderid);
-  } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
-  }
-}
-
-export async function stopAllTrade(req, res) {
-  try {
-    const STOP_ALL_TENDER = `
-            UPDATE ${TR_DAILY_PUBLISH} SET status = 'N'
-        `;
-    await executeQuery(STOP_ALL_TENDER);
-    res.status(200).json("Stopped all tender");
-  } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
-  }
-}
-
-export async function startAllTrade(req, res) {
-  try {
-    const START_ALL_TENDER = `
-            UPDATE ${TR_DAILY_PUBLISH} SET status = 'Y'
-        `;
-    await executeQuery(START_ALL_TENDER);
-    res.status(200).json("Started all tender");
-  } catch (err) {
-    logger.error(err);
-    res.status(500).json(err);
-  }
-}
-
-export async function updateAllSaleRate(req, res, next) {
-  try {
-    const { error, value } = validateReq(updateAllSaleRateReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { sale_rate } = value;
-    const setQuery = {
-      sale_rate: Sequelize.literal(`sale_rate + ${sale_rate}`),
-    };
-    await updateDailyPublishByQuery(setQuery);
-    next("Updated all sale rate");
+    next({
+      message: `Successfully ${
+        status === "Y" ? "Started" : "Stoped"
+      } all trades`,
+    });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -502,7 +425,25 @@ export async function updateSingleSaleRate(req, res, next) {
     };
     const query = { where: { tender_id } };
     await updateDailyPublishByQuery(setQuery, query);
-    next("Updated sale rate for tender id " + tender_id);
+    next({ message: "Updated sale rate for tender id " + tender_id });
+  } catch (err) {
+    if (!err.status) err.status = 500;
+    next(err);
+  }
+}
+
+export async function updateAllSaleRate(req, res, next) {
+  try {
+    const { error, value } = validateReq(updateAllSaleRateReq, req.body);
+    if (error) {
+      throw createError.UnprocessableEntity(error.details);
+    }
+    const { sale_rate } = value;
+    const setQuery = {
+      sale_rate: Sequelize.literal(`sale_rate + ${sale_rate}`),
+    };
+    await updateDailyPublishByQuery(setQuery);
+    next({ message: "Updated all sale rate" });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -512,22 +453,16 @@ export async function updateSingleSaleRate(req, res, next) {
 export async function modifySingleTrade(req, res, next) {
   try {
     const { error, value } = validateReq(modifySingleTradeReq, req.body);
-    if(error){
+    if (error) {
       throw createError.UnprocessableEntity(error.details);
     }
     const { tender_id, sale_rate, published_qty } = value;
-    // const MODIFY_SINGLE_TRADE = `
-    //         UPDATE ${TR_DAILY_PUBLISH}
-    //         SET sale_rate = ${sale_rate}, published_qty = ${published_qty}
-    //         WHERE tenderid = '${tenderid}'
-    //     `;
-    // await executeQuery(MODIFY_SINGLE_TRADE);
-    const setQuery = { sale_rate, published_qty}
+    const setQuery = { sale_rate, published_qty };
     const query = { where: { tender_id } };
     await updateDailyPublishByQuery(setQuery, query);
-    next("Modified trade for tender id " + tender_id);
+    next({ message: "Modified trade for tender id " + tender_id });
   } catch (err) {
-    if(!err.status) err.status = 500;
+    if (!err.status) err.status = 500;
     next(err);
   }
 }

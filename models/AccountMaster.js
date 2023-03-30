@@ -50,7 +50,12 @@ export const AccountMaster = mssql.define(NT_1_ACCOUNTMASTER, {
   unregistergst: { type: DataTypes.BOOLEAN, field: "UnregisterGST" },
   distance: { type: DataTypes.DECIMAL(18, 2), field: "Distance" },
   bal_limit: { type: DataTypes.DECIMAL(18, 2), field: "Bal_Limit" },
-  accoid: { type: DataTypes.INTEGER, field: "accoid", primaryKey: true, autoIncrement: true },
+  accoid: {
+    type: DataTypes.INTEGER,
+    field: "accoid",
+    primaryKey: true,
+    autoIncrement: true,
+  },
   bsid: { type: DataTypes.INTEGER, field: "bsid" },
   cityid: { type: DataTypes.INTEGER, field: "cityid" },
   whatsapp_no: { type: DataTypes.STRING(45), field: "whatsup_no" },

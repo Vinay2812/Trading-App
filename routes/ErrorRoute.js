@@ -4,7 +4,7 @@ const router = Router();
 
 router.post("/", (req, res) => {
   const err = req.body;
-  logger.log("client",  err);
+  logger.log("error", err);
   res.send("Error appended");
 });
 
