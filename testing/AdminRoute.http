@@ -72,11 +72,46 @@ Content-Type: application/json
 ### Get Daily Publish
 GET http://localhost:5000/admin/qrytrdailybalance
 
-### Update
-PATCH http://localhost:5000/admin/trade/update-status
+### Update Single trade status
+PATCH http://localhost:5000/admin/trade/status
 Content-Type: application/json
 
 {
     "tender_id": 2593,
     "status": "N"
+}
+
+### Update All trade status
+PATCH http://localhost:5000/admin/trade/status/all
+Content-Type: application/json
+
+{
+    "status": "N"
+}
+
+###  update sale rate for trade
+PATCH http://localhost:5000/admin/trade/sale_rate
+Content-Type: application/json
+
+{
+    "tender_id": 2593,
+    "sale_rate": -5
+}
+
+###  update sale rate for all trade
+PATCH http://localhost:5000/admin/trade/sale_rate/all
+Content-Type: application/json
+
+{
+    "sale_rate": 5
+}
+
+###  modify trade
+PATCH http://localhost:5000/admin/trade/update
+Content-Type: application/json
+
+{
+    "tender_id": 2593,
+    "published_qty": 1000,
+    "sale_rate": 5
 }

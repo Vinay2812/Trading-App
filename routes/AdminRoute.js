@@ -16,6 +16,7 @@ import {
   modifySingleTrade,
   startAllTrade,
   updateSingleTrade,
+  updateAllTrade,
 } from "../controller/Admin/AdminController.js";
 const router = Router();
 
@@ -33,13 +34,14 @@ router.post("/trDailyPublish", insertIntoTrDailyPublish);
 
 // published-list
 router.get("/qrytrdailybalance", getQryTrDailyBalance);
-router.patch("/trade/update-status", updateSingleTrade);
+router.patch("/trade/status", updateSingleTrade);
+router.patch("/trade/status/all", updateAllTrade);
 router.patch("/trade/stop", stopSingleTrade);
 router.patch("/trade/stop/all", stopAllTrade);
 router.patch("/trade/start", startSingleTrade);
 router.patch("/trade/start/all", startAllTrade);
-router.patch("/sale_rate", updateSingleSaleRate);
-router.patch("/sale_rate/all", updateAllSaleRate);
+router.patch("/trade/sale_rate", updateSingleSaleRate);
+router.patch("/trade/sale_rate/all", updateAllSaleRate);
 router.patch("/trade/update", modifySingleTrade);
 
 export default router;

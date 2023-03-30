@@ -17,50 +17,50 @@ export const processQueryOutput = {
   forInsert: (data) => data?.dataValues,
 };
 // Get queries
-export async function getOnlineUsersByQuery(query) {
+export async function getOnlineUsersByQuery(query = { where: {} } ) {
   let users = await UserOnlineDetails.findAll(query);
   return processQueryOutput.forFindAll(users);
 }
 
-export async function getUserBankDetailsByQuery(query) {
+export async function getUserBankDetailsByQuery(query = { where: {} } ) {
   let data = await UserBankDetails.findAll(query);
   return processQueryOutput.forFindAll(data);
 }
 
-export async function getDataFromAccountMaster(query) {
+export async function getDataFromAccountMaster(query = { where: {} } ) {
   let output = await AccountMaster.findAll(query);
   return processQueryOutput.forFindAll(output);
 }
 
-export async function getDataFromTenderBalanceView(query) {
+export async function getDataFromTenderBalanceView(query = { where: {} } ) {
   let output = await TenderBalanceView.findAll(query);
   return processQueryOutput.forFindAll(output);
 }
 
-export async function getDataFromDailyPublish(query) {
+export async function getDataFromDailyPublish(query = { where: {} } ) {
   let output = await DailyPublish.findAll(query);
   return processQueryOutput.forFindAll(output);
 }
 
-export async function getDataFromDailyBalance(query) {
+export async function getDataFromDailyBalance(query = { where: {} } ) {
   let output = await DailyBalance.findAll(query);
   return processQueryOutput.forFindAll(output);
 }
 
 // Update queries
-export async function updateOnlineUserByQuery(set, query) {
+export async function updateOnlineUserByQuery(set, query = { where: {} } ) {
   let [rows, data] = await UserOnlineDetails.update(set, query);
   data = processQueryOutput.forUpdate(data);
   return { rows_affected: rows, data };
 }
 
-export async function updateAccountMasterByQuery(set, query) {
+export async function updateAccountMasterByQuery(set, query = { where: {} } ) {
   let [rows, data] = await AccountMaster.update(set, query);
   data = processQueryOutput.forUpdate(data);
   return { rows_affected: rows, data };
 }
 
-export async function updateDailyPublishByQuery(set, query) {
+export async function updateDailyPublishByQuery(set, query = { where: {} } ) {
   let [rows, data] = await DailyPublish.update(set, query);
   data = processQueryOutput.forUpdate(data);
   return { rows_affected: rows, data };

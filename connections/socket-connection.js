@@ -15,4 +15,8 @@ export function connectSocket() {
   );
 }
 
+io.on("disconnect", ()=>{
+  logger.info("Socket disconnected")
+})
+
 export default io;

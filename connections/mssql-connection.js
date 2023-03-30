@@ -10,12 +10,13 @@ import logger from "../utils/logger.js";
 const mssql = new Sequelize(DATABASE, DB_USER, DB_PASSWORD, {
   host: DB_SERVER,
   plain: true,
+  retry: true,
   benchmark: true,
   logging: (msg, timing) => logger.warn(`Executed query - ${msg} in ${timing} ms`),
   dialect: "mssql",
   define: {
     timestamps: false,
-    freezeTableName: true,
+    freezeTableName: true
   },
 });
 
