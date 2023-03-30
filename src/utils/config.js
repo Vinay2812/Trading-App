@@ -21,3 +21,4 @@ export const {
   OTP_VALID_INTERVAL = 5 * 60 * 1000,
   REDIS_HOST
 } = process.env;
+

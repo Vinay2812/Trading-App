@@ -2,11 +2,11 @@
     "name": "server",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "app.js",
     "type": "module",
     "scripts": {
-        "start": "node index.js",
-        "dev": "nodemon --inspect --ignore ./client/ index.js",
+        "start": "node src/index.js",
+        "dev": "nodemon --inspect --ignore ./client/ src/app.js",
         "client": "cd client && npm run dev",
         "mssql": "sudo docker start sql1 && sudo docker exec -it sql1 \"bash\""
     },

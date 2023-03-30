@@ -11,7 +11,7 @@ import {
   updateSingleSaleRateReq,
   updateAllSaleRateReq,
   modifySingleTradeReq,
-} from "./AdminValidator.js";
+} from "../../validations/index.js";
 import { validateReq } from "../../utils/joi.js";
 import logger from "../../utils/logger.js";
 import createError from "http-errors";
