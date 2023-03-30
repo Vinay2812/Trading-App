@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import mssql from "../connections/mssql-connection.js";
+import mssql from "../connections/mssql.connection.js";
 import { NT_1_ACCOUNTMASTER } from "../database/dbSchema.js";
 
 export const AccountMaster = mssql.define(NT_1_ACCOUNTMASTER, {

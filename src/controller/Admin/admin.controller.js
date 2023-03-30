@@ -1,18 +1,4 @@
 import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../../utils/config.js";
-
-import {
-  adminLoginReq,
-  updateAuthorizationReq,
-  addUserReq,
-  mapClientReq,
-  postDailyPublishReq,
-  updateSingleTradeReq,
-  updateAllTradeReq,
-  updateSingleSaleRateReq,
-  updateAllSaleRateReq,
-  modifySingleTradeReq,
-} from "../../validations/index.js";
-import { validateReq } from "../../utils/joi.js";
 import logger from "../../utils/logger.js";
 import createError from "http-errors";
 import {
@@ -32,11 +18,7 @@ import { Op, Sequelize } from "sequelize";
 
 export async function adminLogin(req, res, next) {
   try {
-    const { error, value } = validateReq(adminLoginReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { username, password } = value;
+    const { username, password } = req.body;
     if (username !== ADMIN_USERNAME) {
       throw createError.BadRequest("Invalid username");
     }
@@ -74,12 +56,7 @@ export async function getRegistrationListUsers(req, res, next) {
 
 export async function updateAuthorization(req, res, next) {
   try {
-    const { authorized } = req.body;
-    const { userId } = req.params;
-    let { error } = validateReq(updateAuthorizationReq, { authorized, userId });
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
+    const { authorized, userId } = req.body;
     await updateOnlineUserByQuery(
       { authorized },
       { where: { userId }, returning: true }
@@ -93,12 +70,7 @@ export async function updateAuthorization(req, res, next) {
 
 export async function addUser(req, res, next) {
   try {
-    const { error, value } = validateReq(addUserReq, req.params);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { userId } = value;
-
+    const { userId } = req.body;
     const max_ac_code_query = {
       attributes: [
         [Sequelize.fn("max", Sequelize.col("Ac_code")), "max_ac_code"],
@@ -206,7 +178,10 @@ export async function addUser(req, res, next) {
       cityid: "0",
       company_code: "1",
     };
-    const { accoid } = await insertIntoAccountMaster(insertData);
+    const { accoid } = await insertIntoAccountMaster(insertData, {
+      returning: true,
+      plain: true
+    });
     let setQuery = { accoid };
     let updateQuery = { where: { userId }, returning: false };
     await updateOnlineUserByQuery(setQuery, updateQuery);
@@ -219,11 +194,7 @@ export async function addUser(req, res, next) {
 
 export async function mapClient(req, res, next) {
   try {
-    const { error, value } = validateReq(mapClientReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { userId, accoid } = value;
+    const { userId, accoid } = req.body;
     let onlineUser_setQuery = { accoid };
     let onlineUser_query = {
       where: { userId },
@@ -273,10 +244,6 @@ export async function getTenderBalances(req, res, next) {
 
 export async function postDailyPublish(req, res, next) {
   try {
-    const { error, value } = validateReq(postDailyPublishReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
     const {
       tender_no,
       tender_date,
@@ -301,15 +268,17 @@ export async function postDailyPublish(req, res, next) {
       type,
       mill_code,
       payment_to,
-    } = value;
+    } = req.body;
 
     const tenderExistQuery = {
-      attributes: ["tenderid"],
-      where: { tenderid: tender_id },
+      attributes: ["tender_id"],
+      where: { tender_id },
     };
     const tenderIdExist = await getDataFromDailyPublish(tenderExistQuery);
     if (tenderIdExist?.length) {
-      throw createError.Conflict("Tender id already exist");
+      throw createError.Conflict(
+        `tender id ${tender_id} already exist in daily publish`
+      );
     }
     const publish_date = new Date().toISOString();
     const insertData = {
@@ -373,18 +342,14 @@ export async function getDailyBalance(req, res, next) {
 
 export async function updateSingleTrade(req, res, next) {
   try {
-    const { error, value } = validateReq(updateSingleTradeReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { tender_id, status } = value;
+    const { tender_id, status } = req.body;
     const setQuery = { status };
     const query = { where: { tenderid: tender_id } };
 
     await updateDailyPublishByQuery(setQuery, query);
     next({
       message: `${
-        status === "Y" ? "Started" : "Stoped"
+        status === "Y" ? "Started" : "Stopped"
       } trade for tender id ${tender_id}`,
     });
   } catch (err) {
@@ -395,16 +360,12 @@ export async function updateSingleTrade(req, res, next) {
 
 export async function updateAllTrade(req, res, next) {
   try {
-    const { error, value } = validateReq(updateAllTradeReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { status } = value;
+    const { status } = req.body;
     const setQuery = { status };
     await updateDailyPublishByQuery(setQuery);
     next({
       message: `Successfully ${
-        status === "Y" ? "Started" : "Stoped"
+        status === "Y" ? "Started" : "Stopped"
       } all trades`,
     });
   } catch (err) {
@@ -415,11 +376,7 @@ export async function updateAllTrade(req, res, next) {
 
 export async function updateSingleSaleRate(req, res, next) {
   try {
-    const { error, value } = validateReq(updateSingleSaleRateReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { tender_id, sale_rate } = value;
+    const { tender_id, sale_rate } = req.body;
     const setQuery = {
       sale_rate: Sequelize.literal(`sale_rate + ${sale_rate}`),
     };
@@ -434,11 +391,7 @@ export async function updateSingleSaleRate(req, res, next) {
 
 export async function updateAllSaleRate(req, res, next) {
   try {
-    const { error, value } = validateReq(updateAllSaleRateReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { sale_rate } = value;
+    const { sale_rate } = req.body;
     const setQuery = {
       sale_rate: Sequelize.literal(`sale_rate + ${sale_rate}`),
     };
@@ -452,11 +405,7 @@ export async function updateAllSaleRate(req, res, next) {
 
 export async function modifySingleTrade(req, res, next) {
   try {
-    const { error, value } = validateReq(modifySingleTradeReq, req.body);
-    if (error) {
-      throw createError.UnprocessableEntity(error.details);
-    }
-    const { tender_id, sale_rate, published_qty } = value;
+    const { tender_id, sale_rate, published_qty } = req.body;
     const setQuery = { sale_rate, published_qty };
     const query = { where: { tender_id } };
     await updateDailyPublishByQuery(setQuery, query);

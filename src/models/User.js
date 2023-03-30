@@ -1,4 +1,4 @@
-import mssql from "../connections/mssql-connection.js";
+import mssql from "../connections/mssql.connection.js";
 import { DataTypes } from "sequelize";
 import {
   ONLINE_USER_DETAILS,
@@ -123,6 +123,6 @@ export const UserOtpDetails = mssql.define(USER_OTP_DETAILS, {
   create_time: DataTypes.BIGINT,
   expiry_time: {
     type: DataTypes.BIGINT,
-    field: "delete_time"
+    field: "delete_time",
   },
 });

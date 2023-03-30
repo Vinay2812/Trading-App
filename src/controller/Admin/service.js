@@ -14,7 +14,7 @@ export const processQueryOutput = {
         : data?.dataValues;
     return output;
   },
-  forInsert: (data) => data?.dataValues,
+  forInsert: (data) => data ? data.dataValues : null,
 };
 // Get queries
 export async function getOnlineUsersByQuery(query = { where: {} } ) {
@@ -69,7 +69,7 @@ export async function updateDailyPublishByQuery(set, query = { where: {} } ) {
 // insert queries
 export async function insertIntoAccountMaster(
   query,
-  options = { returning: true, plain: true }
+  options = { returning: true }
 ) {
   const data = await AccountMaster.create(query, options);
   return processQueryOutput.forInsert(data);
@@ -77,7 +77,7 @@ export async function insertIntoAccountMaster(
 
 export async function insertIntoDailyPublish(
   query,
-  options = { returning: true, plain: true }
+  options = { returning: true }
 ) {
   const data = await DailyPublish.create(query, options);
   return processQueryOutput.forInsert(data);

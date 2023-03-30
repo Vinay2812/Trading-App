@@ -9,12 +9,9 @@ export {
   updateSingleSaleRateReq,
   updateSingleTradeReq,
   modifySingleTradeReq,
-} from "./AdminValidator.js";
+} from "./admin.validator.js";
 
-export {
+export {} from "./auth.validator.js";
 
-} from "./AuthValidator.js"
+export {} from "./user.validator.js";
 
-export {
-
-} from "./UserValidator.js"

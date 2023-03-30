@@ -6,7 +6,7 @@ export const adminLoginReq = Joi.object({
 }).required();
 
 export const updateAuthorizationReq = Joi.object({
-  authorized: Joi.required(),
+  authorized: Joi.required().valid(0, 1),
   userId: Joi.required(),
 }).required();
 
@@ -34,24 +34,24 @@ export const postDailyPublishReq = Joi.object({
   ic: Joi.required(),
   tender_id: Joi.required(),
   td: Joi.required(),
-  unit: Joi.allow(...["Q", "M", "L"]).required(),
+  unit: Joi.string().valid(...["Q", "M", "L"]).required(),
   sale_rate: Joi.required(),
   publish_quantal: Joi.required(),
   multiple_of: Joi.required(),
-  auto_confirm: Joi.allow(...["Y", "N"]).required(),
+  auto_confirm: Joi.valid(...["Y", "N"]).required(),
   tender_do: Joi.required(),
-  type: Joi.allow(...["F", "P"]).required(),
+  type: Joi.valid(...["F", "P"]).required(),
   mill_code: Joi.required(),
   payment_to: Joi.required(),
 }).required();
 
 export const updateSingleTradeReq = Joi.object({
   tender_id: Joi.required(),
-  status: Joi.string().required().allow("Y", "N"),
+  status: Joi.string().required().valid("Y", "N"),
 }).required();
 
 export const updateAllTradeReq = Joi.object({
-  status: Joi.string().required().allow("Y", "N"),
+  status: Joi.string().required().valid("Y", "N"),
 }).required();
 
 export const updateSingleSaleRateReq = Joi.object({

@@ -15,7 +15,7 @@ PATCH http://localhost:5000/admin/registration-list/d799d6adfe605445127eae81b9e4
 Content-Type: application/json
 
 {
-    "authorized": 0
+    "authorized": 1
 }
 
 ### Add User
@@ -53,7 +53,7 @@ Content-Type: application/json
     "mc": 2462,
     "pt": 2462,
     "item_code": 1,
-    "tender_id": 2670,
+    "tender_id": 2687,
     "td": 2,
     "mill_code": 80958,
     "tender_do": 2,

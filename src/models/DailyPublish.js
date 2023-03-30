@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import mssql from "../connections/mssql-connection.js";
+import mssql from "../connections/mssql.connection.js";
 import { TR_DAILY_PUBLISH } from "../database/dbSchema.js";
 
 export const DailyPublish = mssql.define(TR_DAILY_PUBLISH, {

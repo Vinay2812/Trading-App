@@ -13,3 +13,4 @@ data/.~lock.Vinay.xlsx#
 *.log
 debug/
 logs/
+/.vscode

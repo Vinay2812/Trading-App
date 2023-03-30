@@ -3,7 +3,7 @@ import {
   getAllCompanyName,
   getUserCompanyDataById,
   getUserDataFromNt1AccountMaster,
-} from "../controller/User/UserController.js";
+} from "../controller/User/user.controller.js";
 const router = Router();
 
 router.get("/company/:userId", getUserCompanyDataById);
