@@ -1,6 +1,3 @@
-import { createServer } from "http";
-import { Server } from "socket.io";
-import { SOCKET_PORT } from "../utils/config.js";
 import logger from "../utils/logger.js";
 import io from "../connections/socket.connection.js";
 

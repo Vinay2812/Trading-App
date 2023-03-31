@@ -22,7 +22,7 @@ import ErrorRoute from "./routes/error.route.js";
 import InvalidRoute from "./routes/invalid.route.js";
 
 // utils
-import { SERVER_PORT } from "./utils/config.js";
+import { SERVER_PORT, SERVER_HOST } from "./utils/config.js";
 import logger from "./utils/logger.js";
 
 // others
@@ -43,8 +43,8 @@ app.use(morgan(":status :method :url :response-time ms"));
 
 // routes
 // handle valid routes
-app.use("/auth", AuthRoute);
 app.use("/admin", AdminRoute);
+app.use("/auth", AuthRoute);
 app.use("/user", UserRoute);
 app.use("/error", ErrorRoute);
 
@@ -62,7 +62,7 @@ app.get("*", (req, res) => {
 
 function startServer() {
   logger.info("Starting server.............");
-  logger.info(`Server Listening on port ${port}`);
+  logger.info(`Server Listening on ${SERVER_HOST}:${port}`);
   connectMssql();
   connectSocket();
   connectRedis();
