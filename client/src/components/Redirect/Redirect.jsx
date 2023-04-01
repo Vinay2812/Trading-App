@@ -24,13 +24,11 @@ function Redirect({ children }) {
     }
 
     if (user.password == null) {
-      logger.log("No user password found");
       navigate(`/register/${user.userId}`);
       setLoading(false);
       return;
     }
     if (user.accoid == null) {
-      logger.log("No accoid");
       navigate("/home/no-authorization");
       setLoading(false);
       return;
@@ -41,7 +39,7 @@ function Redirect({ children }) {
   }, [user, admin]);
   return (
     <>
-      {loading ? <Loader /> : children}
+      {children}
       {logger.log("Redirecting to: " + location)}
     </>
   );

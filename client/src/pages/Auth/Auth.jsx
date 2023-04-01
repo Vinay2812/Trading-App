@@ -14,7 +14,7 @@ function Auth() {
   return (
     <div className="auth">
       {
-        loading ? <Loader /> : registerPage ? <Register setRegisterPage={setRegisterPage} /> : <Login setRegisterPage={setRegisterPage} />
+        registerPage ? <Register setRegisterPage={setRegisterPage} /> : <Login setRegisterPage={setRegisterPage} />
       }
     </div>
   )

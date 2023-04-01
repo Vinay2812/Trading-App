@@ -11,7 +11,7 @@ export const processQueryOutput = {
     let output =
       data instanceof Array
         ? data.map(({ dataValues }) => dataValues)
-        : data?.dataValues;
+        : [data?.dataValues];
     return output;
   },
   forInsert: (data) => data ? data.dataValues : null,

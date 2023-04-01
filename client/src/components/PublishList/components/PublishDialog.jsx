@@ -42,9 +42,9 @@ function PublishDialog({ publishItem, setShowDialog }) {
 
   return (
     <div className="dialog-container">
-      {loading ? (
+      {/* {loading ? (
         <Loader />
-      ) : (
+      ) : ( */}
         <div className="dialog-box">
           <div className="dialog-title">Publish Dialog</div>
           <div className="dialog-content">
@@ -126,7 +126,7 @@ function PublishDialog({ publishItem, setShowDialog }) {
             </div>
           </div>
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 }

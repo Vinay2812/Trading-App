@@ -37,7 +37,7 @@ function PublishListItem({ publishListItem }) {
   }
   return (
     <div className="publish-list-row">
-      <div className="publish-list-cell">{listItemData.tender_no}</div>
+      <div className="publish-list-cell fixed">{listItemData.tender_no}</div>
       <div className="publish-list-cell">
         {convertDate(listItemData.tender_date)}
       </div>

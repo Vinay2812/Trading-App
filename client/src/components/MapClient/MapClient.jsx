@@ -114,9 +114,9 @@ function MapClient() {
   return (
     <div className="page">
       <AdminNavbar />
-      {loading ? (
+      {/* {loading ? (
         <Loader />
-      ) : (
+      ) : ( */}
         <div className="map-container">
           <h1 className="map-title">Map Client</h1>
           <div className="user-data-container">
@@ -191,7 +191,7 @@ function MapClient() {
             </div>
           </div>
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 }

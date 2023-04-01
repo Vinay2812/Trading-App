@@ -6,7 +6,7 @@ export async function getCompanyUserDataById(userId, signal) {
     const res = await API.get(`/user/company/${userId}`, signal);
     return res;
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
   }
 }
 export async function getAllCompanyNames(signal) {
@@ -14,7 +14,7 @@ export async function getAllCompanyNames(signal) {
     const res = await API.get("/user/company-names", signal);
     return res;
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
   }
 }
 export async function getUserDataFromNt1AccountMaster(accoid) {
@@ -22,6 +22,6 @@ export async function getUserDataFromNt1AccountMaster(accoid) {
     const res = await API.get(`/user/nt_1_account_master/${accoid}`);
     return res;
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
   }
 }

@@ -35,10 +35,10 @@ function PublishedListItem({
   return (
     <div className={isPublishedList ? "published-list-row" : "client-list-row"}>
       {!isPublishedList && (
-        <div className="published-list-cell">{index + 1}</div>
+        <div className="published-list-cell fixed">{index + 1}</div>
       )}
       {isPublishedList && (
-        <div className="published-list-cell">{listItemData.tender_no}</div>
+        <div className="published-list-cell fixed">{listItemData.tender_no}</div>
       )}
       {isPublishedList && (
         <div className="published-list-cell">

@@ -15,29 +15,29 @@ function App() {
   return (
     <ErrorBoundary fallback="Error">
         <Redirect>
-          <div className="App">
-            <Routes>
-              <Route path="/" element={<Auth />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/home">
-                <Route path="/home" element={<Home />} />
-                <Route
-                  path="/home/no-authorization"
-                  element={<NoAuthorization />}
-                />
-              </Route>
-              <Route path="/register/:userId" element={<Password />} />
-              <Route path="/admin">
-                <Route path="/admin" element={<Admin />} />
-                <Route
-                  path="/admin/registration-list"
-                  element={<RegistrationList />}
-                />
-                <Route path="/admin/map/:id" element={<MapClient />} />
-              </Route>
-              <Route path="/404" element={<Error404 />}/>
-            </Routes>
-          </div>
+            <div className="App">
+              <Routes>
+                <Route path="/" element={<Auth />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/home">
+                  <Route path="/home" element={<Home />} />
+                  <Route
+                    path="/home/no-authorization"
+                    element={<NoAuthorization />}
+                  />
+                </Route>
+                <Route path="/register/:userId" element={<Password />} />
+                <Route path="/admin">
+                  <Route path="/admin" element={<Admin />} />
+                  <Route
+                    path="/admin/registration-list"
+                    element={<RegistrationList />}
+                  />
+                  <Route path="/admin/map/:id" element={<MapClient />} />
+                </Route>
+                <Route path="/404" element={<Error404 />}/>
+              </Routes>
+            </div>
         </Redirect>
     </ErrorBoundary>
   );

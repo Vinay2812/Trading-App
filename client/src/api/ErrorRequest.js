@@ -5,6 +5,6 @@ export async function postError(error) {
     const res = await API.post("/error", { error: JSON.stringify(error) });
     return res;
   } catch (err) {
-    logger.log(err);
+    logger.error(err);
   }
 }

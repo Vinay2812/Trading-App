@@ -1,6 +1,6 @@
 import "./Admin.css";
 import AdminNavbar from "../../components/AdminNavbar/AdminNavbar";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PublishList from "../../components/PublishList/PublishList";
@@ -10,9 +10,10 @@ import {
   AiOutlineArrowDown,
 } from "react-icons/all";
 import PublishedList from "../../components/PublishedList/PublishedList";
-import { startAllTrade, stopAllTrade, updateAllSaleRate } from "../../api/AdminRequest";
+import { updateAllSaleRate, updateAllTrade } from "../../api/AdminRequest";
 import socket from "../../socket.io/socket";
 import logger from "../../utils/logger";
+import Loader from "../../components/Loader/Loader";
 
 function Admin() {
   // hooks
@@ -70,31 +71,12 @@ function Admin() {
     setSaleRateChange("");
   }
 
-  async function handleStopTrading() {
-    try {
-      const res = await stopAllTrade();
-      if (res.status === 200) {
-        handleRefreshPublishedList();
-        socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
-        setIsResumeTrading(true);
-      }
-    } catch (err) {
-      setRefreshPublishedList(false);
-      logger.error(err)
-    }
-  }
-
-  async function handleResumeTrading() {
-    try {
-      const res = await startAllTrade();
-      if (res.status === 200) {
-        handleRefreshPublishedList();
-        socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
-        setIsResumeTrading(false);
-      }
-    } catch (err) {
-      setRefreshPublishedList(false);
-      logger.error(err)
+  async function handleAllTradingStatus(){
+    const response = await updateAllTrade({status: isResumeTrading? "Y" : "N"})
+    if(response.success){
+      handleRefreshPublishedList();
+      socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
+      setIsResumeTrading(prev => !prev);
     }
   }
 
@@ -108,7 +90,7 @@ function Admin() {
     );
     if (quesRes) {
       const res = await updateAllSaleRate({ sale_rate: val });
-      if (res.status === 200) {
+      if (res.success) {
         handleRefreshPublishedList();
         socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
       }
@@ -156,7 +138,7 @@ function Admin() {
             </div>
             <button
               className="publishedListBtn stop-all"
-              onClick={() => isResumeTrading ? handleResumeTrading() : handleStopTrading()}
+              onClick={() => handleAllTradingStatus()}
             >
               {isResumeTrading ? "Resume Trading" : "Stop Trading"}
             </button>
@@ -166,10 +148,12 @@ function Admin() {
       </div>
       <div className="page-container">
         {activeTab === 0 && (
+          <Suspense fallback={<Loader />}>
           <PublishList
             refresh={refreshPublishList}
             setRefresh={setRefreshPublishList}
           />
+          </Suspense>
         )}
         {activeTab === 1 && (
           <PublishedList

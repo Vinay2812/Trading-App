@@ -11,11 +11,9 @@ function ListItem({ data, fetchUsers }) {
   const dispatch = useDispatch();
 
   async function handleAdd() {
-    try {
-      const res = await addUser(data.userId);
-      if (res.status === 200) await fetchUsers();
-    } catch (err) {
-      logger.log(err);
+    const response = await addUser(data.userId);
+    if (response.success) {
+      fetchUsers();
     }
   }
   function handleMap() {

@@ -9,17 +9,15 @@ function RegistrationList() {
   const [users, setUsers] = useState([]);
 
   async function fetchUsers() {
-    try {
-      const { data } = await getRegistrationListUsers();
-      setUsers(data);
-    } catch (err) {
-      logger.error(err);
+    const response = await getRegistrationListUsers();
+    if(response.success){
+      setUsers(response.data);
     }
   }
 
   useEffect(() => {
     fetchUsers();
-  }, [window.onload]);
+  }, []);
 
   return (
     <div className="page">

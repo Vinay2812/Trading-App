@@ -25,7 +25,7 @@ export async function adminLogin(req, res, next) {
     if (password !== ADMIN_PASSWORD) {
       throw createError.BadRequest("Invalid password");
     }
-    next({ username, admin: 1, message: "Login successful" });
+    next({ data: { username, admin: 1 }, message: "Login successful" });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -180,7 +180,7 @@ export async function addUser(req, res, next) {
     };
     const { accoid } = await insertIntoAccountMaster(insertData, {
       returning: true,
-      plain: true
+      plain: true,
     });
     let setQuery = { accoid };
     let updateQuery = { where: { userId }, returning: false };
@@ -277,7 +277,7 @@ export async function postDailyPublish(req, res, next) {
     const tenderIdExist = await getDataFromDailyPublish(tenderExistQuery);
     if (tenderIdExist?.length) {
       throw createError.Conflict(
-        `tender id ${tender_id} already exist in daily publish`
+        `tender no ${tender_no} already exist in published list`
       );
     }
     const publish_date = new Date().toISOString();
@@ -344,13 +344,13 @@ export async function updateSingleTrade(req, res, next) {
   try {
     const { tender_id, status } = req.body;
     const setQuery = { status };
-    const query = { where: { tenderid: tender_id } };
+    const query = { where: { tender_id }, returning: true };
 
-    await updateDailyPublishByQuery(setQuery, query);
+    const result = await updateDailyPublishByQuery(setQuery, query) || [];
     next({
       message: `${
         status === "Y" ? "Started" : "Stopped"
-      } trade for tender id ${tender_id}`,
+      } trade for tender no ${result.data[0]?.tender_no}`,
     });
   } catch (err) {
     if (!err.status) err.status = 500;
