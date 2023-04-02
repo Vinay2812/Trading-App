@@ -1,6 +1,6 @@
-*:not(.published-list-container)::-webkit-scrollbar{
+/* *:not(.published-list-container)::-webkit-scrollbar{
     display: none;
-}
+} */
 
 body{
     color:rgb(36, 36, 36);

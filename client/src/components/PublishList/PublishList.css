@@ -22,7 +22,7 @@
 
 .head > .publish-list-cell {
   text-align: center;
-  overflow: scroll;
+  /* overflow: scroll; */
   position: sticky;
 }
 .publish-list-row > *:not(:last-child) {
@@ -31,13 +31,13 @@
 
 .publish-list-cell {
   padding: 0.5rem;
-  width: calc(100% -1rem);
+  width: calc(100% - 1rem);
   display: flex;
   text-align: center;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  overflow-x: scroll;
+  /* overflow: hidden;
+  overflow-x: scroll; */
 }
 
 .publish-list-cell > * {
