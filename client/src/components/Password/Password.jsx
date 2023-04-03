@@ -16,9 +16,8 @@ function Password() {
   const navigate = useNavigate();
   const params = useParams();
 
-  const user = useSelector( state => state.authReducer?.authData)
-  const { userId }= params;
-
+  const user = useSelector((state) => state.authReducer?.authData);
+  const { userId } = params;
 
   useEffect(() => {
     if (userId == undefined || userId == null) {
@@ -51,7 +50,7 @@ function Password() {
   }
 
   async function handleResend() {
-    resendOTP({userId})
+    resendOTP({ userId });
   }
 
   async function handleVerify() {
@@ -80,75 +79,83 @@ function Password() {
       userId,
       password: passwordDetails.password,
     };
-    const res = await updatePassword(updatePasswordData);
-    if (res.status === 200) {
-      dispatch(login({mobile: user.userData.mobile, company_name: user.userData.company_name, password: passwordDetails.password}))
-      navigate("/home/no-authorization")
-    }
+    try {
+      const res = await loaderWrapper(updatePassword(updatePasswordData));
+      if (res.status === 200) {
+        dispatch(
+          login({
+            mobile: user.userData.mobile,
+            company_name: user.userData.company_name,
+            password: passwordDetails.password,
+          })
+        );
+        navigate("/home/no-authorization");
+      }
+    } catch (err) {}
   }
   return (
     <>
-    <Navbar />
-    <div className="password-container page">
-      <div className="container">
-        <div className="password-title">
-          {passwordPage
-            ? "Please fill the password"
-            : "Please verify your email"}
-        </div>
-        {passwordPage ? (
-          <>
-            <div>
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                name="password"
-                value={passwordDetails.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="confirm_password">Confirm Password</label>
-              <input
-                type="password"
-                placeholder="Confirm your password"
-                name="confirm_password"
-                value={passwordDetails.confirm_password}
-                onChange={handleChange}
-              />
-            </div>
-          </>
-        ) : (
-          <div>
-            <label htmlFor="otp">Enter your otp</label>
-            <input
-              type="text"
-              placeholder="Enter your otp"
-              name="otp"
-              value={passwordDetails.otp}
-              onChange={handleChange}
-            />
+      <Navbar />
+      <div className="password-container page">
+        <div className="container">
+          <div className="password-title">
+            {passwordPage
+              ? "Please fill the password"
+              : "Please verify your email"}
           </div>
-        )}
-        <div className="register-btns">
-          {!passwordPage ? (
+          {passwordPage ? (
             <>
-              <button className="cancel" onClick={handleResend}>
-                Resend
-              </button>
-              <button className="save" onClick={handleVerify}>
-                Verify
-              </button>
+              <div>
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  name="password"
+                  value={passwordDetails.password}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="confirm_password">Confirm Password</label>
+                <input
+                  type="password"
+                  placeholder="Confirm your password"
+                  name="confirm_password"
+                  value={passwordDetails.confirm_password}
+                  onChange={handleChange}
+                />
+              </div>
             </>
           ) : (
-            <button className="save" onClick={handleSubmit}>
-              Submit
-            </button>
+            <div>
+              <label htmlFor="otp">Enter your otp</label>
+              <input
+                type="text"
+                placeholder="Enter your otp"
+                name="otp"
+                value={passwordDetails.otp}
+                onChange={handleChange}
+              />
+            </div>
           )}
+          <div className="register-btns">
+            {!passwordPage ? (
+              <>
+                <button className="cancel" onClick={handleResend}>
+                  Resend
+                </button>
+                <button className="save" onClick={handleVerify}>
+                  Verify
+                </button>
+              </>
+            ) : (
+              <button className="save" onClick={handleSubmit}>
+                Submit
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }

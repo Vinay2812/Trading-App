@@ -18,17 +18,11 @@ function NoAuthorization() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user = useSelector((state) => state.authReducer?.authData?.userData);
   useEffect(() => {
-    socket.on("user_login", (userId, accoid, callback) => {
-      logger.log(userId);
-      if (userId == user.userId) {
-        dispatch(
-          updateAccoid({accoid})
-        );
-        callback(`userId ${userId} accoid id update successful`)
-        navigate("/home");
-      }
+    socket.on("/client/update-authorization", (accoid) => {
+      logger.log(accoid);
+      dispatch(updateAccoid({ accoid }));
+      navigate("/home");
     });
   }, [socket]);
   return (

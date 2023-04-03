@@ -14,9 +14,9 @@ export const adminLogin = async (loginData) => {
   }
 };
 
-export const getRegistrationListUsers = async () => {
+export const getRegistrationListUsers = async (signal) => {
   try {
-    const res = await API.get("/admin/registration-list/users");
+    const res = await API.get("/admin/registration-list/users", signal);
     return handleResponseSuccess(res);
   } catch (err) {
     return handleResponseError(err);

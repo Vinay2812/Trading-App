@@ -1,5 +1,6 @@
-import ContactCard from "../ContactCard/ContactCard";
+import { lazy } from "react";
 import "./ContactDetails.css";
+const  ContactCard = lazy(() => import("../ContactCard/ContactCard"));
 
 function ContactDetails({ contactArray, setContactArray }) {
   return (

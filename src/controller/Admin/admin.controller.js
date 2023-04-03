@@ -15,6 +15,11 @@ import {
   updateDailyPublishByQuery,
 } from "./service.js";
 import { Op, Sequelize } from "sequelize";
+import {
+  updatePublishedList,
+  updateTradingOption,
+  updateUserAuthorization,
+} from "../../socket/controller/emit.js";
 
 export async function adminLogin(req, res, next) {
   try {
@@ -186,6 +191,8 @@ export async function addUser(req, res, next) {
     let updateQuery = { where: { userId }, returning: false };
     await updateOnlineUserByQuery(setQuery, updateQuery);
     next({ message: "User added successfully" });
+    const socket_res = await updateUserAuthorization(userId);
+    socket_res && logger.debug("Sent request to update authorization")
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -208,6 +215,8 @@ export async function mapClient(req, res, next) {
       updateAccountMasterByQuery(account_master_setQuery, account_master_query),
     ]);
     next({ message: "Mapping was successful" });
+    const socket_res = await updateUserAuthorization(userId, accoid);
+    socket_res && logger.debug("Sent request to update authorization")
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -221,6 +230,7 @@ export async function getTenderBalances(req, res, next) {
         [Op.and]: [{ balance: { [Op.gt]: 0 } }, { buyer: 2 }],
       },
     };
+
     const tenderBalances = await getDataFromTenderBalanceView(
       getTenderDetailsQuery
     );
@@ -232,9 +242,7 @@ export async function getTenderBalances(req, res, next) {
         uniqueList.push(ele);
       }
     }
-    uniqueList.sort((a, b) => {
-      return new Date(b.tender_date) - new Date(a.tender_date);
-    });
+    uniqueList.sort((a, b) => a.tender_no - b.tender_no);
     next({ message: "Successfully fetched tender balances", data: uniqueList });
   } catch (err) {
     if (!err.status) err.status = 500;
@@ -270,6 +278,7 @@ export async function postDailyPublish(req, res, next) {
       payment_to,
     } = req.body;
 
+    // check if tender exists in daily publish
     const tenderExistQuery = {
       attributes: ["tender_id"],
       where: { tender_id },
@@ -308,8 +317,12 @@ export async function postDailyPublish(req, res, next) {
       auto_confirm,
       status: "Y",
     };
+    // insert into daily publish
     await insertIntoDailyPublish(insertData);
     next({ message: "Successfully inserted into daily publish" });
+    // tell client to fetch daily publish
+    let sent_request = await updatePublishedList();
+    sent_request && logger.debug("Sent request to update published list");
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -330,9 +343,7 @@ export async function getDailyBalance(req, res, next) {
         uniqueList.push(ele);
       }
     }
-    uniqueList.sort((a, b) => {
-      return new Date(a.publish_date) - new Date(b.publish_date);
-    });
+    uniqueList.sort((a, b) => a.tender_no - b.tender_no);
     next({ data: uniqueList, message: "Successfully fetched daily balances" });
   } catch (err) {
     if (!err.status) err.status = 500;
@@ -346,12 +357,14 @@ export async function updateSingleTrade(req, res, next) {
     const setQuery = { status };
     const query = { where: { tender_id }, returning: true };
 
-    const result = await updateDailyPublishByQuery(setQuery, query) || [];
+    const result = (await updateDailyPublishByQuery(setQuery, query)) || [];
     next({
-      message: `${
-        status === "Y" ? "Started" : "Stopped"
-      } trade for tender no ${result.data[0]?.tender_no}`,
+      message: `${status === "Y" ? "Started" : "Stopped"} trade for tender no ${
+        result.data[0]?.tender_no
+      }`,
     });
+    const sent_request = await updateTradingOption();
+    sent_request && logger.debug("Sent request to update trading option");
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -368,6 +381,8 @@ export async function updateAllTrade(req, res, next) {
         status === "Y" ? "Started" : "Stopped"
       } all trades`,
     });
+    const sent_request = await updateTradingOption();
+    sent_request && logger.debug("Sent request to update trading option");
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -383,6 +398,8 @@ export async function updateSingleSaleRate(req, res, next) {
     const query = { where: { tender_id } };
     await updateDailyPublishByQuery(setQuery, query);
     next({ message: "Updated sale rate for tender id " + tender_id });
+    const request_sent = await updatePublishedList();
+    request_sent && logger.debug(`Sent request to update published list`);
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -397,6 +414,8 @@ export async function updateAllSaleRate(req, res, next) {
     };
     await updateDailyPublishByQuery(setQuery);
     next({ message: "Updated all sale rate" });
+    const request_sent = await updatePublishedList();
+    request_sent && logger.debug(`Sent request to update published list`);
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -410,6 +429,29 @@ export async function modifySingleTrade(req, res, next) {
     const query = { where: { tender_id } };
     await updateDailyPublishByQuery(setQuery, query);
     next({ message: "Modified trade for tender id " + tender_id });
+    const request_sent = await updatePublishedList();
+    request_sent && logger.debug(`Sent request to update published list`);
+  } catch (err) {
+    if (!err.status) err.status = 500;
+    next(err);
+  }
+}
+
+export async function getAllTradeStatus(req, res, next) {
+  try {
+    const query = {
+      attributes: ["status"],
+      where: {},
+    };
+    const statusArr = await getDataFromDailyPublish(query);
+    let stop_trading_option = false;
+    for (let { status } of statusArr) {
+      if (status === "Y") {
+        stop_trading_option = true;
+        break;
+      }
+    }
+    next({ stop_trading_option });
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);

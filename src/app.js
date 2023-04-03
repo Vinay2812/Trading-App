@@ -26,7 +26,7 @@ import { SERVER_PORT, SERVER_HOST } from "./utils/config.js";
 import logger from "./utils/logger.js";
 
 // others
-import "./socket.io/socket.js";
+// import "./socket.io/socket.js";
 import { invalidateOtps } from "./controller/Auth/auth.controller.js";
 import { ApiResponse } from "./middlewares/index.js";
 

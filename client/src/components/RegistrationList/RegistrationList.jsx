@@ -3,20 +3,27 @@ import "./RegistrationList.css";
 import { getRegistrationListUsers } from "../../api/AdminRequest";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import ListItem from "./component/ListItem";
+import { useLoading } from "../Loader/Loader";
 import logger from "../../utils/logger";
 
 function RegistrationList() {
+  const { loaderWrapper } = useLoading();
   const [users, setUsers] = useState([]);
 
-  async function fetchUsers() {
-    const response = await getRegistrationListUsers();
-    if(response.success){
+  async function fetchUsers(signal) {
+    const response = await loaderWrapper(getRegistrationListUsers(signal));
+    if (response.success) {
       setUsers(response.data);
     }
   }
 
   useEffect(() => {
-    fetchUsers();
+    const controller = new AbortController();
+    const signal = { signal: controller.signal };
+    fetchUsers(signal);
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (

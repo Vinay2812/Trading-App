@@ -1,10 +1,11 @@
 import "./PublishedList.css";
-import Loader from "../Loader/Loader";
+import { useLoading } from "../Loader/Loader";
 import { useEffect, useState } from "react";
 import { getDailyBalance } from "../../api/AdminRequest";
 import PublishedListItem from "./components/PublishedListItem";
 import socket from "../../socket.io/socket";
 import { formatArrayData } from "../../utils/format";
+import logger from "../../utils/logger";
 
 function PublishedList({
   refresh = null,
@@ -12,7 +13,7 @@ function PublishedList({
   isPublishedList = true,
 }) {
   // useStates
-  const [loading, setLoading] = useState(false);
+  const { loaderWrapper } = useLoading()
   const [publishedList, setPublishedList] = useState([]);
 
   // useEffects
@@ -33,20 +34,18 @@ function PublishedList({
   useEffect(() => {
     const controller = new AbortController();
     const signal = { signal: controller.signal };
-    socket.on("refresh_client_list", (msg) => {
+    socket.on("/published-list/update", () => {
       fetchPublishedList(signal);
     });
   }, [socket]);
 
   // functions
   async function fetchPublishedList(signal = null) {
-    setLoading(true);
-    const dailyBalances = await getDailyBalance();
+    const dailyBalances = await loaderWrapper(getDailyBalance(signal));
     if (dailyBalances.success) {
       const formattedData = formatArrayData(dailyBalances.data);
       setPublishedList(formattedData);
     }
-    setLoading(false);
   }
 
   (function checkIsResumeTrading() {
@@ -63,9 +62,6 @@ function PublishedList({
   let index = 0;
   return (
     <div className="published-list-container">
-      {/* {loading ? (
-        <Loader />
-      ) : ( */}
       <>
         <div
           className={
@@ -124,7 +120,6 @@ function PublishedList({
           );
         })}
       </>
-      {/* )} */}
     </div>
   );
 }

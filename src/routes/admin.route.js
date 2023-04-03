@@ -13,6 +13,7 @@ import {
   modifySingleTrade,
   updateSingleTrade,
   updateAllTrade,
+  getAllTradeStatus,
 } from "../controller/Admin/admin.controller.js";
 import {
   addUserReq,
@@ -81,5 +82,6 @@ router.patch(
   ValidateRequest(modifySingleTradeReq),
   modifySingleTrade
 );
+router.get("/published-list/trade/status/all", getAllTradeStatus);
 
 export default router;

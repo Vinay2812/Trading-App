@@ -2,16 +2,16 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addUser } from "../../../api/AdminRequest";
 import { setAdminTab } from "../../../redux/actions/adminActions";
-
+import { useLoading } from "../../Loader/Loader";
 import logger from "../../../utils/logger";
 
 function ListItem({ data, fetchUsers }) {
-  // const [authorized, setAuthorized] = useState(data.authorized === 1)
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { loaderWrapper } = useLoading();
 
   async function handleAdd() {
-    const response = await addUser(data.userId);
+    const response = await loaderWrapper(addUser(data.userId));
     if (response.success) {
       fetchUsers();
     }

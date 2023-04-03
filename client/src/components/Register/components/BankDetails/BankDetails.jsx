@@ -1,5 +1,5 @@
-
-import BankDetailCard from "../BankDetailCard/BankDetailCard";
+import { lazy } from "react";
+const BankDetailCard = lazy(() => import("../BankDetailCard/BankDetailCard"))
 import "./BankDetails.css";
 
 function BankDetails({ bankDetailArray, setBankDetailArray }) {

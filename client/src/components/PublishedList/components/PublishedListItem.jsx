@@ -4,6 +4,7 @@ import { FaEdit, BsPauseCircle, BsFillPlayFill } from "react-icons/all";
 import { useState } from "react";
 import { updateSingleTrade } from "../../../api/AdminRequest";
 import ModifyDialog from "./ModifyDialog";
+import { useLoading } from "../../Loader/Loader";
 
 function PublishedListItem({
   index = null,
@@ -11,6 +12,7 @@ function PublishedListItem({
   isPublishedList,
   socket,
 }) {
+  const { loaderWrapper } = useLoading();
   // useStates
   const [listItemData, setListItemData] = useState(publishedItemData);
   const [showModifyDialog, setShowModifyDialog] = useState(false);
@@ -18,17 +20,12 @@ function PublishedListItem({
   // functions
   async function handleTradeBtnClick() {
     const updated_status = listItemData.status === "Y" ? "N" : "Y";
-    const updatedRes = await updateSingleTrade({
+    const updatedRes = await loaderWrapper(updateSingleTrade({
       tender_id: listItemData.tender_id,
       status: updated_status,
-    });
-    if (updatedRes?.success) {
+    }));
+    if (updatedRes.success) {
       setListItemData((prev) => ({ ...prev, status: updated_status }));
-      socket.connected &&
-        socket.emit(
-          "update_client_list",
-          "Req received - client list updation"
-        );
     }
   }
 

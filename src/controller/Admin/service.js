@@ -63,6 +63,7 @@ export async function updateAccountMasterByQuery(set, query = { where: {} } ) {
 export async function updateDailyPublishByQuery(set, query = { where: {} } ) {
   let [rows, data] = await DailyPublish.update(set, query);
   data = processQueryOutput.forUpdate(data);
+  logger.debug(data);
   return { rows_affected: rows, data };
 }
 

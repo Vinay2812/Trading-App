@@ -10,35 +10,41 @@ import NoAuthorization from "./pages/NoAuthorization/NoAuthorization";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import Redirect from "./components/Redirect/Redirect";
 import Error404 from "./components/404/Error404";
+import Loader from "./components/Loader/Loader";
+import { Suspense } from "react";
 
 function App() {
   return (
     <ErrorBoundary fallback="Error">
-        <Redirect>
-            <div className="App">
-              <Routes>
-                <Route path="/" element={<Auth />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/home">
-                  <Route path="/home" element={<Home />} />
-                  <Route
-                    path="/home/no-authorization"
-                    element={<NoAuthorization />}
-                  />
-                </Route>
-                <Route path="/register/:userId" element={<Password />} />
-                <Route path="/admin">
-                  <Route path="/admin" element={<Admin />} />
-                  <Route
-                    path="/admin/registration-list"
-                    element={<RegistrationList />}
-                  />
-                  <Route path="/admin/map/:id" element={<MapClient />} />
-                </Route>
-                <Route path="/404" element={<Error404 />}/>
-              </Routes>
-            </div>
-        </Redirect>
+      <Redirect>
+        <Loader>
+          <Suspense fallback = {"Loading....."}>
+          <div className="App">
+            <Routes>
+              <Route path="/" element={<Auth />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/home">
+                <Route path="/home" element={<Home />} />
+                <Route
+                  path="/home/no-authorization"
+                  element={<NoAuthorization />}
+                />
+              </Route>
+              <Route path="/register/:userId" element={<Password />} />
+              <Route path="/admin">
+                <Route path="/admin" element={<Admin />} />
+                <Route
+                  path="/admin/registration-list"
+                  element={<RegistrationList />}
+                />
+                <Route path="/admin/map/:id" element={<MapClient />} />
+              </Route>
+              <Route path="/404" element={<Error404 />} />
+            </Routes>
+          </div>
+          </Suspense>
+        </Loader>
+      </Redirect>
     </ErrorBoundary>
   );
 }

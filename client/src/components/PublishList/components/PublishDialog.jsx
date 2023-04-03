@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { postDailyPublish } from "../../../api/AdminRequest";
-import Loader from "../../Loader/Loader";
+import Loader, { useLoading } from "../../Loader/Loader";
 import convertDate from "../../../utils/convertDate";
 import convertUnit from "../../../utils/convertUnit";
 import logger from "../../../utils/logger";
 import socket from "../../../socket.io/socket";
 
 function PublishDialog({ publishItem, setShowDialog }) {
+  const { loaderWrapper } = useLoading();
   // useStates
   const [dialogData, setDialogData] = useState({
     ...publishItem,
@@ -14,7 +15,6 @@ function PublishDialog({ publishItem, setShowDialog }) {
     multiple_of: 160,
     auto_confirm: "Y",
   });
-  const [loading, setLoading] = useState(false);
 
   // functions
   function handleInputChange(e) {
@@ -27,24 +27,12 @@ function PublishDialog({ publishItem, setShowDialog }) {
   }
 
   async function handleDialogPublish() {
-    setLoading(true);
-    const res = await postDailyPublish(dialogData);
-    if (res?.success) {
-      socket.connected &&
-        socket.emit(
-          "update_client_list",
-          "Req received - client list updation"
-        );
-      setShowDialog(false);
-    }
-    setLoading(false);
+    await loaderWrapper(postDailyPublish(dialogData));
+    setShowDialog(false);
   }
 
   return (
     <div className="dialog-container">
-      {/* {loading ? (
-        <Loader />
-      ) : ( */}
         <div className="dialog-box">
           <div className="dialog-title">Publish Dialog</div>
           <div className="dialog-content">
@@ -126,7 +114,6 @@ function PublishDialog({ publishItem, setShowDialog }) {
             </div>
           </div>
         </div>
-      {/* )} */}
     </div>
   );
 }

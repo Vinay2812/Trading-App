@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy } from "react";
 import "./Register.css";
 import allDistricts from "./data/districts.json";
 import states from "./data/states.json";
@@ -6,13 +6,15 @@ import { constitutionFirm } from "./data/contitution-firm";
 import { AiFillSave } from "react-icons/ai";
 import validateForm from "./utils/FormValidation.js";
 // import { register } from "../../redux/actions/authActions";
-import { register } from "../../api/AuthRequest";
+// import { register } from "../../api/AuthRequest";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import Loader from "../Loader/Loader";
-import BankDetails from "./components/BankDetails/BankDetails";
-import ContactDetails from "./components/ContactDetails/ContactDetails";
-import { login } from "../../redux/actions/authActions";
+import { useLoading } from "../Loader/Loader";
+const BankDetails = lazy(() => import("./components/BankDetails/BankDetails"));
+const ContactDetails = lazy(() =>
+  import("./components/ContactDetails/ContactDetails")
+);
+import { login, register } from "../../redux/actions/authActions";
 
 function Register({ setRegisterPage }) {
   states.sort((a, b) => a.code - b.code);
@@ -70,7 +72,7 @@ function Register({ setRegisterPage }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState(false);
+  const { loaderWrapper } = useLoading();
 
   useEffect(() => {
     const reqDistricts =
@@ -138,250 +140,242 @@ function Register({ setRegisterPage }) {
     );
 
     if (validation === true) {
-      setLoading(true);
       const updatedMobile = userDetails.mobile.substring(
-        userDetails.mobile.length - 10,
-        userDetails.mobile.length
+        userDetails.mobile.length - 10
       );
       const formData = {
         userData: { ...userDetails, mobile: updatedMobile },
         bankData: bankDetailArray,
         contactData: contactArray,
       };
-      register(formData)
-        .then((res) => {
-          const { mobile, company_name, password, userId } = res.data.userData;
-          dispatch(login({mobile, company_name, password}))
-          navigate(`/register/${userId}`)
-          setLoading(false);
-        })
-        .catch((err) => {
-          setLoading(false);
-          logger.error(err)
-        });
+      dispatch(register(formData));
+      navigate(`/register/${userId}`);
+      // register(formData)
+      //   .then((res) => {
+      //     const { mobile, company_name, password, userId } = res.data.userData;
+      //     dispatch(login({ mobile, company_name, password }));
+      //     navigate(`/register/${userId}`);
+      //     setLoading(false);
+      //   })
+      //   .catch((err) => {
+      //     setLoading(false);
+      //     logger.error(err);
+      //   });
     }
   }
   return (
     <div className="register-container">
-      {loading ? (
-        <Loader />
-      ) : (
-        <>
-          <div className="register-title">
-            User Registration
-            {error.length ? <div className="error">{error}</div> : ""}
-          </div>
+      <div className="register-title">
+        User Registration
+        {error.length ? <div className="error">{error}</div> : ""}
+      </div>
 
-          <div className="row">
-            <div>
-              <label htmlFor="company_name">Company name</label>
-              <input
-                type="text"
-                name="company_name"
-                required={true}
-                value={userDetails.company_name}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                required={true}
-                value={userDetails.email}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div>
-              <label htmlFor="address">Address</label>
-              <textarea
-                type="text"
-                name="address"
-                value={userDetails.address}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="drp-state">State</label>
-              <select
-                name="drp-state"
-                defaultValue="none"
-                onChange={handleStateChange}
-              >
-                <option value="none" disabled={true} hidden={true}></option>
-                {states.map((state) => {
-                  return (
-                    <option value={state.code} key={state.id}>
-                      {state.name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="district">District</label>
-              <select
-                name="district"
-                defaultValue={0}
-                onChange={handleChange}
-                disabled={userDetails.state.length === 0}
-              >
-                <option value={0} disabled hidden></option>
-                {stateDistricts.map((district) => {
-                  return (
-                    <option value={district.name} key={district.name}>
-                      {district.name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          </div>
-          <div className="row">
-            <div>
-              <label htmlFor="pincode">Pincode</label>
-              <input
-                type="number"
-                name="pincode"
-                required={true}
-                value={userDetails.pincode}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="mobile">Mobile</label>
-              <input
-                type="text"
-                name="mobile"
-                required={true}
-                value={userDetails.mobile}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="whatsapp">Whatsapp</label>
-              <input
-                type="text"
-                name="whatsapp"
-                value={userDetails.whatsapp}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="row">
-            {hasGST ? (
-              <div>
-                <label htmlFor="gst">GST</label>
-                <div>
-                  <input
-                    type="checkbox"
-                    name="gst_registered"
-                    checked={hasGST}
-                    onChange={() => {
-                      setHasGST((prev) => !prev);
-                    }}
-                  />
-                  <input
-                    type="text"
-                    className="gst"
-                    name="gst"
-                    required={true}
-                    value={userDetails.gst}
-                    onChange={handleGSTChange}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="gst-checkbox">
-                <input
-                  type="checkbox"
-                  name="gst_registered"
-                  checked={hasGST}
-                  onChange={() => {
-                    setHasGST(true);
-                  }}
-                />
-                <label htmlFor="gst_registered">Is GST Registered</label>
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="pan">PAN</label>
-              <input
-                type="text"
-                name="pan"
-                required={true}
-                value={userDetails.pan}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="fssai">FSSAI</label>
-              <input
-                type="text"
-                name="fssai"
-                value={userDetails.fssai}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div>
-              <label htmlFor="tan">TAN</label>
-              <input
-                type="text"
-                name="tan"
-                value={userDetails.tan}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="constitution_of_firm">
-                Constitution of the Firm
-              </label>
-              <select
-                name="constitution_of_firm"
-                id=""
-                defaultValue="none"
-                onChange={handleChange}
-              >
-                <option value="none" disabled={true} hidden={true}></option>
-                {constitutionFirm.map((item) => {
-                  return (
-                    <option value={item} key={item}>
-                      {item}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          </div>
-          <BankDetails
-            bankDetailArray={bankDetailArray}
-            setBankDetailArray={setBankDetailArray}
+      <div className="row">
+        <div>
+          <label htmlFor="company_name">Company name</label>
+          <input
+            type="text"
+            name="company_name"
+            required={true}
+            value={userDetails.company_name}
+            onChange={handleChange}
           />
-
-          <ContactDetails
-            contactArray={contactArray}
-            setContactArray={setContactArray}
+        </div>
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            name="email"
+            required={true}
+            value={userDetails.email}
+            onChange={handleChange}
           />
+        </div>
+      </div>
+      <div className="row">
+        <div>
+          <label htmlFor="address">Address</label>
+          <textarea
+            type="text"
+            name="address"
+            value={userDetails.address}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="drp-state">State</label>
+          <select
+            name="drp-state"
+            defaultValue="none"
+            onChange={handleStateChange}
+          >
+            <option value="none" disabled={true} hidden={true}></option>
+            {states.map((state) => {
+              return (
+                <option value={state.code} key={state.id}>
+                  {state.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="district">District</label>
+          <select
+            name="district"
+            defaultValue={0}
+            onChange={handleChange}
+            disabled={userDetails.state.length === 0}
+          >
+            <option value={0} disabled hidden></option>
+            {stateDistricts.map((district) => {
+              return (
+                <option value={district.name} key={district.name}>
+                  {district.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      </div>
+      <div className="row">
+        <div>
+          <label htmlFor="pincode">Pincode</label>
+          <input
+            type="number"
+            name="pincode"
+            required={true}
+            value={userDetails.pincode}
+            onChange={handleChange}
+          />
+        </div>
 
-          <div className="register-btns">
-            <button className="cancel" onClick={() => setRegisterPage(false)}>
-              CANCEL
-            </button>
-            <button className="save" onClick={handleSubmit}>
-              {<AiFillSave />} SAVE
-            </button>
+        <div>
+          <label htmlFor="mobile">Mobile</label>
+          <input
+            type="text"
+            name="mobile"
+            required={true}
+            value={userDetails.mobile}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="whatsapp">Whatsapp</label>
+          <input
+            type="text"
+            name="whatsapp"
+            value={userDetails.whatsapp}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+      <div className="row">
+        {hasGST ? (
+          <div>
+            <label htmlFor="gst">GST</label>
+            <div>
+              <input
+                type="checkbox"
+                name="gst_registered"
+                checked={hasGST}
+                onChange={() => {
+                  setHasGST((prev) => !prev);
+                }}
+              />
+              <input
+                type="text"
+                className="gst"
+                name="gst"
+                required={true}
+                value={userDetails.gst}
+                onChange={handleGSTChange}
+              />
+            </div>
           </div>
-        </>
-      )}
+        ) : (
+          <div className="gst-checkbox">
+            <input
+              type="checkbox"
+              name="gst_registered"
+              checked={hasGST}
+              onChange={() => {
+                setHasGST(true);
+              }}
+            />
+            <label htmlFor="gst_registered">Is GST Registered</label>
+          </div>
+        )}
+
+        <div>
+          <label htmlFor="pan">PAN</label>
+          <input
+            type="text"
+            name="pan"
+            required={true}
+            value={userDetails.pan}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="fssai">FSSAI</label>
+          <input
+            type="text"
+            name="fssai"
+            value={userDetails.fssai}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+      <div className="row">
+        <div>
+          <label htmlFor="tan">TAN</label>
+          <input
+            type="text"
+            name="tan"
+            value={userDetails.tan}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="constitution_of_firm">Constitution of the Firm</label>
+          <select
+            name="constitution_of_firm"
+            id=""
+            defaultValue="none"
+            onChange={handleChange}
+          >
+            <option value="none" disabled={true} hidden={true}></option>
+            {constitutionFirm.map((item) => {
+              return (
+                <option value={item} key={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      </div>
+      <BankDetails
+        bankDetailArray={bankDetailArray}
+        setBankDetailArray={setBankDetailArray}
+      />
+
+      <ContactDetails
+        contactArray={contactArray}
+        setContactArray={setContactArray}
+      />
+
+      <div className="register-btns">
+        <button className="cancel" onClick={() => setRegisterPage(false)}>
+          CANCEL
+        </button>
+        <button className="save" onClick={handleSubmit}>
+          {<AiFillSave />} SAVE
+        </button>
+      </div>
     </div>
   );
 }

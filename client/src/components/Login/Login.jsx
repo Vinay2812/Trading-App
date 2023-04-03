@@ -9,10 +9,11 @@ import {
 } from "react-icons/all";
 import { getComapanies, getUser, resendOTP } from "../../api/AuthRequest";
 import { adminLogin } from "../../redux/actions/adminActions";
-import { login } from "../../redux/actions/authActions"
+import { login } from "../../redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux"
+import { useDispatch } from "react-redux";
 import logger from "../../utils/logger";
+import { useLoading } from "../Loader/Loader";
 
 function Login({ setRegisterPage }) {
   const INITIAL_LOGIN_DATA = {
@@ -27,6 +28,8 @@ function Login({ setRegisterPage }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loaderWrapper } = useLoading();
+
   useEffect(() => {
     setLoginData(INITIAL_LOGIN_DATA);
   }, [isAdmin]);
@@ -67,7 +70,15 @@ function Login({ setRegisterPage }) {
     if (isAdmin) {
       dispatch(adminLogin(loginData));
     } else {
-      dispatch(login({...loginData, mobile: loginData.mobile.substring(loginData.mobile.length - 10, loginData.mobile.length)}));
+      dispatch(
+        login({
+          ...loginData,
+          mobile: loginData.mobile.substring(
+            loginData.mobile.length - 10,
+            loginData.mobile.length
+          ),
+        })
+      );
     }
   }
 
@@ -83,10 +94,10 @@ function Login({ setRegisterPage }) {
     }
 
     try {
-      const {data} = await getUser(loginData);
-      if(data?.userId){
-        await resendOTP({userId: data.userId});
-        navigate(`/register/${res.data.userId}`);
+      const { data } = await loaderWrapper(getUser(loginData));
+      if (data?.userId) {
+        loaderWrapper(resendOTP({ userId: data.userId }));
+        navigate(`/register/${userId}`);
       }
     } catch (err) {
       logger.error(err);
@@ -121,7 +132,11 @@ function Login({ setRegisterPage }) {
           >
             <option value="none" hidden={true}></option>
             {companies.map((company, index) => {
-              return <option value={company} key={index}>{company}</option>;
+              return (
+                <option value={company} key={index}>
+                  {company}
+                </option>
+              );
             })}
           </select>
         </div>

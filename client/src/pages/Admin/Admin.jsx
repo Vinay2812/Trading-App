@@ -13,11 +13,12 @@ import PublishedList from "../../components/PublishedList/PublishedList";
 import { updateAllSaleRate, updateAllTrade } from "../../api/AdminRequest";
 import socket from "../../socket.io/socket";
 import logger from "../../utils/logger";
-import Loader from "../../components/Loader/Loader";
+import { useLoading } from "../../components/Loader/Loader";
 
 function Admin() {
   // hooks
   const navigate = useNavigate();
+  const { loaderWrapper } = useLoading()
 
   // useSelectors
   const admin = useSelector((state) => state.adminReducer?.adminData?.admin);
@@ -72,10 +73,9 @@ function Admin() {
   }
 
   async function handleAllTradingStatus(){
-    const response = await updateAllTrade({status: isResumeTrading? "Y" : "N"})
+    const response = await loaderWrapper(updateAllTrade({status: isResumeTrading? "Y" : "N"}))
     if(response.success){
       handleRefreshPublishedList();
-      socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
       setIsResumeTrading(prev => !prev);
     }
   }
@@ -89,7 +89,7 @@ function Admin() {
       } all sale rate by ${Math.abs(val)} ?`
     );
     if (quesRes) {
-      const res = await updateAllSaleRate({ sale_rate: val });
+      const res = await loaderWrapper(updateAllSaleRate({ sale_rate: val }));
       if (res.success) {
         handleRefreshPublishedList();
         socket.connected && socket.emit("update_client_list", "Req received - start updating client list")
@@ -148,12 +148,10 @@ function Admin() {
       </div>
       <div className="page-container">
         {activeTab === 0 && (
-          <Suspense fallback={<Loader />}>
           <PublishList
             refresh={refreshPublishList}
             setRefresh={setRefreshPublishList}
           />
-          </Suspense>
         )}
         {activeTab === 1 && (
           <PublishedList
