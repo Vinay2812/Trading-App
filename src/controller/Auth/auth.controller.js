@@ -219,14 +219,15 @@ export async function updatePassword(req, res) {
     const hashedPassword = await bcrypt.hash(password, genSalt);
 
     const UPDATE_PASSWORD_QUERY = `
-            UPDATE ${ONLINE_USER_DETAILS} 
+            UPDATE ${ONLINE_USER_DETAILS}
             SET password = '${hashedPassword}'
+            OUTPUT inserted.*
             WHERE
                 userId = '${userId}'
         `;
 
-    await executeQuery(UPDATE_PASSWORD_QUERY);
-    res.status(200).json("Password updated successfully");
+    const user = await executeQuery(UPDATE_PASSWORD_QUERY);
+    res.status(200).json({message: "Password updated successfully", data: user[0]});
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);
