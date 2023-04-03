@@ -8,7 +8,7 @@ import store from "./redux/store/store";
 import Loader from "./components/Loader/Loader";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
@@ -23,5 +23,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </Routes>
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

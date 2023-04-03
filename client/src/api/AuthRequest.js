@@ -32,6 +32,7 @@ export async function updatePassword(data) {
     return res;
   } catch (err) {
     logger.error(err);
+    return err;
   }
 }
 export async function getComapanies(mobile) {

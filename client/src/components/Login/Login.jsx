@@ -96,8 +96,7 @@ function Login({ setRegisterPage }) {
     try {
       const { data } = await loaderWrapper(getUser(loginData));
       if (data?.userId) {
-        loaderWrapper(resendOTP({ userId: data.userId }));
-        navigate(`/register/${userId}`);
+        navigate(`/register/${data.userId}`);
       }
     } catch (err) {
       logger.error(err);

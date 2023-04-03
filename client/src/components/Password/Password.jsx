@@ -11,6 +11,7 @@ import { login } from "../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import logger from "../../utils/logger";
 import Navbar from "../Navbar/Navbar";
+import { useLoading } from "../Loader/Loader";
 
 function Password() {
   const navigate = useNavigate();
@@ -22,9 +23,12 @@ function Password() {
   useEffect(() => {
     if (userId == undefined || userId == null) {
       navigate("/auth");
-      return;
     }
   }, [userId]);
+
+  useEffect(() => {
+    handleResend();
+  },[])
 
   const INITIAL_PASSWORD_DETAILS = useMemo(
     () => ({
@@ -40,6 +44,7 @@ function Password() {
 
   const [passwordPage, setPasswordPage] = useState(false);
   const dispatch = useDispatch();
+  const { loaderWrapper } = useLoading()
 
   function handleChange(e) {
     e.preventDefault();
@@ -84,14 +89,14 @@ function Password() {
       if (res.status === 200) {
         dispatch(
           login({
-            mobile: user.userData.mobile,
-            company_name: user.userData.company_name,
+            mobile: res.data.data.mobile,
+            company_name: res.data.data.company_name,
             password: passwordDetails.password,
           })
         );
         navigate("/home/no-authorization");
       }
-    } catch (err) {}
+    } catch (err) {console.log(err)}
   }
   return (
     <>

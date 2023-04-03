@@ -9,15 +9,14 @@
   display: grid; /*   1     2     3   4   5   6    7     8   9    10    11     12    13     14  15  16  */
   /* grid-template-columns: 0.65fr 0.8fr 1fr 1fr 1fr 1fr 0.75fr 1fr 1fr 0.75fr 0.8fr 0.75fr 0.75fr 1fr 1fr 1fr; */
   grid-template-columns: repeat(16, 1fr);
-  width: 150vw;
+  width: 2500px;
 }
 
 .head {
   background-color: darkslategray;
   color: white;
   font-weight: 600;
-  height: 4rem;
-  /* position: fixed; */
+  height: 3.5rem;
 }
 
 .head > .publish-list-cell {

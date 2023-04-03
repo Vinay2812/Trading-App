@@ -23,13 +23,13 @@ function PublishedList({
     fetchPublishedList(signal);
   }, []);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = { signal: controller.signal };
-    if (refresh) {
-      fetchPublishedList(signal);
-    }
-  }, [refresh]);
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   const signal = { signal: controller.signal };
+  //   if (refresh) {
+  //     fetchPublishedList(signal);
+  //   }
+  // }, [refresh]);
 
   useEffect(() => {
     const controller = new AbortController();

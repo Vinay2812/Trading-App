@@ -16,7 +16,6 @@ export function adminLogin(loginData) {
       return;
     }
     dispatch({ type: ADMIN_AUTH_FAIL });
-    logger.error(err);
   };
 }
 
