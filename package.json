@@ -5,7 +5,7 @@
     "main": "app.js",
     "type": "module",
     "scripts": {
-        "start": "node src/index.js",
+        "start": "node --inspect src/app.js",
         "dev": "nodemon --inspect --ignore ./client/ src/app.js",
         "client": "cd client && npm run dev",
         "mssql": "sudo docker start sql1 && sudo docker exec -it sql1 \"bash\""
