@@ -31,6 +31,7 @@ import { invalidateOtps } from "./controller/Auth/auth.controller.js";
 import { ApiResponse } from "./middlewares/index.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
+console.log(__dirname)
 
 const app = express();
 const port = SERVER_PORT;
@@ -55,9 +56,9 @@ app.use("/error", ErrorRoute);
 app.use(ApiResponse);
 
 // serve static assets if in production
-app.use(express.static(path.join(__dirname, "client", "dist")));
+app.use(express.static(path.join(__dirname, "../client", "dist")));
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
 });
 
 function startServer() {

@@ -30,7 +30,7 @@ function logData(info, next) {
 const options = {
   transports: [
     new transports.Console({
-      level: NODE_ENV === "production" ? "error" : "debug",
+      level: NODE_ENV === "production" ? "info" : "debug",
       log: logData,
       format: format.combine(format.prettyPrint()),
     }),
