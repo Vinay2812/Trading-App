@@ -42,5 +42,5 @@ const options = {
   ],
 };
 
-const logger = NODE_ENV === "production" ? console : createLogger(options);
+const logger = createLogger(options);
 export default logger;
