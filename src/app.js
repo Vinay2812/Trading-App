@@ -49,7 +49,7 @@ app.use("/user", UserRoute);
 app.use("/error", ErrorRoute);
 
 // handle invalid routes
-app.use(InvalidRoute);
+// app.use(InvalidRoute);
 
 // response middleware
 app.use(ApiResponse);
