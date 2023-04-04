@@ -15,3 +15,4 @@ debug/
 logs/
 /.vscode
 testing/
+/client/dist/
