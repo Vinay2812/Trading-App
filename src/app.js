@@ -31,13 +31,14 @@ import { invalidateOtps } from "./controller/Auth/auth.controller.js";
 import { ApiResponse } from "./middlewares/index.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-console.log(__dirname)
 
 const app = express();
 const port = SERVER_PORT;
 
 // middlewares
-app.use(cors());
+app.use(cors({
+  origin: "*",
+}));
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(morgan(":status :method :url :response-time ms"));
