@@ -51,16 +51,10 @@ app.use("/user", UserRoute);
 app.use("/error", ErrorRoute);
 
 // handle invalid routes
-// app.use(InvalidRoute);
+app.use(InvalidRoute);
 
 // response middleware
 app.use(ApiResponse);
-
-// serve static assets if in production
-app.use(express.static(path.join(__dirname, "../client", "dist")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
-});
 
 function startServer() {
   logger.info("Starting server.............");
