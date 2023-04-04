@@ -35,23 +35,8 @@ const options = {
       format: format.combine(format.prettyPrint()),
     }),
     new transports.File({
-      filename: "./logs/debug.log",
+      filename: "logs/debug.log",
       level: "debug",
-      format: format.combine(format.prettyPrint()),
-    }),
-    new transports.File({
-      filename: "./logs/error.log",
-      level: "error",
-      format: format.combine(format.prettyPrint()),
-    }),
-    new transports.File({
-      filename: "./logs/mssql.log",
-      level: "warn",
-      format: format.combine(format.prettyPrint()),
-    }),
-    new transports.File({
-      filename: "./logs/client.log",
-      level: "client",
       format: format.combine(format.prettyPrint()),
     }),
   ],

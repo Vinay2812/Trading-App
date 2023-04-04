@@ -12,7 +12,6 @@ data/.~lock.Vinay.xlsx#
 .env
 *.log
 debug/
-logs/
 /.vscode
 testing/
 client/dist/
