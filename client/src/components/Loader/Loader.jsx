@@ -1,7 +1,6 @@
 import "./Loader.css";
 import { RotatingLines } from "react-loader-spinner";
 import { useContext, createContext, useState } from "react";
-import { dismissToast } from "../Toast/Toast";
 
 const LoaderContext = createContext();
 export const useLoading = () => {

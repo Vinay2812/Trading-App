@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import mssql from "../connections/mssql.connection.js";
-import { QRY_TENDER_DO_BALANCE_VIEW } from "../database/dbSchema.js";
+import mssql from "../../connections/mssql.connection.js";
+import { QRY_TENDER_DO_BALANCE_VIEW } from "../../database/dbSchema.js";
 
 export const TenderBalanceView = mssql.define(QRY_TENDER_DO_BALANCE_VIEW, {
   tender_no: {

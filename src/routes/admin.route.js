@@ -14,7 +14,7 @@ import {
   updateSingleTrade,
   updateAllTrade,
   getAllTradeStatus,
-} from "../controller/Admin/admin.controller.js";
+} from "../controller/admin.controller.js";
 import {
   addUserReq,
   adminLoginReq,

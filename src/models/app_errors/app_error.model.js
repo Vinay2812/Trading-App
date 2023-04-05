@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import mssql from "../connections/mssql.connection.js";
-import { TRADING_APP_ERRORS } from "../database/dbSchema.js";
+import mssql from "../../connections/mssql.connection.js";
+import { TRADING_APP_ERRORS } from "../../database/dbSchema.js";
 
 export const AppErrors = mssql.define(TRADING_APP_ERRORS, {
   errorId: {

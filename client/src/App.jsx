@@ -11,10 +11,30 @@ import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import Redirect from "./components/Redirect/Redirect";
 import Error404 from "./components/404/Error404";
 import Loader from "./components/Loader/Loader";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Toast from "./components/Toast/Toast";
+import { API } from "./api/AxiosInstance";
 
 function App() {
+  const [checkConnection, setCheckConnection] = useState(false)
+  useEffect(() => {
+    const controller = new AbortController()
+    const signal = {signal: controller.signal}
+    setInterval(async () => {
+      try {
+         const res = await API.post("/", signal)
+          setCheckConnection(res.data.status === "success")
+      } catch (err) {
+          setCheckConnection(false)
+      }
+    }, [5000])
+  },[]);
+
+  useEffect(() => {
+    if (!checkConnection) {
+      alert("Connection lost")
+    }
+  }, [checkConnection])
   return (
     <ErrorBoundary fallback="Error">
       <Redirect>

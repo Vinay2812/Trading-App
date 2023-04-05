@@ -1,11 +1,11 @@
-import mssql from "../connections/mssql.connection.js";
+import mssql from "../../connections/mssql.connection.js";
 import { DataTypes } from "sequelize";
 import {
   ONLINE_USER_DETAILS,
   USER_BANK_DETAILS,
   USER_CONTACT_DETAILS,
   USER_OTP_DETAILS,
-} from "../database/dbSchema.js";
+} from "../../database/dbSchema.js";
 
 export const UserOnlineDetails = mssql.define(ONLINE_USER_DETAILS, {
   userId: {

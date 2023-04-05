@@ -8,7 +8,7 @@ import {
   sendOTP,
   updatePassword,
   validateOTP,
-} from "../controller/Auth/auth.controller.js";
+} from "../controller/auth.controller.js";
 const router = Router();
 
 // authentication

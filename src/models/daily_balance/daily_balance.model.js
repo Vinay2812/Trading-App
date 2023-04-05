@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import mssql from "../connections/mssql.connection.js";
-import { QRY_TR_DAILY_BALANCE } from "../database/dbSchema.js";
+import mssql from "../../connections/mssql.connection.js";
+import { QRY_TR_DAILY_BALANCE } from "../../database/dbSchema.js";
 
 export const DailyBalance = mssql.define(QRY_TR_DAILY_BALANCE, {
   tender_no: {

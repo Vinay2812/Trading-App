@@ -1,18 +1,15 @@
-import executeQuery from "../../database/executeQuery.js";
-import { getRandomId, getRandomOtp } from "../../utils/random.js";
-import sendEMail from "../../utils/email.js";
+import executeQuery from "../database/executeQuery.js";
+import { getRandomId, getRandomOtp } from "../utils/random.js";
+import sendEMail from "../utils/email.js";
 import bcrypt from "bcrypt";
 import {
   ONLINE_USER_DETAILS,
   USER_BANK_DETAILS,
   USER_CONTACT_DETAILS,
   USER_OTP_DETAILS,
-} from "../../database/dbSchema.js";
-import {
-  OTP_REFRESH_INTERVAL,
-  OTP_VALID_INTERVAL,
-} from "../../utils/config.js";
-import logger from "../../utils/logger.js";
+} from "../database/dbSchema.js";
+import { OTP_REFRESH_INTERVAL, OTP_VALID_INTERVAL } from "../utils/config.js";
+import logger from "../utils/logger.js";
 
 export async function register(req, res) {
   const { userData, bankData, contactData } = req.body;
@@ -227,7 +224,9 @@ export async function updatePassword(req, res) {
         `;
 
     const user = await executeQuery(UPDATE_PASSWORD_QUERY);
-    res.status(200).json({message: "Password updated successfully", data: user[0]});
+    res
+      .status(200)
+      .json({ message: "Password updated successfully", data: user[0] });
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);

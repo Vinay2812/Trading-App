@@ -1,5 +1,5 @@
-import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../../utils/config.js";
-import logger from "../../utils/logger.js";
+import { ADMIN_USERNAME, ADMIN_PASSWORD } from "../utils/config.js";
+import logger from "../utils/logger.js";
 import createError from "http-errors";
 import {
   getDataFromAccountMaster,
@@ -13,13 +13,13 @@ import {
   insertIntoDailyPublish,
   getDataFromDailyBalance,
   updateDailyPublishByQuery,
-} from "./service.js";
+} from "../models/index.js";
 import { Op, Sequelize } from "sequelize";
 import {
   updatePublishedList,
   updateTradingOption,
   updateUserAuthorization,
-} from "../../socket/controller/emit.js";
+} from "../socket/controller/emit.js";
 
 export async function adminLogin(req, res, next) {
   try {
@@ -192,7 +192,7 @@ export async function addUser(req, res, next) {
     await updateOnlineUserByQuery(setQuery, updateQuery);
     next({ message: "User added successfully" });
     const socket_res = await updateUserAuthorization(userId);
-    socket_res && logger.debug("Sent request to update authorization")
+    socket_res && logger.debug("Sent request to update authorization");
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);
@@ -216,7 +216,7 @@ export async function mapClient(req, res, next) {
     ]);
     next({ message: "Mapping was successful" });
     const socket_res = await updateUserAuthorization(userId, accoid);
-    socket_res && logger.debug("Sent request to update authorization")
+    socket_res && logger.debug("Sent request to update authorization");
   } catch (err) {
     if (!err.status) err.status = 500;
     next(err);

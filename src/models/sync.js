@@ -1,8 +1,5 @@
 import logger from "../utils/logger.js";
-import { AccountMaster } from "./AccountMaster.js";
-import { AppErrors } from "./AppErrors.js";
-import { DailyPublish } from "./DailyPublish.js";
-import { UserBankDetails, UserOnlineDetails } from "./User.js";
+import { AccountMaster, AppErrors, DailyPublish, UserBankDetails, UserOnlineDetails } from "./index.js";
 
 export default function syncMssql() {
   const options = {
